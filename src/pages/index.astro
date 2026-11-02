@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import VueCheck from '../components/VueCheck.vue';
+---
+<BaseLayout title="Asymptopia Software — New Site">
+  <header class="site-header">
+    <span class="site-name">Asymptopia Software</span>
+    <span class="dev-label">New site scaffold</span>
+  </header>
+  <main>
+    <h1>Asymptopia Software</h1>
+    <p class="blank-label">Content intentionally left blank.</p>
+    <div class="empty-stage" aria-label="Reserved space for future content"></div>
+  </main>
+  <footer class="technical-check">
+    <p class="tech-heading">Framework check</p>
+    <VueCheck client:load />
+  </footer>
+</BaseLayout>
