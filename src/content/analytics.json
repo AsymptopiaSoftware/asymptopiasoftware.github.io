@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "ga4": {
+    "enabled": false,
+    "measurementId": ""
+  },
+  "cloudflareWebAnalytics": {
+    "enabled": false,
+    "token": ""
+  },
+  "notes": "No tracking until an approved provider ID/token is configured and its privacy requirements are reviewed."
+}

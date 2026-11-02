@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import brand from '../content/brand.json';
+import analytics from '../content/analytics.json';
 
 interface Props {
   title: string;
@@ -9,6 +10,10 @@ interface Props {
 const { title, description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
 const siteUrl = new URL('/', Astro.site ?? Astro.url).href;
+const ga4Id = analytics.ga4.measurementId.trim();
+const ga4Enabled = analytics.ga4.enabled && /^G-[A-Z0-9]+$/i.test(ga4Id);
+const cfToken = analytics.cloudflareWebAnalytics.token.trim();
+const cfEnabled = analytics.cloudflareWebAnalytics.enabled && /^[a-f0-9]{32}$/i.test(cfToken);
 const socialImage = brand.seo.socialImage
   ? new URL(brand.seo.socialImage, Astro.site ?? Astro.url).href
   : null;
@@ -62,10 +67,35 @@ const structuredData = {
     <meta name="twitter:description" content={description} />
     {socialImage && <meta name="twitter:image" content={socialImage} />}
     <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')}></script>
+    {ga4Enabled && (
+      <>
+        <script is:inline async src={'https://www.googletagmanager.com/gtag/js?id=' + ga4Id}></script>
+        <script define:vars={{ ga4Id }}>
+          window.dataLayer = window.dataLayer || [];
+          window.gtag = function () { window.dataLayer.push(arguments); };
+          window.gtag('js', new Date());
+          window.gtag('config', ga4Id, {
+            allow_google_signals: false,
+            allow_ad_personalization_signals: false
+          });
+        </script>
+      </>
+    )}
+    {cfEnabled && (
+      <script
+        is:inline
+        type="module"
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon={JSON.stringify({ token: cfToken })}
+      ></script>
+    )}
   </head>
   <body>
     <div class="shell">
       <slot />
     </div>
+    <script>
+      import '../scripts/site-analytics.js';
+    </script>
   </body>
 </html>

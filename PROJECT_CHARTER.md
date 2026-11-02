@@ -39,7 +39,9 @@ Build a publicly accessible, long-lived, low-maintenance archive that does not r
 - Protect existing search visibility before the later DNS cutover: inventory currently indexed `asymptopia.com` paths, preserve URLs when reasonable, and plan redirects/404 handling for any changed URLs.
 - Maintain fast, semantic, accessible, mobile-usable pages and avoid unnecessary dependencies.
 - Be deliberate about internal linking between the homepage, individual projects, historical archive, source repositories, and launch pages.
-- Allow for analytics later, but keep it privacy-respecting, lightweight, and optional; distinguish actual readership from scanner traffic.
+- **Analytics is a first-class requirement:** measure genuine site use, referrers, search/campaign attribution, project launch clicks, download clicks, and trends while distinguishing real readers from bots and scans.
+- **Separate browser analytics from HTTP-edge security analytics:** GitHub Pages exposes neither visitor access logs nor Apache-style error logs; GitHub repository Insights do not count website visitors. Any future raw-request visibility requires a separately authorized edge/proxy arrangement.
+- **Analytics must remain editable, exportable, privacy-conscious and nonessential to site operation:** document provider ownership, permissions, data retention/export, and consent/privacy responsibilities. Do not start third-party tracking until configured and reviewed. Never send student data, personal identifiers, or page-query contents as custom event properties.
 
 ## Historical asymptopia.org identity
 
@@ -80,6 +82,9 @@ The user formerly operated **`asymptopia.org`**, but **does not control that dom
 - [ ] Agree on visual design, page types, and navigation with the owner.
 - [ ] Add selected project content incrementally, after review.
 - [ ] Document `asymptopia.org` history accurately when authoring that section.
+- [ ] Enable a real analytics account and validate production page views and project event collection (not only source-code instrumentation).
+- [ ] Add an independent HTTP-edge traffic view at custom-domain cutover; examine bot/scanner traffic without mislabeling it as readers.
+- [ ] Set up regular durable export or backups of aggregate traffic and event results, subject to provider retention limits and privacy review.
 - [ ] Inventory old `asymptopia.com` URLs and prepare SEO-safe domain transition.
 - [ ] Arrange long-term backups, account succession, and eventual server retirement.
 
