@@ -1,0 +1,11 @@
+{
+  "name": "Asymptopia Software",
+  "slogan": "Software@theLimit",
+  "established": "Established 1999",
+  "logo": "/images/asymptopia-software-logo.png",
+  "logoAlt": "Asymptopia Software — Original Education Software Since 1999",
+  "developmentStatus": "New site scaffold",
+  "placeholder": "Content intentionally left blank.",
+  "frameworkLabel": "Framework check",
+  "versionSeries": "0.1"
+}
