@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "ga4": {
-    "enabled": false,
-    "measurementId": ""
+    "enabled": true,
+    "measurementId": "G-YSDC1DHME5"
   },
   "cloudflareWebAnalytics": {
     "enabled": false,
     "token": ""
   },
-  "notes": "No tracking until an approved provider ID/token is configured and its privacy requirements are reviewed."
+  "notes": "GA4 web stream for asymptopiasoftware.github.io only; production asymptopia.com is not configured here. Review analytics disclosure, privacy, and regional consent requirements."
 }
