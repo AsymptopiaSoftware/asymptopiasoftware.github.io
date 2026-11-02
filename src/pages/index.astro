@@ -14,10 +14,10 @@ const siteVersion = `v${brand.versionSeries}.${buildNumber}`;
     <a class="brand-home" href="/" aria-label={`${brand.name} homepage`}>
       <img
         class="brand-logo"
-        src={brand.logo}
+        src={`${brand.logo}?v=${siteVersion}`}
         alt={brand.logoAlt}
-        width="220"
-        height="84"
+        width="380"
+        height="127"
       />
     </a>
     <div class="build-info" title={`Git commit ${commitSha}`}>
