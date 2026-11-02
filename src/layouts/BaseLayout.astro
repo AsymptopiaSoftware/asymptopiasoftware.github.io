@@ -1,20 +1,67 @@
 ---
 import '../styles/global.css';
+import brand from '../content/brand.json';
 
 interface Props {
   title: string;
+  description: string;
 }
-const { title } = Astro.props;
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
+const siteUrl = new URL('/', Astro.site ?? Astro.url).href;
+const socialImage = brand.seo.socialImage
+  ? new URL(brand.seo.socialImage, Astro.site ?? Astro.url).href
+  : null;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': siteUrl + '#website',
+      url: siteUrl,
+      name: brand.name,
+      alternateName: brand.seo.alternateName,
+      description: brand.seo.description,
+      inLanguage: 'en',
+      creator: { '@type': 'Person', name: brand.seo.creator }
+    },
+    {
+      '@type': 'WebPage',
+      '@id': canonical + '#webpage',
+      url: canonical,
+      name: title,
+      description,
+      inLanguage: 'en',
+      isPartOf: { '@id': siteUrl + '#website' }
+    }
+  ]
+};
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex, nofollow" />
+    <meta name="robots" content={brand.seo.indexable ? 'index, follow' : 'noindex, follow'} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={brand.seo.creator} />
+    <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="/cherries-favicon.png" sizes="28x28" />
-    <title>{title}</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content={brand.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {socialImage && <meta property="og:image" content={socialImage} />}
+    <meta name="twitter:card" content={socialImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {socialImage && <meta name="twitter:image" content={socialImage} />}
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')}></script>
   </head>
   <body>
     <div class="shell">

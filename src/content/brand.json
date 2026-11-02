@@ -1,11 +1,16 @@
 {
   "name": "Asymptopia Software",
   "slogan": "Software@theLimit",
-  "established": "Established 1999",
   "logo": "/images/asymptopia-logo-vector.svg",
   "logoAlt": "Asymptopia wordmark in green and yellow with a red apple above the i; Original Education Software, Since 1999",
-  "developmentStatus": "New site scaffold",
-  "placeholder": "Content intentionally left blank.",
-  "frameworkLabel": "Framework check",
-  "versionSeries": "0.1"
+  "versionSeries": "0.1",
+  "establishedYear": 1999,
+  "seo": {
+    "title": "Asymptopia Software | Software@theLimit",
+    "description": "Asymptopia Software (Software@theLimit): original educational and scientific software by Dr. Charles Cossé since 1999, spanning mathematics, music, reading, languages, and visualization.",
+    "creator": "Dr. Charles Cossé",
+    "alternateName": "Asymptopia",
+    "indexable": false,
+    "socialImage": ""
+  }
 }
