@@ -26,7 +26,7 @@ test('clock timing, numeric results and confetti remain original', () => {
 test('reel data, positions, callbacks and original symbols', () => {
   assert.equal((page.match(/reelImgs\.slice\(offset\*\d,20\)/g) || []).length, 7);
   assert.equal((reel.match(/#reelcontainer\d+\s*\{/g) || []).length, 7);
-  assert.equal((controls.match(/d3\.select\("#reel\d+"\)/g) || []).length, 14);
+  assert.equal((controls.match(/d3\.select\("#reel\d+"\)/g) || []).length, 21);
   assert.equal((page.match(/'\/images\/slot\//g) || []).length, 20);
   assert.equal((controls.match(/this\.explode\(\)/g) || []).length, 1);
 });
