@@ -43,7 +43,7 @@ const reelImgs = [
   '/images/slot/seven3.png',
   '/images/slot/chest.png'
 ]
-const offset = 3 // each reel is advanced by <offset> images from the previous reel (-3, +3); more than |3| * (5 reels) > 20 -> WRAP-ERROR
+const offset = 3 // each reel is advanced by <offset> images from the previous reel (-3, +3); more than |3| * seven reels use offsets 0, 3, 6, 9, 12, 15, 18
 export default defineComponent({
   name: 'IndexPage',
   components: {StageComponent, ControlsComponent},
@@ -55,7 +55,9 @@ export default defineComponent({
         reelImgs.slice(offset*1,20).concat(reelImgs.slice(0, offset*1)),
         reelImgs.slice(offset*2,20).concat(reelImgs.slice(0, offset*2)),
         reelImgs.slice(offset*3,20).concat(reelImgs.slice(0, offset*3)),
-        reelImgs.slice(offset*4,20).concat(reelImgs.slice(0, offset*4))
+        reelImgs.slice(offset*4,20).concat(reelImgs.slice(0, offset*4)),
+        reelImgs.slice(offset*5,20).concat(reelImgs.slice(0, offset*5)),
+        reelImgs.slice(offset*6,20).concat(reelImgs.slice(0, offset*6))
       ])
     }
   }

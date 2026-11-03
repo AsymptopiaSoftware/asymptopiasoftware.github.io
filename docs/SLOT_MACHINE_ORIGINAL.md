@@ -3,7 +3,7 @@
 Source: https://github.com/ccosse/slotmachine
 Reference: https://www.asymptopia.com/slotmachine/#/
 
-The homepage uses the owner's original five-reel Quasar/Vue source, not an invented WELCOME animation.
+The homepage uses the owner's original five-reel Quasar/Vue source, now extended to seven reels, not an invented WELCOME animation.
 
 Integration-only modifications:
 - Alias imports changed to relative paths.
@@ -17,3 +17,7 @@ Preserved: five reels, twenty 18-degree faces per reel, 700px stage, green stage
 The seven-letter WELCOME and the earlier Reading Edge reinterpretation were removed from the homepage and source, and remain recoverable from Git history.
 
 Browser rendering and behavior must still be compared with the reference deployment.
+
+## Seven-reel change
+
+Two reels have been added, preserving the same 20 symbols, 18-degree panes, five-second spin cycle and existing stop algorithm. Image offsets continue with 15 and 18 positions. Reels are now spaced at eighths of the unchanged stage width. Numerical results include all seven reels, and confetti starts after the seventh stops. No WELCOME letters have been added.

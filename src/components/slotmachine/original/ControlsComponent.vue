@@ -50,7 +50,7 @@ export default defineComponent({
       degPerSec: 360./parseFloat(props.t360),
       secPerTab: null,
       msPerTab: null,
-      startNumbers: [0, 0, 0, 0, 0],
+      startNumbers: [0, 0, 0, 0, 0, 0, 0],
       confettiOn: ref(false)
     }
   },
@@ -84,7 +84,7 @@ export default defineComponent({
       }
     },
     spin(){
-      d3.select("#resultsLabel").html('-.-.-.-.-')
+      d3.select("#resultsLabel").html('-.-.-.-.-.-.-')
       d3.selectAll(".reel").classed("spinning", false)
       // d3.selectAll(".reel").classed("paused", false) // this resets to initial zero rotation
       window.setTimeout(() => {
@@ -155,10 +155,30 @@ export default defineComponent({
         while (tileNo > 19) tileNo -= 20
         console.log(this.ximgs[4][tileNo])
         this.startNumbers[4] = tileNo
+        HTML += tileNo + ", "
+        d3.select("#resultsLabel").html(HTML)
+      },(13 + parseInt(Math.random() * 5))*this.msPerTab)
+      window.setTimeout(() => {
+        d3.select("#reel5").classed("spinning", this.spinning)
+        d3.select("#reel5").classed("paused", this.paused)
+        let tileNo = this.startNumbers[5] + parseInt((Date.now() - this.t0)/this.msPerTab)
+        while (tileNo > 19) tileNo -= 20
+        console.log(this.ximgs[5][tileNo])
+        this.startNumbers[5] = tileNo
+        HTML += tileNo + ", "
+        d3.select("#resultsLabel").html(HTML)
+      },(17 + parseInt(Math.random() * 5))*this.msPerTab)
+      window.setTimeout(() => {
+        d3.select("#reel6").classed("spinning", this.spinning)
+        d3.select("#reel6").classed("paused", this.paused)
+        let tileNo = this.startNumbers[6] + parseInt((Date.now() - this.t0)/this.msPerTab)
+        while (tileNo > 19) tileNo -= 20
+        console.log(this.ximgs[6][tileNo])
+        this.startNumbers[6] = tileNo
         HTML += tileNo
         d3.select("#resultsLabel").html(HTML)
         this.explode()
-      },(13 + parseInt(Math.random() * 5))*this.msPerTab)
+      },(21 + parseInt(Math.random() * 5))*this.msPerTab)
     }
   }
 })
