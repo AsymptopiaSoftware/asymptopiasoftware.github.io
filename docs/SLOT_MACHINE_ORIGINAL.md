@@ -21,3 +21,7 @@ Browser rendering and behavior must still be compared with the reference deploym
 ## Seven-reel change
 
 Two reels have been added, preserving the same 20 symbols, 18-degree panes, five-second spin cycle and existing stop algorithm. Image offsets continue with 15 and 18 positions. Reels are now spaced at eighths of the unchanged stage width. Numerical results include all seven reels, and confetti starts after the seventh stops. No WELCOME letters have been added.
+
+## One letter per reel (WELCOME)
+
+Each reel shows its assigned letter on face 0, W E L C O M E left to right. The original 20-symbol image arrays are retained unchanged; the corresponding face displays the letter in place of its original graphic. The reel animation and staggered stopping delays remain. Each reel aligns to face 0 at its usual stop, and the numerical results display reports the landed index 0. Spin clears that alignment for the next run. No extra sections or text were added.

@@ -9,7 +9,7 @@
   <div class="original-slotmachine">
     <div>
     <!-- t360 < 5 is too accurate and leads to bad alignment; also must manually set animation-duration at ReelComponent-->
-    <StageComponent :ximgs = "this.ximgs" :t360="5"/>
+    <StageComponent :ximgs = "this.ximgs" :letters="this.welcomeLetters" :t360="5"/>
     <ControlsComponent :ximgs = "this.ximgs" :t360="5" :numpane="20"/>
     </div>
   </div>
@@ -43,6 +43,7 @@ const reelImgs = [
   '/images/slot/seven3.png',
   '/images/slot/chest.png'
 ]
+const welcomeLetters = ['W', 'E', 'L', 'C', 'O', 'M', 'E']
 const offset = 3 // each reel is advanced by <offset> images from the previous reel (-3, +3); more than |3| * seven reels use offsets 0, 3, 6, 9, 12, 15, 18
 export default defineComponent({
   name: 'IndexPage',
@@ -50,6 +51,7 @@ export default defineComponent({
   setup () {
     return {
       turn: null,
+      welcomeLetters,
       ximgs: ref([
         reelImgs.slice(offset*0,20).concat(reelImgs.slice(0, offset*0)),
         reelImgs.slice(offset*1,20).concat(reelImgs.slice(0, offset*1)),

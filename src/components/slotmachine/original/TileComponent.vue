@@ -6,7 +6,7 @@
   License         :ALL RIGHTS RESERVED
 */
 <template>
-  <q-img
+  <q-img v-if="!letter"
     :src="this.imgUrl"
     :width="this.w_pane"
     :height="this.h_pane"
@@ -14,6 +14,7 @@
   >
     <span class="text-h6 text-blue">{{this.idx}}</span>
   </q-img>
+  <div v-else class="slot-letter-face" :aria-label="letter">{{ letter }}</div>
 </template>
 <script>
 import { defineComponent } from 'vue'
@@ -22,7 +23,7 @@ import { defineComponent } from 'vue'
 */
 export default defineComponent ({
   name: 'TileComponent',
-  props: ['imgUrl', 'w_pane', 'h_pane', 'idx'],
+  props: ['imgUrl', 'w_pane', 'h_pane', 'idx', 'letter'],
   setup (props) {
     console.log(props)
     return {
@@ -30,5 +31,16 @@ export default defineComponent ({
   }
 })
 </script>
-<style>
+<style scoped>
+.slot-letter-face {
+  width: 100px;
+  height: 100px;
+  transform: rotateZ(90deg);
+  background: white;
+  color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: bold 70px/1 Arial, sans-serif;
+}
 </style>

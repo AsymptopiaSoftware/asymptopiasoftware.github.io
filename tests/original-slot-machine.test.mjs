@@ -30,3 +30,14 @@ test('reel data, positions, callbacks and original symbols', () => {
   assert.equal((page.match(/'\/images\/slot\//g) || []).length, 20);
   assert.equal((controls.match(/this\.explode\(\)/g) || []).length, 1);
 });
+
+test('WELCOME is assigned once per reel, and each stops on its letter face', () => {
+  const tile = read('../src/components/slotmachine/original/TileComponent.vue');
+  assert.match(page, /welcomeLetters\s*=\s*\['W', 'E', 'L', 'C', 'O', 'M', 'E'\]/);
+  assert.equal((stage.match(/:letter="this\.letters\[\d\]"/g) || []).length, 7);
+  assert.match(reel, /idx === 0 \? letter : ''/);
+  assert.match(tile, /v-else class="slot-letter-face"/);
+  assert.equal((controls.match(/style\("animation", "none"\)/g) || []).length, 7);
+  assert.equal((controls.match(/style\("transform", "rotateY\(0deg\)"\)/g) || []).length, 7);
+  assert.equal((controls.match(/let tileNo = 0/g) || []).length, 7);
+});

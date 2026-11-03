@@ -85,7 +85,11 @@ export default defineComponent({
     },
     spin(){
       d3.select("#resultsLabel").html('-.-.-.-.-.-.-')
-      d3.selectAll(".reel").classed("spinning", false)
+      d3.selectAll(".reel")
+        .style("animation", null)
+        .style("transform", null)
+        .classed("paused", false)
+        .classed("spinning", false)
       // d3.selectAll(".reel").classed("paused", false) // this resets to initial zero rotation
       window.setTimeout(() => {
         console.log('Spin')
@@ -111,7 +115,8 @@ export default defineComponent({
       window.setTimeout(() => {
         d3.select("#reel0").classed("spinning", this.spinning)
         d3.select("#reel0").classed("paused", this.paused)
-        let tileNo = this.startNumbers[0] + parseInt((Date.now() - this.t0)/this.msPerTab)
+        d3.select("#reel0").style("animation", "none").style("transform", "rotateY(0deg)")
+        let tileNo = 0
         while (tileNo > 19) tileNo -= 20
         this.startNumbers[0] = tileNo
         console.log(this.ximgs[0][tileNo])
@@ -121,7 +126,8 @@ export default defineComponent({
       window.setTimeout(() => {
         d3.select("#reel1").classed("spinning", this.spinning)
         d3.select("#reel1").classed("paused", this.paused)
-        let tileNo = this.startNumbers[1] + parseInt((Date.now() - this.t0)/this.msPerTab)
+        d3.select("#reel1").style("animation", "none").style("transform", "rotateY(0deg)")
+        let tileNo = 0
         this.startNumbers[1] = tileNo
         while (tileNo > 19) tileNo -= 20
         console.log(this.ximgs[1][tileNo])
@@ -131,7 +137,8 @@ export default defineComponent({
       window.setTimeout(() => {
         d3.select("#reel2").classed("spinning", this.spinning)
         d3.select("#reel2").classed("paused", this.paused)
-        let tileNo = this.startNumbers[2] + parseInt((Date.now() - this.t0)/this.msPerTab)
+        d3.select("#reel2").style("animation", "none").style("transform", "rotateY(0deg)")
+        let tileNo = 0
         while (tileNo > 19) tileNo -= 20
         this.startNumbers[2] = tileNo
         console.log(this.ximgs[2][tileNo])
@@ -141,7 +148,8 @@ export default defineComponent({
       window.setTimeout(() => {
         d3.select("#reel3").classed("spinning", this.spinning)
         d3.select("#reel3").classed("paused", this.paused)
-        let tileNo = this.startNumbers[3] + parseInt((Date.now() - this.t0)/this.msPerTab)
+        d3.select("#reel3").style("animation", "none").style("transform", "rotateY(0deg)")
+        let tileNo = 0
         while (tileNo > 19) tileNo -= 20
         this.startNumbers[3] = tileNo
         console.log(this.ximgs[3][tileNo])
@@ -151,7 +159,8 @@ export default defineComponent({
       window.setTimeout(() => {
         d3.select("#reel4").classed("spinning", this.spinning)
         d3.select("#reel4").classed("paused", this.paused)
-        let tileNo = this.startNumbers[4]+ parseInt((Date.now() - this.t0)/this.msPerTab)
+        d3.select("#reel4").style("animation", "none").style("transform", "rotateY(0deg)")
+        let tileNo = 0
         while (tileNo > 19) tileNo -= 20
         console.log(this.ximgs[4][tileNo])
         this.startNumbers[4] = tileNo
@@ -161,7 +170,8 @@ export default defineComponent({
       window.setTimeout(() => {
         d3.select("#reel5").classed("spinning", this.spinning)
         d3.select("#reel5").classed("paused", this.paused)
-        let tileNo = this.startNumbers[5] + parseInt((Date.now() - this.t0)/this.msPerTab)
+        d3.select("#reel5").style("animation", "none").style("transform", "rotateY(0deg)")
+        let tileNo = 0
         while (tileNo > 19) tileNo -= 20
         console.log(this.ximgs[5][tileNo])
         this.startNumbers[5] = tileNo
@@ -171,7 +181,8 @@ export default defineComponent({
       window.setTimeout(() => {
         d3.select("#reel6").classed("spinning", this.spinning)
         d3.select("#reel6").classed("paused", this.paused)
-        let tileNo = this.startNumbers[6] + parseInt((Date.now() - this.t0)/this.msPerTab)
+        d3.select("#reel6").style("animation", "none").style("transform", "rotateY(0deg)")
+        let tileNo = 0
         while (tileNo > 19) tileNo -= 20
         console.log(this.ximgs[6][tileNo])
         this.startNumbers[6] = tileNo
