@@ -1,6 +1,6 @@
 # Reading Edge demo — fidelity requirements
 
-**Status: source review, not implemented.** This document replaces an incorrect conceptual word-picker UI suggested on November 2, 2026. That sketch was **not** Reading Edge and must never serve as the design reference.
+**Status: first implementation committed, not yet owner-reviewed.** This document replaces an incorrect conceptual word-picker UI suggested on November 2, 2026. That sketch was **not** Reading Edge and must never serve as the design reference.
 
 ## Authoritative references
 
@@ -35,4 +35,4 @@ The original `MyAssignment.vue` renders its paragraph into `#slideTextDiv`, uses
 - Validate visually against original screenshots and the YouTube demonstration **before** publishing the interactive demo.
 - The eventual separate Reading Edge rewrite will also use the core exercise as its reference.
 
-**No live homepage implementation has been approved or added yet.** The next action is an accurately scoped port, not a new game design.
+**First homepage component:** `src/components/ReadingEdgeDemo.vue`, with pure mechanics in `src/lib/reading-edge.js`, data in `src/content/demos.json`, and behavior tests in `tests/reading-edge.test.mjs`. This is a working first pass, not an assertion of exact visual parity; the YouTube demonstration still needs comparison and the owner has not yet approved the final UI.

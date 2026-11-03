@@ -19,8 +19,8 @@ Build a publicly accessible, long-lived, low-maintenance archive that does not r
 - **Start intentionally empty.** Do not automatically import the old website's project text, catalog ordering, images, or design. Every published item is reviewed and approved deliberately.
 - **Preserve original repositories and their URLs.** Do not move, rename, overwrite, or transfer anything in `ccosse` just to reorganize this website. Link to or selectively copy original work where appropriate and approved.
 - **Reading Edge remains a separate application and future rewrite.** Keep the `Reading-Edge` organization independent. Its non-negotiable educational functionality is **paragraph reconstruction**, not the former teacher/student account, classroom, assignments, or Firebase architecture. Preserve only genuinely useful exercise controls and feedback.
-- **Homepage Reading Edge demonstration (approved concept, not yet implemented):** Faithfully reproduce the user's existing, carefully developed paragraph-reconstruction exercise. **Do not substitute word-arranging games or other simplified activities.** Follow `docs/READING_EDGE_FIDELITY.md` and the original source, demonstration video, and whitepaper. Use a curated passage and relevant properly attributed media in an in-browser Vue component without accounts, Firebase, paid backend, or mandatory live Wikipedia API calls. Retain the actual exercise mechanics, feedback, scoring, presentation and repeat-on-error behavior. Keep the homepage catalog accessible and let the demo be optional.
-- **Other homepage interactive demo (concept, not yet implemented):** A brief user-controllable WELCOME slot-machine/reels/confetti celebration inspired by existing `ccosse` prototypes. Respect reduced-motion settings and avoid blocking access to projects.
+- **Homepage Reading Edge demonstration (first implementation committed; under review):** Faithfully reproduce the user's existing, carefully developed paragraph-reconstruction exercise. **Do not substitute word-arranging games or other simplified activities.** Follow `docs/READING_EDGE_FIDELITY.md` and the original source, demonstration video, and whitepaper. Use a curated passage and relevant properly attributed media in an in-browser Vue component without accounts, Firebase, paid backend, or mandatory live Wikipedia API calls. Retain the actual exercise mechanics, feedback, scoring, presentation and repeat-on-error behavior. Keep the homepage catalog accessible and let the demo be optional.
+- **Other homepage interactive demo (first implementation committed; under review):** A brief user-controllable WELCOME slot-machine/reels/confetti celebration inspired by existing `ccosse` prototypes. Respect reduced-motion settings and avoid blocking access to projects.
 - **`software.vegas` need not be preserved as a brand or domain.** Preserve actual worthwhile software and update references before retiring its hosting/domain.
 
 ## Non-negotiable authoring requirements
@@ -81,8 +81,8 @@ The user formerly operated **`asymptopia.org`**, but **does not control that dom
 - [ ] Establish editable content/data schema **before** entering real content.
 - [ ] Establish media paths and a documented self-service image replacement workflow.
 - [ ] Add SEO infrastructure/templates and test build-time HTML.
-- [ ] Prototype the in-browser "Try Reading Edge" paragraph-reconstruction mini exercise with curated, properly attributed Wikimedia media, after the owner selects the sample.
-- [ ] Prototype the optional WELCOME animation separately, with reduced-motion support.
+- [x] Prototype the in-browser "Try Reading Edge" paragraph-reconstruction exercise using an editable historical example and attributed Wikimedia media; owner review and visual fidelity comparison remain pending.
+- [x] Prototype the optional WELCOME reels and confetti, with reduced-motion support; owner review remains pending.
 - [ ] Agree on visual design, page types, and navigation with the owner.
 - [ ] Add selected project content incrementally, after review.
 - [ ] Document `asymptopia.org` history accurately when authoring that section.
