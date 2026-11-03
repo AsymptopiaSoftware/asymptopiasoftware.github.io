@@ -9,7 +9,7 @@
   <div v-bind:id="this.reelcontainerid" class="reel_container">
     <div v-bind:id="this.reelid" class="reel">
       <div v-for="(val,idx) in this.numpanes" :key="idx" class="pane">
-        <TileComponent :imgUrl="this.tileImgs[idx]" :w_pane="this.w_pane" :h_pane="this.h_pane" :idx="idx" :letter="idx === 0 ? letter : ''"/>
+        <TileComponent :imgUrl="idx === 0 ? '/images/slot/letters/' + letter.toLowerCase() + '.svg' : this.tileImgs[idx]" :w_pane="this.w_pane" :h_pane="this.h_pane" :idx="idx"/>
       </div>
     </div>
   </div>

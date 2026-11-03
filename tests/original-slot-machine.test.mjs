@@ -26,7 +26,7 @@ test('clock timing, numeric results and confetti remain original', () => {
 test('reel data, positions, callbacks and original symbols', () => {
   assert.equal((page.match(/reelImgs\.slice\(offset\*\d,20\)/g) || []).length, 7);
   assert.equal((reel.match(/#reelcontainer\d+\s*\{/g) || []).length, 7);
-  assert.equal((controls.match(/d3\.select\("#reel\d+"\)/g) || []).length, 21);
+  assert.equal((controls.match(/this\.landReel\(\d/g) || []).length, 7);
   assert.equal((page.match(/'\/images\/slot\//g) || []).length, 20);
   assert.equal((controls.match(/this\.explode\(\)/g) || []).length, 1);
 });
@@ -35,9 +35,17 @@ test('WELCOME is assigned once per reel, and each stops on its letter face', () 
   const tile = read('../src/components/slotmachine/original/TileComponent.vue');
   assert.match(page, /welcomeLetters\s*=\s*\['W', 'E', 'L', 'C', 'O', 'M', 'E'\]/);
   assert.equal((stage.match(/:letter="this\.letters\[\d\]"/g) || []).length, 7);
-  assert.match(reel, /idx === 0 \? letter : ''/);
-  assert.match(tile, /v-else class="slot-letter-face"/);
-  assert.equal((controls.match(/style\("animation", "none"\)/g) || []).length, 7);
-  assert.equal((controls.match(/style\("transform", "rotateY\(0deg\)"\)/g) || []).length, 7);
+  assert.match(reel, /idx === 0 \? '\/images\/slot\/letters\//);
+  assert.match(tile, /<q-img/);
+  assert.match(controls, /element\.animate\(/);
+  assert.match(controls, /active\?\.currentTime/);
   assert.equal((controls.match(/let tileNo = 0/g) || []).length, 7);
+});
+
+test('letter images are real reel faces; reels ease to their landing instead of popping', () => {
+  assert.match(reel, /:imgUrl="idx === 0 \?/);
+  assert.doesNotMatch(controls, /d3\.select\("#reel\d+"\)\.style\("animation", "none"\)/);
+  assert.equal((controls.match(/this\.landReel\(\d/g) || []).length, 7);
+  assert.match(controls, /landing\.addEventListener\('finish'/);
+  assert.match(controls, /this\.settling = false; this\.explode\(\)/);
 });

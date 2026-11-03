@@ -25,3 +25,7 @@ Two reels have been added, preserving the same 20 symbols, 18-degree panes, five
 ## One letter per reel (WELCOME)
 
 Each reel shows its assigned letter on face 0, W E L C O M E left to right. The original 20-symbol image arrays are retained unchanged; the corresponding face displays the letter in place of its original graphic. The reel animation and staggered stopping delays remain. Each reel aligns to face 0 at its usual stop, and the numerical results display reports the landed index 0. Spin clears that alignment for the next run. No extra sections or text were added.
+
+## Smooth reel landing correction
+
+The previous WELCOME version jumped each reel instantly to `rotateY(0deg)` when the reel stopped. Each letter is now a local SVG used **as the actual image on the reel's original face zero**, via the original QImg/TileComponent. The other nineteen reel faces still show the original symbols. The reel's current spinning angle is captured, and the remaining forward rotation is animated smoothly to the letter. The Spin button stays disabled through the final landing; confetti begins when reel seven finishes.

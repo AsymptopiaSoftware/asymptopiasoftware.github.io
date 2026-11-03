@@ -19,7 +19,7 @@
       <div class="" id="timerLabel">
       {{this.t_elapsed.toFixed(3)}}
       </div>
-      <q-btn class="controlB" no-caps style="background-color:green" v-if="!this.spinning" @click="this.spin()">Spin</q-btn>
+      <q-btn class="controlB" no-caps style="background-color:green" v-if="!this.spinning && !this.settling" @click="this.spin()">Spin</q-btn>
       <q-btn class="controlB" no-caps style="background-color:red" v-else >Wait ...</q-btn>
     </div>
   </div>
@@ -42,6 +42,7 @@ export default defineComponent({
     console.log(props)
     return {
       spinning: ref(false),
+      settling: ref(false),
       t_elapsed: ref(0),
       t0: Date.now(),
       interval: ref(null),
@@ -63,6 +64,42 @@ export default defineComponent({
     console.log('confettiOn', this.confettiOn)
   },
   methods:{
+    // Stop without visually teleporting the reel to its letter.
+    landReel (index, onComplete = null) {
+      const element = document.getElementById('reel' + index)
+      if (!element) {
+        if (onComplete) onComplete()
+        return
+      }
+      // Read the angle before ending the original five-second spinY animation.
+      const active = element.getAnimations().find(animation => animation.animationName === 'spinY')
+      const cycleMs = 5000
+      const time = Number(active?.currentTime)
+      let angle
+      if (active && Number.isFinite(time)) {
+        const phase = ((time % cycleMs) + cycleMs) % cycleMs
+        angle = 360 * (1 - phase / cycleMs)
+      } else {
+        const matrix = new DOMMatrixReadOnly(getComputedStyle(element).transform)
+        angle = (Math.atan2(-matrix.m13, matrix.m11) * 180 / Math.PI + 360) % 360
+      }
+      const start = 'rotateY(' + angle + 'deg)'
+      const target = 'rotateY(0deg)'
+      const selection = d3.select(element)
+      selection.classed('spinning', false).classed('paused', false)
+        .style('animation', 'none').style('transform', start)
+      // Forward rotation with ease-out makes the letter reach the payline naturally.
+      const duration = Math.max(500, Math.min(1600, angle / 360 * 1750))
+      const landing = element.animate(
+        [{ transform: start }, { transform: target }],
+        { duration, easing: 'cubic-bezier(0.18, 0.72, 0.25, 1)', fill: 'forwards' }
+      )
+      landing.addEventListener('finish', () => {
+        selection.style('transform', target)
+        landing.cancel()
+        if (onComplete) onComplete()
+      }, { once: true })
+    },
     async explode () {
       console.log('EXPLODE!')
       d3.select('.confetti').classed('hidden', false).classed('z-max', true)
@@ -110,12 +147,11 @@ export default defineComponent({
       cancelAnimationFrame(this.interval);
       this.spinning = false
       this.paused = true
+      this.settling = true
       // reels stop from L to R by adding sufficient int to allow for max previous dt
       let HTML = ''
       window.setTimeout(() => {
-        d3.select("#reel0").classed("spinning", this.spinning)
-        d3.select("#reel0").classed("paused", this.paused)
-        d3.select("#reel0").style("animation", "none").style("transform", "rotateY(0deg)")
+        this.landReel(0)
         let tileNo = 0
         while (tileNo > 19) tileNo -= 20
         this.startNumbers[0] = tileNo
@@ -124,9 +160,7 @@ export default defineComponent({
         d3.select("#resultsLabel").html(HTML)
       },0*this.msPerTab)
       window.setTimeout(() => {
-        d3.select("#reel1").classed("spinning", this.spinning)
-        d3.select("#reel1").classed("paused", this.paused)
-        d3.select("#reel1").style("animation", "none").style("transform", "rotateY(0deg)")
+        this.landReel(1)
         let tileNo = 0
         this.startNumbers[1] = tileNo
         while (tileNo > 19) tileNo -= 20
@@ -135,9 +169,7 @@ export default defineComponent({
         d3.select("#resultsLabel").html(HTML)
       },(1 + parseInt(Math.random() * 5))*this.msPerTab)
       window.setTimeout(() => {
-        d3.select("#reel2").classed("spinning", this.spinning)
-        d3.select("#reel2").classed("paused", this.paused)
-        d3.select("#reel2").style("animation", "none").style("transform", "rotateY(0deg)")
+        this.landReel(2)
         let tileNo = 0
         while (tileNo > 19) tileNo -= 20
         this.startNumbers[2] = tileNo
@@ -146,9 +178,7 @@ export default defineComponent({
         d3.select("#resultsLabel").html(HTML)
       },(5 + parseInt(Math.random() * 5))*this.msPerTab)
       window.setTimeout(() => {
-        d3.select("#reel3").classed("spinning", this.spinning)
-        d3.select("#reel3").classed("paused", this.paused)
-        d3.select("#reel3").style("animation", "none").style("transform", "rotateY(0deg)")
+        this.landReel(3)
         let tileNo = 0
         while (tileNo > 19) tileNo -= 20
         this.startNumbers[3] = tileNo
@@ -157,9 +187,7 @@ export default defineComponent({
         d3.select("#resultsLabel").html(HTML)
       },(9 + parseInt(Math.random()) * 5)*this.msPerTab)
       window.setTimeout(() => {
-        d3.select("#reel4").classed("spinning", this.spinning)
-        d3.select("#reel4").classed("paused", this.paused)
-        d3.select("#reel4").style("animation", "none").style("transform", "rotateY(0deg)")
+        this.landReel(4)
         let tileNo = 0
         while (tileNo > 19) tileNo -= 20
         console.log(this.ximgs[4][tileNo])
@@ -168,9 +196,7 @@ export default defineComponent({
         d3.select("#resultsLabel").html(HTML)
       },(13 + parseInt(Math.random() * 5))*this.msPerTab)
       window.setTimeout(() => {
-        d3.select("#reel5").classed("spinning", this.spinning)
-        d3.select("#reel5").classed("paused", this.paused)
-        d3.select("#reel5").style("animation", "none").style("transform", "rotateY(0deg)")
+        this.landReel(5)
         let tileNo = 0
         while (tileNo > 19) tileNo -= 20
         console.log(this.ximgs[5][tileNo])
@@ -179,16 +205,13 @@ export default defineComponent({
         d3.select("#resultsLabel").html(HTML)
       },(17 + parseInt(Math.random() * 5))*this.msPerTab)
       window.setTimeout(() => {
-        d3.select("#reel6").classed("spinning", this.spinning)
-        d3.select("#reel6").classed("paused", this.paused)
-        d3.select("#reel6").style("animation", "none").style("transform", "rotateY(0deg)")
+        this.landReel(6, () => { this.settling = false; this.explode() })
         let tileNo = 0
         while (tileNo > 19) tileNo -= 20
         console.log(this.ximgs[6][tileNo])
         this.startNumbers[6] = tileNo
         HTML += tileNo
         d3.select("#resultsLabel").html(HTML)
-        this.explode()
       },(21 + parseInt(Math.random() * 5))*this.msPerTab)
     }
   }
