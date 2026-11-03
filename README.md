@@ -1,54 +1,37 @@
-# Asymptopia Software — website framework
+# Asymptopia Software — new permanent website
 
-This is a new, intentionally minimal website. It is **not** a migration of the current asymptopia.com content and does not replace or modify any `ccosse` repositories.
+Public site: https://asymptopiasoftware.github.io/
 
-## Architecture
+This is the new standalone Astro/Vue website in the `AsymptopiaSoftware` organization. It is **not** a migration of the full current asymptopia.com content.
 
-- Astro static-site generator: build-time HTML, no application server.
-- Vue 3 via `@astrojs/vue`: optional interactive islands where appropriate.
-- GitHub Actions + GitHub Pages: deploy from the `main` branch.
-- No Django, database, Linode, or paid hosting dependency.
-- Placeholder homepage with a tiny Vue interaction check. **No project catalog or imported text.**
+## Current homepage
 
-The current placeholder carries `noindex, nofollow` deliberately. We will remove this when there is a genuine public site to index.
+- Faithful source port of the author's original five-reel **Slot Machine** in `src/components/slotmachine/original/`. See [docs/SLOT_MACHINE_ORIGINAL.md](docs/SLOT_MACHINE_ORIGINAL.md).
+- Restored SVG Asymptopia logo and original cherries favicon.
+- Automatic GitHub Pages build version badge.
+- SEO and GA4 metadata are in `src/content/brand.json` and `src/content/analytics.json`.
 
-## Develop locally
+**The unapproved WELCOME and Reading Edge redesigns are no longer on the homepage.** Reading Edge remains deferred until its original interaction can be reproduced faithfully.
 
-Install Node.js 24 (or compatible Node 22.12+) and run:
+## Local development
+
+Node.js 24 or 22.12+:
 
 ```sh
 npm install
+npm test
 npm run dev
 npm run build
-npm run preview
 ```
 
-## GitHub Pages
+The site publishes via GitHub Actions on pushes to `main`. GitHub Pages is configured from Settings → Pages → GitHub Actions.
 
-Repository: `AsymptopiaSoftware/asymptopiasoftware.github.io`
+## Editing and stewardship
 
-Planned Pages address: https://asymptopiasoftware.github.io/
+- Edit the logo, SEO title/description and other site identity fields in `src/content/brand.json`.
+- Replace images through GitHub's UI in `public/images/`.
+- Preserve the original `ccosse` repositories unchanged.
+- The current GitHub Pages site remains `noindex` until project content and SEO migration are approved.
+- See [PROJECT_CHARTER.md](PROJECT_CHARTER.md) for preservation, SEO, editing and security principles.
 
-In **Settings → Pages**, set **Build and deployment → Source** to **GitHub Actions**. Every push to `main` then runs `.github/workflows/deploy.yml`.
-
-We intentionally use the GitHub Pages *organization site* repo name, so there is no `base` subpath in the Astro config.
-
-## Files
-
-```
-astro.config.mjs
-package.json
-tsconfig.json
-src/pages/index.astro
-src/layouts/BaseLayout.astro
-src/styles/global.css
-src/components/VueCheck.vue
-public/.nojekyll
-.github/workflows/deploy.yml
-```
-
-## Future principles
-
-Software first, minimal maintenance, self-contained content, stable public URLs and independently preserved code. No design, rankings, descriptions, images or content imports are committed yet. Any old live sites and the `ccosse` repositories remain unchanged.
-
-Once we install dependencies successfully, we should commit a `package-lock.json` and change the workflow to `npm ci` to make future builds reproducible.
+No Linode instance, database, or live `asymptopia.com` application is required to run this website.
