@@ -26,6 +26,8 @@ jobs:
           node-version: '24'
       - name: Install dependencies
         run: npm install --no-audit --no-fund
+      - name: Verify Reading Edge exercise behavior
+        run: npm test
       - name: Build static site
         env:
           PUBLIC_BUILD_NUMBER: ${{ github.run_number }}
