@@ -1,11 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import WelcomeSlots from '../components/WelcomeSlots.vue';
-import ReadingEdgeDemo from '../components/ReadingEdgeDemo.vue';
+import SlotMachineOriginal from '../components/slotmachine/SlotMachineOriginal.vue';
 import brand from '../content/brand.json';
-import demos from '../content/demos.json';
 
-// Each successful GitHub Pages deployment has a distinct build number.
 const buildNumber = import.meta.env.PUBLIC_BUILD_NUMBER || '0';
 const commitSha = import.meta.env.PUBLIC_COMMIT_SHA?.slice(0, 7) || 'local';
 const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber;
@@ -13,20 +10,17 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber;
 <BaseLayout title={brand.seo.title} description={brand.seo.description}>
   <header class="site-header">
     <a class="brand-home" href="/" aria-label={brand.name + ' homepage'}>
-      <img class="brand-logo" src={brand.logo + '?v=' + siteVersion} alt={brand.logoAlt}
-        width="380" height="127" />
+      <img class="brand-logo" src={brand.logo + '?v=' + siteVersion}
+        alt={brand.logoAlt} width="380" height="127" />
     </a>
     <div class="build-info">
       <span class="site-version" title={'Git commit ' + commitSha}>{siteVersion}</span>
     </div>
   </header>
-  <main id="main-content" class="home-demos">
+  <main id="main-content">
     <h1 class="sr-only">{brand.name}</h1>
-    <section aria-label="Welcome slot machine" class="home-demo-row">
-      <WelcomeSlots demo={demos.welcome} client:load />
-    </section>
-    <section aria-label="Try Reading Edge paragraph reconstruction" class="home-demo-row">
-      <ReadingEdgeDemo demo={demos.readingEdge} client:visible />
+    <section class="slotmachine-embed" aria-label="Original Asymptopia Slot Machine">
+      <SlotMachineOriginal client:only="vue" />
     </section>
   </main>
 </BaseLayout>
