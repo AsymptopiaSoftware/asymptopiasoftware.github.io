@@ -22,8 +22,8 @@ body { margin: 0; }
   justify-content: center;
   align-items: center;
   width: 100%;
-  aspect-ratio: 1000 / 190;
-  margin: 24px 0;
+  aspect-ratio: 1000 / 178;
+  margin: 24px 0 9px;
   overflow: hidden;
   border-radius: 20px;
   background: #303030;
