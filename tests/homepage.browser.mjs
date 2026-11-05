@@ -40,8 +40,13 @@ test('built homepage renders working source-owned WELCOME demo at desktop and mo
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     await page.waitForFunction(() => {
       const logo = document.querySelector('.brand-home')?.getBoundingClientRect();
+      const panel = document.querySelector('.slotmachine-embed')?.getBoundingClientRect();
       const reels = document.querySelector('.slot-machine.compact .machine-canvas')?.getBoundingClientRect();
-      return logo && reels && Math.abs(logo.width - reels.width) <= 3;
+      if (!logo || !panel || !reels) return false;
+      const reelRatio = reels.width / panel.width;
+      const centered = Math.abs((reels.left + reels.right) / 2 - (panel.left + panel.right) / 2) <= 3;
+      return Math.abs(logo.width - panel.width) <= 3
+        && reelRatio >= 0.69 && reelRatio <= 0.71 && centered;
     }, { timeout: 5000 });
     const button = await page.getByRole('button', { name:'Spin', exact:true }).boundingBox();
     assert.ok(button.height >= 25 && button.height <= 36, `Spin button height ${button.height}`);
