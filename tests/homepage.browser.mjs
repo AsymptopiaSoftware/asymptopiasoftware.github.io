@@ -26,6 +26,12 @@ test('built homepage renders working source-owned WELCOME demo at desktop and mo
   await page.goto(`http://127.0.0.1:${server.address().port}`);
   await page.waitForFunction(() => document.querySelectorAll('.q-img__image--loaded').length === 140);
   assert.equal(await page.locator('.reel').count(), 7);
+  assert.equal(await page.locator('.demo-actions .demo-action').count(), 3);
+  assert.equal(await page.getByRole('link', { name: 'Source', exact: true }).getAttribute('href'), 'https://github.com/ccosse/slotmachine');
+  assert.equal(await page.getByRole('link', { name: 'Launch', exact: true }).getAttribute('href'), 'https://www.asymptopia.com/slotmachine/#/');
+  await page.locator('.demo-more summary').click();
+  assert.ok(await page.locator('.demo-more').evaluate(el => el.open));
+  await page.locator('.demo-more summary').click();
   assert.ok(await page.locator('.slot-machine.compact').evaluate(el => { const h = el.getBoundingClientRect().height; return h > 0 && h <= 191; }), 'Compact badge should fit its 190px design height');
   await page.waitForFunction(() => document.querySelector('#resultsLabel').textContent === 'WELCOME', { timeout: 15000 });
   const sources = await page.locator('.q-img img').evaluateAll(es => es.map(e => e.src));
