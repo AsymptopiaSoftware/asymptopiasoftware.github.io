@@ -1,0 +1,35 @@
+---
+interface Props {
+  sourceUrl: string;
+  launchUrl?: string;
+  title: string;
+  description: string;
+}
+const { sourceUrl, launchUrl, title, description } = Astro.props;
+---
+<div class="demo-actions" aria-label={title + ' links and details'}>
+  <nav class="demo-actions__links" aria-label={title + ' actions'}>
+    <a class="demo-action" href={sourceUrl} target="_blank" rel="noopener noreferrer" title={'View ' + title + ' source code on GitHub'}>Source</a>
+    {launchUrl && <a class="demo-action" href={launchUrl} target="_blank" rel="noopener noreferrer" title={'Launch the standalone ' + title}>Launch</a>}
+  </nav>
+  <details class="demo-more">
+    <summary class="demo-action">More</summary>
+    <div class="demo-more__content">
+      <strong>{title}</strong>
+      <p>{description}</p>
+    </div>
+  </details>
+</div>
+<style>
+.demo-actions { display:flex; justify-content:flex-end; align-items:flex-start; gap:8px; flex-wrap:wrap; position:relative; margin: 0 0 18px; font-size:12px; }
+.demo-actions__links { display:flex; gap:8px; }
+.demo-action { display:inline-flex; justify-content:center; align-items:center; min-height:32px; padding:5px 12px; color:#eceff2; background:#303030; border:1px solid #555; border-radius:7px; text-decoration:none; font:inherit; cursor:pointer; }
+.demo-action:hover, .demo-action:focus-visible { color:#f1ff00; border-color:#9baa63; outline-offset:2px; }
+.demo-more { position:relative; }
+.demo-more > summary { list-style:none; }
+.demo-more > summary::-webkit-details-marker { display:none; }
+.demo-more[open] > summary { border-color:#9baa63; color:#f1ff00; }
+.demo-more__content { position:absolute; top:calc(100% + 8px); right:0; z-index:20; width:min(340px, calc(100vw - 40px)); padding:16px; color:#e6e6e6; background:#292929; border:1px solid #666; border-radius:10px; box-shadow:0 8px 22px #0008; line-height:1.5; }
+.demo-more__content p { margin:.5em 0 0; }
+@media (max-width:450px) { .demo-actions { justify-content:center; } }
+</style>
