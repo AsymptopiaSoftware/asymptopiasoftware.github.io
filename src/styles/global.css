@@ -1,7 +1,7 @@
 :root { color-scheme: light; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #222b38; background: #fafaf9; }
 * { box-sizing: border-box; }
 body { margin: 0; }
-.shell { max-width: 1100px; margin: 0 auto; padding: 0 32px; min-height: 100vh; display: flex; flex-direction: column; }
+.shell { max-width: 1064px; margin: 0 auto; padding: 0 32px; min-height: 100vh; display: flex; flex-direction: column; }
 .site-header { display:flex; justify-content:center; align-items:center; width:100%; padding: 0 0 18px; margin: 18px 0 0; border-bottom: 1px solid #e2e4e5; }
 .brand-home { display:flex; align-items:center; justify-content:center; width:100%; max-width:100%; min-height:170px; padding: 15px; background: #303030; border-radius: 20px; }
 .brand-home:focus-visible { outline: 2px solid #334155; outline-offset: 3px; border-radius: 6px; }
