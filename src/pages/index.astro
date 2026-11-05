@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SlotMachineOriginal from '../components/slotmachine/SlotMachineOriginal.vue';
+import ProjectDemoActions from '../components/ProjectDemoActions.astro';
 import brand from '../content/brand.json';
 
 const buildNumber = import.meta.env.PUBLIC_BUILD_NUMBER || 'local';
@@ -18,6 +19,12 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber;
     <h1 class="sr-only">{brand.name}</h1>
     <section class="slotmachine-embed" aria-label="Animated Asymptopia WELCOME slot machine">
       <SlotMachineOriginal client:only="vue" />
+      <ProjectDemoActions
+        title="Slot Machine"
+        sourceUrl="https://github.com/ccosse/slotmachine"
+        liveUrl="https://www.asymptopia.com/slotmachine/#/"
+        pageUrl="/projects/slotmachine/"
+      />
     </section>
   </main>
   <footer class="site-footer">
