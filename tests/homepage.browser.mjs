@@ -27,11 +27,11 @@ test('built homepage renders working source-owned WELCOME demo at desktop and mo
   await page.waitForFunction(() => document.querySelectorAll('.q-img__image--loaded').length === 140);
   assert.equal(await page.locator('.reel').count(), 7);
   assert.equal(await page.locator('.demo-actions .demo-action').count(), 3);
-  assert.equal(await page.getByRole('link', { name: 'Source', exact: true }).getAttribute('href'), 'https://github.com/ccosse/slotmachine');
-  assert.equal(await page.getByRole('link', { name: 'Launch', exact: true }).getAttribute('href'), 'https://www.asymptopia.com/slotmachine/#/');
-  await page.locator('.demo-more summary').click();
-  assert.ok(await page.locator('.demo-more').evaluate(el => el.open));
-  await page.locator('.demo-more summary').click();
+  assert.equal(await page.getByRole('link', { name: /Source: Slot Machine/ }).getAttribute('href'), 'https://github.com/ccosse/slotmachine');
+  assert.equal(await page.getByRole('link', { name: /Live: launch Slot Machine/ }).getAttribute('href'), 'https://www.asymptopia.com/slotmachine/#/');
+  assert.equal(await page.getByRole('link', { name: /Page: read about Slot Machine/ }).getAttribute('href'), '/projects/slotmachine/');
+  assert.equal(await page.locator('.demo-actions .demo-action svg').count(), 3);
+  assert.ok(await page.locator('.demo-actions').evaluate(el => el.closest('.slotmachine-embed') !== null));
   assert.ok(await page.locator('.slot-machine.compact').evaluate(el => { const h = el.getBoundingClientRect().height; return h > 0 && h <= 191; }), 'Compact badge should fit its 190px design height');
   await page.waitForFunction(() => document.querySelector('#resultsLabel').textContent === 'WELCOME', { timeout: 15000 });
   const sources = await page.locator('.q-img img').evaluateAll(es => es.map(e => e.src));
@@ -44,6 +44,16 @@ test('built homepage renders working source-owned WELCOME demo at desktop and mo
     await page.waitForFunction(() => document.querySelector('#resultsLabel').textContent === 'WELCOME');
     assert.deepEqual(await page.locator('.q-img img').evaluateAll(es => es.map(e => e.src)), sources);
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    assert.ok(await page.locator('.slotmachine-embed').evaluate(el => {
+      const box = el.getBoundingClientRect();
+      return Math.abs(box.height / box.width - 154 / 1000) <= .005;
+    }), 'Full-width demo panel should use the shorter 154:1000 ratio');
+    const icons = await page.locator('.demo-actions .demo-action').evaluateAll(els => els.map(el => {
+      const r = el.getBoundingClientRect();
+      return { width:r.width, height:r.height };
+    }));
+    assert.ok(icons.every(b => Math.abs(b.width - b.height) < 1), 'Demo icon controls must be square');
+    assert.ok(icons.every(b => Math.abs(b.width - icons[0].width) < 1), 'Demo icon controls must match sizes');
     await page.waitForFunction(() => {
       const logo = document.querySelector('.brand-home')?.getBoundingClientRect();
       const panel = document.querySelector('.slotmachine-embed')?.getBoundingClientRect();
