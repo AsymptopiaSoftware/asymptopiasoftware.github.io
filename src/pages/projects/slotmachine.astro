@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const title = 'Slot Machine | Asymptopia Software';
+const description = 'The original Vue and Quasar 3D slot machine and its reusable WELCOME homepage demo.';
+---
+<BaseLayout title={title} description={description}>
+  <main class="project-page">
+    <a class="back-link" href="/">← Asymptopia Software</a>
+    <h1>Slot Machine</h1>
+    <p>Original three-dimensional, spinning-reel Slot Machine built with Vue and Quasar. Its independent source repository remains the authoritative implementation.</p>
+    <p>On the homepage, a reusable compact edition displays seven reels with matching neon symbols and slows the spin before landing on WELCOME. The standalone application retains its traditional five-reel experience.</p>
+    <nav class="project-links" aria-label="Slot Machine project links">
+      <a href="https://github.com/ccosse/slotmachine" target="_blank" rel="noopener noreferrer">GitHub source</a>
+      <a href="https://www.asymptopia.com/slotmachine/#/" target="_blank" rel="noopener noreferrer">Live standalone application</a>
+      <a href="/">Homepage demo</a>
+    </nav>
+  </main>
+</BaseLayout>
+<style>
+.project-page { width:min(760px, 100%); margin:48px auto; color:#e8e8e8; line-height:1.65; }
+.project-page h1 { font-size:2rem; margin:20px 0; }
+.back-link { color:#f1ff00; }
+.project-links { display:flex; flex-wrap:wrap; gap:12px; margin-top:24px; }
+.project-links a { color:#f1ff00; padding:8px 12px; border:1px solid #555; border-radius:8px; text-decoration:none; }
+.project-links a:hover { border-color:#f1ff00; }
+</style>
