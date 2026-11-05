@@ -1,35 +1,41 @@
 ---
 interface Props {
   sourceUrl: string;
-  launchUrl?: string;
+  liveUrl?: string;
+  pageUrl: string;
   title: string;
-  description: string;
 }
-const { sourceUrl, launchUrl, title, description } = Astro.props;
+const { sourceUrl, liveUrl, pageUrl, title } = Astro.props;
 ---
-<div class="demo-actions" aria-label={title + ' links and details'}>
-  <nav class="demo-actions__links" aria-label={title + ' actions'}>
-    <a class="demo-action" href={sourceUrl} target="_blank" rel="noopener noreferrer" title={'View ' + title + ' source code on GitHub'}>Source</a>
-    {launchUrl && <a class="demo-action" href={launchUrl} target="_blank" rel="noopener noreferrer" title={'Launch the standalone ' + title}>Launch</a>}
-  </nav>
-  <details class="demo-more">
-    <summary class="demo-action">More</summary>
-    <div class="demo-more__content">
-      <strong>{title}</strong>
-      <p>{description}</p>
-    </div>
-  </details>
-</div>
+<nav class="demo-actions" aria-label={title + ' project actions'}>
+  <a class="demo-action" href={sourceUrl} target="_blank" rel="noopener noreferrer"
+    aria-label={'Source: ' + title + ' on GitHub'} title="Source">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 19c-4.3 1.3-4.3-2.4-6-3m12 6v-3.4a3.1 3.1 0 0 0-.8-2.4c2.7-.3 5.5-1.3 5.5-6A4.7 4.7 0 0 0 18.4 7a4.3 4.3 0 0 0-.1-3s-1-.3-3.3 1.3a11.3 11.3 0 0 0-6 0C6.7 3.7 5.7 4 5.7 4a4.3 4.3 0 0 0-.1 3A4.7 4.7 0 0 0 4.3 10c0 4.7 2.8 5.7 5.5 6a3.1 3.1 0 0 0-.8 2.4V22"/>
+    </svg>
+  </a>
+  {liveUrl && <a class="demo-action" href={liveUrl} target="_blank" rel="noopener noreferrer"
+    aria-label={'Live: launch ' + title} title="Live">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 4h6v6M20 4 10 14"/>
+      <path d="M19 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h6"/>
+    </svg>
+  </a>}
+  <a class="demo-action" href={pageUrl} aria-label={'Page: read about ' + title} title="Page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <path d="M14 2v6h6M8 13h8M8 17h8"/>
+    </svg>
+  </a>
+</nav>
 <style>
-.demo-actions { display:flex; justify-content:flex-end; align-items:flex-start; gap:8px; flex-wrap:wrap; position:relative; margin: 0 0 18px; font-size:12px; }
-.demo-actions__links { display:flex; gap:8px; }
-.demo-action { display:inline-flex; justify-content:center; align-items:center; min-height:32px; padding:5px 12px; color:#eceff2; background:#303030; border:1px solid #555; border-radius:7px; text-decoration:none; font:inherit; cursor:pointer; }
-.demo-action:hover, .demo-action:focus-visible { color:#f1ff00; border-color:#9baa63; outline-offset:2px; }
-.demo-more { position:relative; }
-.demo-more > summary { list-style:none; }
-.demo-more > summary::-webkit-details-marker { display:none; }
-.demo-more[open] > summary { border-color:#9baa63; color:#f1ff00; }
-.demo-more__content { position:absolute; top:calc(100% + 8px); right:0; z-index:20; width:min(340px, calc(100vw - 40px)); padding:16px; color:#e6e6e6; background:#292929; border:1px solid #666; border-radius:10px; box-shadow:0 8px 22px #0008; line-height:1.5; }
-.demo-more__content p { margin:.5em 0 0; }
-@media (max-width:450px) { .demo-actions { justify-content:center; } }
+.demo-actions { position:absolute; top:9px; right:12px; z-index:12; display:flex; align-items:center; gap:6px; }
+.demo-action { display:inline-flex; align-items:center; justify-content:center; flex:none; width:30px; height:30px; padding:5px; border:1px solid #575757; border-radius:7px; background:rgba(35,35,35,.92); color:#e7ebe8; text-decoration:none; box-sizing:border-box; }
+.demo-action svg { display:block; width:17px; height:17px; }
+.demo-action:hover, .demo-action:focus-visible { color:#f1ff00; border-color:#c6db69; outline-offset:2px; }
+@media(max-width:450px) {
+  .demo-actions { top:5px; right:6px; gap:3px; }
+  .demo-action { width:26px; height:26px; padding:4px; }
+  .demo-action svg { width:15px; height:15px; }
+}
 </style>
