@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SlotMachineOriginal from '../components/slotmachine/SlotMachineOriginal.vue';
+import ProjectDemoActions from '../components/ProjectDemoActions.astro';
 import brand from '../content/brand.json';
 
 const buildNumber = import.meta.env.PUBLIC_BUILD_NUMBER || 'local';
@@ -19,6 +20,12 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber;
     <section class="slotmachine-embed" aria-label="Animated Asymptopia WELCOME slot machine">
       <SlotMachineOriginal client:only="vue" />
     </section>
+    <ProjectDemoActions
+      title="Slot Machine"
+      sourceUrl="https://github.com/ccosse/slotmachine"
+      launchUrl="https://www.asymptopia.com/slotmachine/#/"
+      description="An original 3D slot machine built with Vue and Quasar. This compact homepage edition has seven animated reels, custom neon fruit and treasure symbols, and a WELCOME finish. Launch opens the classic standalone five-reel game."
+    />
   </main>
   <footer class="site-footer">
     <div class="build-info">
