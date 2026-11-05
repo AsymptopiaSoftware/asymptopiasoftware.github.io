@@ -13,9 +13,6 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber;
       <img class="brand-logo" src={brand.logo + '?v=' + siteVersion}
         alt={brand.logoAlt} width="380" height="127" />
     </a>
-    <div class="build-info">
-      <span class="site-version" title={'Git commit ' + commitSha}>{siteVersion}</span>
-    </div>
   </header>
   <main id="main-content">
     <h1 class="sr-only">{brand.name}</h1>
@@ -23,4 +20,9 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber;
       <SlotMachineOriginal client:only="vue" />
     </section>
   </main>
+  <footer class="site-footer">
+    <div class="build-info">
+      <span class="site-version" title={'Git commit ' + commitSha}>{siteVersion}</span>
+    </div>
+  </footer>
 </BaseLayout>
