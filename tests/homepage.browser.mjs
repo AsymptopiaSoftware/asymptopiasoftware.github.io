@@ -26,6 +26,8 @@ test('built homepage renders working source-owned WELCOME demo at desktop and mo
   await page.goto(`http://127.0.0.1:${server.address().port}`);
   await page.waitForFunction(() => document.querySelectorAll('.q-img__image--loaded').length === 140);
   assert.equal(await page.locator('.reel').count(), 7);
+  assert.ok(await page.locator('.slot-machine.compact').evaluate(el => el.getBoundingClientRect().height <= 151));
+  await page.waitForFunction(() => document.querySelector('#resultsLabel').textContent === 'WELCOME', { timeout: 15000 });
   const sources = await page.locator('.q-img img').evaluateAll(es => es.map(e => e.src));
   for (const width of [1200, 375]) {
     await page.setViewportSize({ width, height: width === 375 ? 700 : 1000 });
@@ -37,7 +39,7 @@ test('built homepage renders working source-owned WELCOME demo at desktop and mo
     assert.deepEqual(await page.locator('.q-img img').evaluateAll(es => es.map(e => e.src)), sources);
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     const button = await page.getByRole('button', { name:'Spin', exact:true }).boundingBox();
-    assert.ok(button.height >= 43.9, `Spin button height ${button.height}`);
+    assert.ok(button.height >= 25 && button.height <= 36, `Spin button height ${button.height}`);
     if (process.env.EVIDENCE_DIR) {
       // Let celebratory confetti finish so the reel faces remain unobscured.
       await page.waitForTimeout(5100);
