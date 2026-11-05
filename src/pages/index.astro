@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SlotMachineOriginal from '../components/slotmachine/SlotMachineOriginal.vue';
 import brand from '../content/brand.json';
 
-const buildNumber = import.meta.env.PUBLIC_BUILD_NUMBER || '0';
+const buildNumber = import.meta.env.PUBLIC_BUILD_NUMBER || 'local';
 const commitSha = import.meta.env.PUBLIC_COMMIT_SHA?.slice(0, 7) || 'local';
 const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber;
 ---
@@ -19,7 +19,7 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber;
   </header>
   <main id="main-content">
     <h1 class="sr-only">{brand.name}</h1>
-    <section class="slotmachine-embed" aria-label="Original Asymptopia Slot Machine">
+    <section class="slotmachine-embed" aria-label="Animated Asymptopia WELCOME slot machine">
       <SlotMachineOriginal client:only="vue" />
     </section>
   </main>
