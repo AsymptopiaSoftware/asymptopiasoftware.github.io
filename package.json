@@ -15,7 +15,7 @@
     "@quasar/extras": "^1.16.0",
     "astro": "7.4.4",
     "quasar": "^2.17.0",
-    "slotmachine": "https://codeload.github.com/ccosse/slotmachine/tar.gz/a170e5398d25ffc85642af5da1c583849ba5c5a5",
+    "slotmachine": "https://codeload.github.com/ccosse/slotmachine/tar.gz/807c0226cad7f4549a83164dc2c1b20819d126f4",
     "vue": "^3.5.0"
   },
   "engines": {
