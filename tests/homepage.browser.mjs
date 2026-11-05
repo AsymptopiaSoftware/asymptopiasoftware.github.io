@@ -38,6 +38,11 @@ test('built homepage renders working source-owned WELCOME demo at desktop and mo
     await page.waitForFunction(() => document.querySelector('#resultsLabel').textContent === 'WELCOME');
     assert.deepEqual(await page.locator('.q-img img').evaluateAll(es => es.map(e => e.src)), sources);
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    await page.waitForFunction(() => {
+      const logo = document.querySelector('.brand-home')?.getBoundingClientRect();
+      const reels = document.querySelector('.slot-machine.compact .machine-canvas')?.getBoundingClientRect();
+      return logo && reels && Math.abs(logo.width - reels.width) <= 3;
+    }, { timeout: 5000 });
     const button = await page.getByRole('button', { name:'Spin', exact:true }).boundingBox();
     assert.ok(button.height >= 25 && button.height <= 36, `Spin button height ${button.height}`);
     if (process.env.EVIDENCE_DIR) {
