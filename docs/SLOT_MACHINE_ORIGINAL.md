@@ -1,31 +1,36 @@
-# Original Asymptopia Slot Machine
+# Slot Machine demo
 
-Source: https://github.com/ccosse/slotmachine
-Reference: https://www.asymptopia.com/slotmachine/#/
+Authoritative source: https://github.com/ccosse/slotmachine
 
-The homepage uses the owner's original five-reel Quasar/Vue source, now extended to seven reels, not an invented WELCOME animation.
+The homepage imports the original project's exported Vue component via the
+immutable commit archive in package.json (with integrity recorded in the lockfile). It passes `compact`, `reel-count=7`, and
+`preset=WELCOME`. There is no local reel, timing, stopping, or symbol logic.
+The package bundles the original artwork; no live backend is needed.
 
-Integration-only modifications:
-- Alias imports changed to relative paths.
-- Top-level q-page wrapper replaced with positioned div because the Astro homepage is not a Quasar layout.
-- Remote image URLs switched to copies of the *same* original images stored under public/images/slot/.
-- Original global html/body height rule scoped to the embedded component.
-- QBtn and QImg registered through Astro's Vue application entrypoint.
+The original full-page app defaults to five reels and random stopping. Its
+optional preset mode puts actual letter faces on the same twenty-pane reels
+before animation. All spins, landings, and confetti belong to that project.
 
-Preserved: five reels, twenty 18-degree faces per reel, 700px stage, green stage / orange controls, five-second rotation cycle, Spin and Wait controls, clock-based stop timing, numerical results, and confetti. The original author notes that the clock-based stop can be inaccurate on slower computers; this behavior is intentionally unchanged.
+Do not add a homepage project without a functioning demo supplied by that
+project. Reading Edge remains deferred. No catalog or additional project copy
+has been added as part of this change.
 
-The seven-letter WELCOME and the earlier Reading Edge reinterpretation were removed from the homepage and source, and remain recoverable from Git history.
+## Updating and local development
 
-Browser rendering and behavior must still be compared with the reference deployment.
+Change the `slotmachine` dependency to a reviewed full commit SHA from the
+original repository, then run `npm install`, `npm test`, and `npm run build`.
+Commit package-lock.json. Never copy the component source into this repository.
+For source development use the selected original checkout, run its browser tests,
+and push its feature branch before pinning the homepage to that commit.
 
-## Seven-reel change
+The homepage requires Node 22.12+ (Node 24 tested). `npm ci` installs the pinned
+source package. `npm run dev` starts Astro. The app entrypoint registers Quasar
+components and styles; the website wrapper supplies configuration only.
 
-Two reels have been added, preserving the same 20 symbols, 18-degree panes, five-second spin cycle and existing stop algorithm. Image offsets continue with 15 and 18 positions. Reels are now spaced at eighths of the unchanged stage width. Numerical results include all seven reels, and confetti starts after the seventh stops. No WELCOME letters have been added.
+Review evidence is in `docs/evidence/`. Check desktop and narrow mobile layouts,
+Spin and repeated WELCOME landings before approving either PR. The source PR
+must be reviewed first; the homepage PR depends on its immutable commit.
 
-## One letter per reel (WELCOME)
-
-Each reel shows its assigned letter on face 0, W E L C O M E left to right. The original 20-symbol image arrays are retained unchanged; the corresponding face displays the letter in place of its original graphic. The reel animation and staggered stopping delays remain. Each reel aligns to face 0 at its usual stop, and the numerical results display reports the landed index 0. Spin clears that alignment for the next run. No extra sections or text were added.
-
-## Smooth reel landing correction
-
-The previous WELCOME version jumped each reel instantly to `rotateY(0deg)` when the reel stopped. Each letter is now a local SVG used **as the actual image on the reel's original face zero**, via the original QImg/TileComponent. The other nineteen reel faces still show the original symbols. The reel's current spinning angle is captured, and the remaining forward rotation is animated smoothly to the letter. The Spin button stays disabled through the final landing; confetti begins when reel seven finishes.
+Run `BROWSER_PATH=/usr/bin/chromium npm run test:browser` to build and exercise
+the actual homepage demo on desktop and mobile; omit BROWSER_PATH when using
+Playwright-managed Chromium (`npx playwright install chromium`).

@@ -1,6 +1,6 @@
 <script setup>
-import IndexPage from './original/IndexPage.vue';
+import SlotMachine from 'slotmachine';
 </script>
 <template>
-  <IndexPage />
+  <SlotMachine compact :reel-count="7" preset="WELCOME" />
 </template>
