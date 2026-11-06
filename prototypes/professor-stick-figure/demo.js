@@ -1,8 +1,9 @@
 import { textTimeline } from '../drawing-arm/src/timeline.js';
 import { ProfessorFigure } from './src/figure.js';
+import { configureBody } from './src/body.js';
 const q = selector => document.querySelector(selector);
 let raw, figure, time = 0, playing = false, previous = null;
-const body = { origin: [230, 505], scale: 1, lean: 0 };
+let body = configureBody();
 const rig = { upper: 195, forearm: 180, tip: 10, elbow: 'negative' };
 function refresh() {
   const state = figure.render(time);
@@ -10,7 +11,7 @@ function refresh() {
   q('#clock').textContent = `${(time / 1000).toFixed(1)} / ${(figure.timeline.duration / 1000).toFixed(1)} s`;
   q('#play').textContent = playing ? 'Pause' : 'Play';
   q('#contact').textContent = state.pose ? `${state.chalkDown ? '● CHALK DOWN' : '○ CHALK LIFTED'} / ${state.pose.reason.toUpperCase()}` : '○ IDLE / NO VECTOR STROKES';
-  q('#shoulder-value').textContent = figure.arm.shoulder.map(n => n.toFixed(0)).join(', ');
+  q('#shoulder-value').textContent = figure.arm.shoulder.map(n => Number(n.toFixed(2))).join(', ');
 }
 function load(json) {
   // Validation in setTimeline happens before the previous rendering is replaced.
@@ -30,15 +31,48 @@ q('#play').onclick = () => { if (time >= figure.timeline.duration) time = 0; pla
 q('#reset').onclick = () => { time = 0; playing = false; refresh(); };
 q('#seek').oninput = () => { time = Number(q('#seek').value); playing = false; refresh(); };
 q('#anchors').onchange = () => { figure.setDebug(q('#anchors').checked); q('#board-anchor').setAttribute('visibility', q('#anchors').checked ? 'visible' : 'hidden'); };
-function attachment() {
-  // Explicit configuration editing pauses the lesson. Playback never changes the body.
-  playing = false; body.lean = Number(q('#lean').value); rig.upper = Number(q('#upper').value); rig.forearm = Number(q('#forearm').value);
-  figure.setConfiguration(body, rig);
-  for (const key of ['lean', 'upper', 'forearm']) q(`#${key}-value`).textContent = q(`#${key}`).value;
-  refresh();
+// UI values are body-local. The adapter alone converts the shoulder to world units.
+const bodyFields = [
+  ['headSize', 'Head size', .7, 1.3, .05], ['neckLength', 'Neck length', 8, 40, 1],
+  ['shoulderWidth', 'Shoulder width', 24, 90, 1], ['torsoLength', 'Torso length', 70, 160, 1],
+  ['hipWidth', 'Hip width', 12, 60, 1], ['legHeight', 'Leg height', 80, 160, 1],
+  ['footLength', 'Foot length', 10, 40, 1], ['lean', 'Upper-body offset', -25, 25, 1],
+  ['shoulderY', 'Shoulder height offset', -30, 10, 1],
+  ['rightShoulderX', 'Right shoulder X offset', -20, 30, 1],
+  ['rightShoulderY', 'Right shoulder Y offset', -30, 30, 1]
+];
+function bodyValue(key) {
+  if (key === 'shoulderY') return body.shoulderOffset[1];
+  if (key === 'rightShoulderX') return body.rightShoulderOffset[0];
+  if (key === 'rightShoulderY') return body.rightShoulderOffset[1];
+  return body[key];
 }
-for (const key of ['lean', 'upper', 'forearm']) q(`#${key}`).oninput = attachment;
-q('#restore').onclick = () => { q('#lean').value = 0; q('#upper').value = 195; q('#forearm').value = 180; attachment(); };
+for (const [key, title, min, max, step] of bodyFields) {
+  const div = document.createElement('div'); div.className = 'slider';
+  div.innerHTML = `<label for="${key}">${title}<output id="${key}-value"></output></label><input id="${key}" type="range" min="${min}" max="${max}" step="${step}">`;
+  q('#body-controls').append(div);
+}
+function syncControls() {
+  for (const [key] of bodyFields) { q(`#${key}`).value = bodyValue(key); q(`#${key}-value`).textContent = bodyValue(key); }
+  for (const key of ['upper', 'forearm']) { q(`#${key}`).value = rig[key]; q(`#${key}-value`).textContent = rig[key]; }
+}
+function attachment() {
+  playing = false;
+  const next = structuredClone(body);
+  for (const [key] of bodyFields) {
+    const value = Number(q(`#${key}`).value);
+    if (key === 'shoulderY') next.shoulderOffset[1] = value;
+    else if (key === 'rightShoulderX') next.rightShoulderOffset[0] = value;
+    else if (key === 'rightShoulderY') next.rightShoulderOffset[1] = value;
+    else next[key] = value;
+  }
+  body = configureBody(next); rig.upper = Number(q('#upper').value); rig.forearm = Number(q('#forearm').value);
+  figure.setConfiguration(body, rig); syncControls(); refresh();
+}
+for (const [key] of bodyFields) q(`#${key}`).oninput = attachment;
+for (const key of ['upper', 'forearm']) q(`#${key}`).oninput = attachment;
+q('#restore').onclick = () => { body = configureBody(); rig.upper = 195; rig.forearm = 180; syncControls(); attachment(); };
+syncControls();
 q('#export').onclick = () => {
   const url = URL.createObjectURL(new Blob([JSON.stringify(raw, null, 2)], { type: 'application/json' }));
   const a = document.createElement('a'); a.href = url; a.download = 'professor-timeline.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);

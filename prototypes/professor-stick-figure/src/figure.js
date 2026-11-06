@@ -18,15 +18,19 @@ export function drawBody(group, config = {}) {
     fill: 'none', stroke: '#e7e4d5', 'stroke-width': 6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', ...attrs }, group);
   // The far arm is behind the spine; feet and hips do not depend on lean.
   line('left-arm', [p.leftShoulder, p.leftElbow, p.leftHand], { stroke: '#9fafa6', 'stroke-width': 5 });
-  line('legs', [p.leftFoot, p.leftKnee, p.hips, p.rightKnee, p.rightFoot]);
-  line('left-foot', [p.leftFoot, [p.leftFoot[0] + 16, 0]], { 'stroke-width': 7 });
-  line('right-foot', [p.rightFoot, [p.rightFoot[0] + 19, 0]], { 'stroke-width': 7 });
+  line('legs', [p.leftFoot, p.leftKnee, p.leftHip, p.rightHip, p.rightKnee, p.rightFoot]);
+  line('hips', [p.leftHip, p.hips, p.rightHip]);
+  line('left-foot', [p.leftFoot, p.leftToe], { 'stroke-width': 7 });
+  line('right-foot', [p.rightFoot, p.rightToe], { 'stroke-width': 7 });
   line('torso', [p.hips, p.torsoTop, p.neck]);
   line('shoulders', [p.leftShoulder, p.torsoTop, p.rightShoulder]);
-  node('path', { 'data-part': 'head', d: `M${hx-9},${hy+28} C${hx-32},${hy+20} ${hx-33},${hy-18} ${hx-10},${hy-28} C${hx+8},${hy-37} ${hx+25},${hy-20} ${hx+25},${hy-7} L${hx+37},${hy+1} L${hx+26},${hy+5} C${hx+25},${hy+20} ${hx+12},${hy+28} ${hx-9},${hy+28}Z`,
+  // Head profile is normalized geometry scaled around a derived head landmark.
+  const h = body.headSize;
+  const H = (x, y) => `${hx + x * h},${hy + y * h}`;
+  node('path', { 'data-part': 'head', d: `M${H(-9,28)} C${H(-32,20)} ${H(-33,-18)} ${H(-10,-28)} C${H(8,-37)} ${H(25,-20)} ${H(25,-7)} L${H(37,1)} L${H(26,5)} C${H(25,20)} ${H(12,28)} ${H(-9,28)}Z`,
     fill: '#202c29', stroke: '#e7e4d5', 'stroke-width': 4, 'stroke-linejoin': 'round' }, group);
   // Nape mark, no face or eyes: the viewer sees the back of the head.
-  line('nape', [[hx-13, hy+21], [hx-8, hy+27]], { stroke: '#8da497', 'stroke-width': 2 });
+  line('nape', [[hx-13*h, hy+21*h], [hx-8*h, hy+27*h]], { stroke: '#8da497', 'stroke-width': 2 });
   return p;
 }
 
