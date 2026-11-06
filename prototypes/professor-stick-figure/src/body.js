@@ -52,12 +52,14 @@ export function bodyLandmarks(config = {}) {
     leftHand: [leftShoulder[0] - 2 - b.lean, leftShoulder[1] + b.torsoLength * 101 / 115],
     leftKnee: [(leftHip[0] + leftFoot[0]) / 2, -b.legHeight / 2],
     rightKnee: [(rightHip[0] + rightFoot[0]) / 2, -b.legHeight / 2],
-    leftFoot, rightFoot, leftToe: [leftFoot[0] + b.footLength, 0], rightToe: [rightFoot[0] + b.footLength, 0]
+    leftFoot, rightFoot, leftAnkle: [...leftFoot], rightAnkle: [...rightFoot], leftToe: [leftFoot[0] + b.footLength, 0], rightToe: [rightFoot[0] + b.footLength, 0]
   };
 }
-/** Lengths are body-local. The engine shoulder always comes from the body landmark. */
+/** Anatomical defaults: upper = .65 torso, forearm = .55 torso, tool = .04 torso.
+ * The adapter owns lengths and anchor; rig options supply bend/limits only. */
 export function attachedArm(bodyConfig = {}, rig = {}) {
-  const body = configureBody(bodyConfig), local = configureArm({ upper: 195, forearm: 180, tip: 10, elbow: 'negative', ...rig });
+  const body = configureBody(bodyConfig), local = configureArm({ elbow: 'negative', ...rig,
+    upper: .65 * body.torsoLength, forearm: .55 * body.torsoLength, tip: .04 * body.torsoLength });
   return configureArm({ ...local, shoulder: bodyToWorld(bodyLandmarks(body).rightShoulder, body),
     upper: local.upper * body.scale, forearm: local.forearm * body.scale, tip: local.tip * body.scale });
 }

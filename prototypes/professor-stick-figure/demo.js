@@ -4,13 +4,15 @@ import { configureBody } from './src/body.js';
 const q = selector => document.querySelector(selector);
 let raw, figure, time = 0, playing = false, previous = null;
 let body = configureBody();
-const rig = { upper: 195, forearm: 180, tip: 10, elbow: 'negative' };
+const rig = { elbow: 'negative' };
 function refresh() {
   const state = figure.render(time);
-  q('#seek').max = figure.timeline.duration || 1; q('#seek').value = time;
-  q('#clock').textContent = `${(time / 1000).toFixed(1)} / ${(figure.timeline.duration / 1000).toFixed(1)} s`;
+  q('#seek').max = figure.duration || 1; q('#seek').value = time;
+  q('#clock').textContent = `${(time / 1000).toFixed(1)} / ${(figure.duration / 1000).toFixed(1)} s`;
   q('#play').textContent = playing ? 'Pause' : 'Play';
-  q('#contact').textContent = state.pose ? `${state.chalkDown ? '● CHALK DOWN' : '○ CHALK LIFTED'} / ${state.pose.reason.toUpperCase()}` : '○ IDLE / NO VECTOR STROKES';
+  q('#contact').textContent = `${state.chalkDown ? '● CHALK DOWN' : '○ CHALK LIFTED'} / ${state.reason === 'blocked' ? 'BLOCKED: VERTICAL / JOINT REACH' : state.kind.toUpperCase()}`;
+  q('#arm-lengths').textContent = `${figure.arm.upper.toFixed(1)} / ${figure.arm.forearm.toFixed(1)}`;
+  q('#body-origin').textContent = figure.currentBody.origin.map(n => n.toFixed(1)).join(', ');
   q('#shoulder-value').textContent = figure.arm.shoulder.map(n => Number(n.toFixed(2))).join(', ');
 }
 function load(json) {
@@ -19,15 +21,18 @@ function load(json) {
   else figure = new ProfessorFigure(q('#professor'), json, { body, rig });
   raw = structuredClone(json); time = 0; playing = false; previous = null; refresh();
 }
+function statusMessage() {
+  return figure.plan.blocked.length ? `${figure.plan.blocked.length} portion(s) blocked: horizontal movement cannot satisfy vertical reach or joint limits. No chalk is drawn there.` : (raw.fallbacks?.length ? 'Unsupported characters use font fallback, not traced strokes.' : 'Ready. Writing coordinates fixed; moves and reaches add playback time.');
+}
 function loadWriting() {
   try {
     if (q('#writing').value.length > 200) throw new Error('Keep this writing study to 200 characters.');
     load(textTimeline(q('#writing').value, { x: 0, y: 0, size: 24, speed: 135, lift: 100, board: { origin: [355, 140], scale: 1, rotation: 0 } }));
-    q('#message').textContent = raw.fallbacks.length ? 'Unsupported glyphs use the engine’s font fallback; the arm does not trace them.' : 'Original timeline format. Original drawing engine.';
+    q('#message').textContent = statusMessage();
   } catch (error) { q('#message').textContent = error.message; }
 }
 q('#load').onclick = loadWriting;
-q('#play').onclick = () => { if (time >= figure.timeline.duration) time = 0; playing = !playing; previous = null; refresh(); };
+q('#play').onclick = () => { if (time >= figure.duration) time = 0; playing = !playing; previous = null; refresh(); };
 q('#reset').onclick = () => { time = 0; playing = false; refresh(); };
 q('#seek').oninput = () => { time = Number(q('#seek').value); playing = false; refresh(); };
 q('#anchors').onchange = () => { figure.setDebug(q('#anchors').checked); q('#board-anchor').setAttribute('visibility', q('#anchors').checked ? 'visible' : 'hidden'); };
@@ -54,7 +59,7 @@ for (const [key, title, min, max, step] of bodyFields) {
 }
 function syncControls() {
   for (const [key] of bodyFields) { q(`#${key}`).value = bodyValue(key); q(`#${key}-value`).textContent = bodyValue(key); }
-  for (const key of ['upper', 'forearm']) { q(`#${key}`).value = rig[key]; q(`#${key}-value`).textContent = rig[key]; }
+
 }
 function attachment() {
   playing = false;
@@ -66,12 +71,11 @@ function attachment() {
     else if (key === 'rightShoulderY') next.rightShoulderOffset[1] = value;
     else next[key] = value;
   }
-  body = configureBody(next); rig.upper = Number(q('#upper').value); rig.forearm = Number(q('#forearm').value);
-  figure.setConfiguration(body, rig); syncControls(); refresh();
+  body = configureBody(next);
+  figure.setConfiguration(body, rig); time = Math.min(time, figure.duration); syncControls(); refresh(); q('#message').textContent = statusMessage();
 }
 for (const [key] of bodyFields) q(`#${key}`).oninput = attachment;
-for (const key of ['upper', 'forearm']) q(`#${key}`).oninput = attachment;
-q('#restore').onclick = () => { body = configureBody(); rig.upper = 195; rig.forearm = 180; syncControls(); attachment(); };
+q('#restore').onclick = () => { body = configureBody(); syncControls(); attachment(); };
 syncControls();
 q('#export').onclick = () => {
   const url = URL.createObjectURL(new Blob([JSON.stringify(raw, null, 2)], { type: 'application/json' }));
@@ -81,14 +85,14 @@ q('#import').onchange = async event => {
   try {
     const file = event.target.files[0]; if (!file) return;
     if (file.size > 1024 * 1024) throw new Error('Timeline must be smaller than 1 MB.');
-    load(JSON.parse(await file.text())); q('#message').textContent = 'Drawing Arm timeline imported without conversion.';
+    load(JSON.parse(await file.text())); q('#message').textContent = statusMessage();
   } catch (error) { q('#message').textContent = `Import failed: ${error.message}`; }
   event.target.value = '';
 };
 function frame(now) {
   if (playing) {
-    if (previous !== null) time = Math.min(figure.timeline.duration, time + (now - previous) * Number(q('#speed').value));
-    previous = now; if (time >= figure.timeline.duration) playing = false; refresh();
+    if (previous !== null) time = Math.min(figure.duration, time + (now - previous) * Number(q('#speed').value));
+    previous = now; if (time >= figure.duration) playing = false; refresh();
   } else previous = null;
   requestAnimationFrame(frame);
 }

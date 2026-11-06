@@ -1,16 +1,19 @@
-# B1.1 validation — November 6, 2026
+# B1.2 validation — November 6, 2026
 
 Passed:
 
-- **16 body/composition tests**, including all 10 existing attachment tests and 6 B1.1 tests. Sweeps cover 14 proportion/shoulder configurations across many writing timestamps: fixed heel anchors, derived hips/knees/neck/head, visible shoulder/engine-anchor coincidence, wrist/tool endpoints, unchanged world writing targets and compiled timeline, preserved arm lengths, saved-time reattachment without cumulative transforms, invalid-edit atomicity and explicit unreachable contact suppression.
-- All five Drawing Arm source hashes match pinned original Git blobs. No engine source edits.
-- **15 original Drawing Arm engine and SVG adapter tests**.
-- Standalone build verifies the original hashes and packages the same engine modules with the new skeleton. JavaScript syntax checks pass for modular sources, scripts, optional browser test and the embedded standalone script.
-- Default and three-profile evidence generated with the actual body adapter and original SVG renderer. The rasterized profile comparison was inspected for derived body proportions, planted feet and correctly attached right shoulders. The writing/board coordinates are identical across profiles.
+- 18 body, motion, curved-rendering and integrity tests. The former whole-timeline stationary-body assertions were replaced with the B1.2 requirements: stationary root while writing, grounded translation between writing phases.
+- Default equation: body-derived upper/forearm/tool = 74.75/63.25/4.6; 7 horizontal moves in both directions; 0 blocked portions; 4.805 s original writing becomes 15.384 s planned playback.
+- Reachable writing tips match original board targets; hand/shoulder poses remain continuous at every phase boundary. Sampled root speed stays ≤90 world units/s. All move/approach phases lift chalk. Both feet retain fixed ground Y, and both translate by the same X increment.
+- Long paths split without rescaling, missing reachable portions or changing summed source duration; vertical impossibility is explicitly blocked without movement loops or unreachable chalk.
+- Completed chalk persists during later moves; seeking reproduces geometry and chalk deterministically. Source JSON and board transforms remain unchanged. Invalid import/config changes remain atomic.
+- Curved outlines are closed, finite, tapered and non-mutating. Skin and tool follow the original joint/endpoint geometry.
+- All five original Drawing Arm module blob hashes verify unchanged. All 15 original engine/renderer tests pass.
+- Standalone build and JavaScript syntax checks pass. Default and four-frame motion evidence generated through the adapter and original renderer; rasterized evidence inspected visually.
 
 Outstanding:
 
-- Authorized browser-control tools remain unavailable. The expanded optional browser smoke tests in `tests/browser.mjs` are included but unrun; they cover each slider, current-time reattachment, fixed feet, body stability while playing, JSON import/export and mobile overflow. Browser event handling, controls and layout need real-browser verification before accepting draft PR #11.
-- `standalone.html` is a local-file browser preview. No hosted preview or deployment is claimed.
+- Authorized browser-control tools are unavailable. Optional browser smoke tests were updated for the compact tool, initially collapsed panel, horizontal movement, curved arm, sliders, JSON import/export and responsive layout, but remain unrun. Actual browser interactions/layout require verification before accepting draft PR #11.
+- `standalone.html` is the local-file preview; no hosted preview or deployment is claimed.
 
-Scope: only the existing `prototypes/professor-stick-figure/` directory changes. Drawing Arm modules, writing JSON, engine lock, homepage, production routes, hosting and workflow configuration stay unchanged. PR #11 remains draft on `feature/reduced-professor-stick-figure`. No merge or deployment.
+Scope stays in `prototypes/professor-stick-figure/`. Drawing Arm, original writing JSON, engine lock, homepage, production routes and hosting/workflow configuration are unchanged. The B1.1 comparison SVG is replaced by `motion.svg` to reflect the new behavior. No merge or deployment.
