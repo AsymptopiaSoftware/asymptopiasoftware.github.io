@@ -10,7 +10,7 @@ function refresh() {
   q('#seek').max = figure.duration || 1; q('#seek').value = time;
   q('#clock').textContent = `${(time / 1000).toFixed(1)} / ${(figure.duration / 1000).toFixed(1)} s`;
   q('#play').textContent = playing ? 'Pause' : 'Play';
-  q('#contact').textContent = `${state.chalkDown ? '● CHALK DOWN' : '○ CHALK LIFTED'} / ${state.reason === 'blocked' ? 'BLOCKED: VERTICAL / JOINT REACH' : state.kind.toUpperCase()}`;
+  q('#contact').textContent = `${state.chalkDown ? '● CHALK DOWN' : '○ CHALK LIFTED'} / ${state.reason === 'blocked' ? 'BLOCKED: NO FORWARD WRITING STANCE' : state.kind.toUpperCase()}`;
   q('#arm-lengths').textContent = `${figure.arm.upper.toFixed(1)} / ${figure.arm.forearm.toFixed(1)}`;
   q('#body-origin').textContent = figure.currentBody.origin.map(n => n.toFixed(1)).join(', ');
   q('#shoulder-value').textContent = figure.arm.shoulder.map(n => Number(n.toFixed(2))).join(', ');
@@ -22,7 +22,7 @@ function load(json) {
   raw = structuredClone(json); time = 0; playing = false; previous = null; refresh();
 }
 function statusMessage() {
-  return figure.plan.blocked.length ? `${figure.plan.blocked.length} portion(s) blocked: horizontal movement cannot satisfy vertical reach or joint limits. No chalk is drawn there.` : (raw.fallbacks?.length ? 'Unsupported characters use font fallback, not traced strokes.' : 'Ready. Writing coordinates fixed; moves and reaches add playback time.');
+  return figure.plan.blocked.length ? `${figure.plan.blocked.length} portion(s) blocked: no reachable forward-writing stance at this height / joint limits. No chalk is drawn there.` : (raw.fallbacks?.length ? 'Unsupported characters use font fallback, not traced strokes.' : 'Ready. Writing coordinates fixed; moves and reaches add playback time.');
 }
 function loadWriting() {
   try {

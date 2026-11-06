@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.2 · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.3 · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
 </style></head>
 <body><main>
 <div class="experiment"><section class="stage" aria-label="Professor writing demonstration">
@@ -16,7 +16,7 @@
 </svg>
 <div class="transport"><button id="play" class="primary">Play</button><button id="reset">Reset</button><label class="scrubber">Timeline<input id="seek" type="range" min="0" max="1" value="0" aria-label="Timeline position"></label><output id="clock">0.0 / 0.0 s</output><label class="speed-label">Speed<select id="speed"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div>
 <div class="stage-footer"><span id="contact" role="status">Ready</span><label><input id="anchors" type="checkbox"> Show skeleton / anchors</label></div>
-</section><aside><p class="eyebrow">B1.2 / WRITING TOOL</p><label for="writing">Writing instructions</label><textarea id="writing" rows="2" spellcheck="false">2 × (3 + 4)
+</section><aside><p class="eyebrow">B1.3 / WRITING TOOL</p><label for="writing">Writing instructions</label><textarea id="writing" rows="2" spellcheck="false">2 × (3 + 4)
 = 14</textarea><button id="load" class="primary wide">Load writing ↗</button><p id="message" role="status"></p><div class="file-actions"><button id="export">Export JSON ↓</button><label for="import" class="file-label">Import JSON<input id="import" type="file" accept=".json,application/json"></label></div>
 <details id="advanced"><summary>Advanced / Body Rig</summary><div id="body-controls" class="body-controls"></div><dl><dt>Upper / forearm</dt><dd id="arm-lengths"></dd><dt>Right shoulder</dt><dd id="shoulder-value"></dd><dt>Body origin</dt><dd id="body-origin"></dd></dl><button id="restore" class="wide">Restore body rig</button></details><p class="docs"><a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/reduced-professor-stick-figure/prototypes/professor-stick-figure/README.md">Docs</a> · <a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/reduced-professor-stick-figure/prototypes/professor-stick-figure/docs/coordinates.md">Rig / motion contract</a></p></aside></div>
 </main><script type="module">
@@ -390,26 +390,35 @@ function validPlacement12(points, arm) {
   }
   return points.every(p=>distance(p,arm.shoulder)<=outer+1e-7);
 }
-/** Find the nearest feasible horizontal shoulder placement, with extension reserve. */
-function placementFor(points, body, rig, currentOffset=0) {
+/** Internal posture band, in world units. No new UI or joint constraints. */
+function writingRange(body, rig={}) {
+  const arm=attachedArm(body,rig),reach=arm.upper+arm.forearm+arm.tip;
+  return {min:.18*reach,max:.82*reach,preferred:.5*reach};
+}
+/** Keep a valid placement; otherwise center the forward-writing band. */
+function placementFor(points, body={}, rig={}, currentOffset=0) {
+  body=configureBody(body);
   const base=attachedArm(body,rig), R=base.upper+base.forearm+base.tip;
-  const current=attachedArm(translatedBody(body,currentOffset),rig);
-  if(validPlacement12(points,current))return currentOffset;
+  const current=attachedArm(translatedBody(body,currentOffset),rig),band=writingRange(body,rig);
+  const comfortable=arm=>points.every(p=>p[0]-arm.shoulder[0]>=band.min-1e-7&&p[0]-arm.shoulder[0]<=band.max+1e-7);
+  if(comfortable(current)&&validPlacement12(points,current))return currentOffset;
   for(const radius of [R*.94,R]) {
     let lo=-Infinity,hi=Infinity;
     for(const p of points) {
       const dy=p[1]-base.shoulder[1];
       if(Math.abs(dy)>radius+1e-8){lo=1;hi=0;break;}
       const dx=Math.sqrt(Math.max(0,radius*radius-dy*dy));
-      lo=Math.max(lo,p[0]-dx-base.shoulder[0]);hi=Math.min(hi,p[0]+dx-base.shoulder[0]);
+      lo=Math.max(lo,p[0]-dx-base.shoulder[0],p[0]-band.max-base.shoulder[0]);
+      hi=Math.min(hi,p[0]+dx-base.shoulder[0],p[0]-band.min-base.shoulder[0]);
     }
     if(lo>hi+1e-8)continue;
-    const preferred=clamp12(currentOffset,lo,hi),candidates=[preferred,lo,hi,(lo+hi)/2];
+    const targetCenter=(Math.min(...points.map(p=>p[0]))+Math.max(...points.map(p=>p[0])))/2;
+    const preferred=clamp12(targetCenter-band.preferred-base.shoulder[0],lo,hi),candidates=[preferred,lo,hi,(lo+hi)/2];
     // Bounded search also handles inner dead zones and explicit joint limits.
     const n=Math.max(1,Math.ceil((hi-lo)/2));
     for(let i=0;i<=n;i++)candidates.push(lo+(hi-lo)*i/n);
-    candidates.sort((a,b)=>Math.abs(a-currentOffset)-Math.abs(b-currentOffset));
-    for(const x of candidates)if(validPlacement12(points,attachedArm(translatedBody(body,x),rig)))return x;
+    candidates.sort((a,b)=>Math.abs(a-preferred)-Math.abs(b-preferred));
+    for(const x of candidates)if(comfortable(attachedArm(translatedBody(body,x),rig))&&validPlacement12(points,attachedArm(translatedBody(body,x),rig)))return x;
   }
   return null;
 }
@@ -426,9 +435,9 @@ function planWriting(timeline, bodyOptions={}, rig={}) {
   const restPose=pose;
   const add=(phase,duration)=>{const p={...phase,at:cursor,duration};phases.push(p);cursor+=duration;if(!Number.isFinite(cursor))throw new RangeError('Planned playback duration overflow');return p;};
   const hold=(duration,sourceTime,reason='gap')=>{if(duration>0)add({kind:'hold',offset,angles:angles12(pose),sourceTime,reason},duration);};
-  function writePiece(points,duration,sourceAt,pen=true) {
+  function writePiece(points,duration,sourceAt,pen=true,clusterOffset=null) {
     if(++operations>5000)throw new RangeError('Timeline exceeds the 5000-piece planning budget');
-    const next=placementFor(points,body,rig,offset);
+    const next=placementFor(points,body,rig,clusterOffset??offset);
     if(next===null){blocked.push({sourceAt,points});hold(duration,sourceAt,'blocked');return;}
     if(Math.abs(next-offset)>1e-7) {
       const from=offset,angles=angles12(pose);
@@ -446,9 +455,27 @@ function planWriting(timeline, bodyOptions={}, rig={}) {
     const p=add({kind:'write',offset,arm,stroke,sourceAt,sourceTime:sourceAt},duration);writes.push(p);
     pose=solveIK(arm,points.at(-1));
   }
-  for(const s of timeline.strokes) {
+  let clusterUntil=-1,clusterOffset=null;
+  for(const [index,s] of timeline.strokes.entries()) {
     hold(s.at-sourceEnd,sourceEnd);
-    if(placementFor(s.points,body,rig,offset)!==null)writePiece(s.points,s.duration,s.at,s.pen!==false);
+    if(index>clusterUntil) {
+      clusterUntil=index;clusterOffset=placementFor(s.points,body,rig,offset);
+      if(clusterOffset!==null) {
+        let points=[...s.points];
+        // Reserve one stance for a small spatial/temporal cluster. Commit its end
+        // so repeated lookahead cannot cause creeping moves at every stroke.
+        for(let j=index+1;j<Math.min(timeline.strokes.length,index+24);j++) {
+          const next=timeline.strokes[j],previous=timeline.strokes[j-1];
+          if(next.at-previous.at-previous.duration>250||next.pen===false||s.pen===false)break;
+          const candidate=[...points,...next.points],ys=candidate.map(p=>p[1]);
+          if(Math.max(...ys)-Math.min(...ys)>.3*(initial.upper+initial.forearm+initial.tip))break;
+          const stance=placementFor(candidate,body,rig,offset);
+          if(stance===null)break;
+          points=candidate;clusterUntil=j;clusterOffset=stance;
+        }
+      }
+    }
+    if(placementFor(s.points,body,rig,offset)!==null)writePiece(s.points,s.duration,s.at,s.pen!==false,clusterOffset);
     else {
       // A path wider than one workspace is split on its original straight edges.
       // No points are rescaled or shifted; reposition at lifted-chalk boundaries.
@@ -577,7 +604,7 @@ function refresh() {
   q('#seek').max = figure.duration || 1; q('#seek').value = time;
   q('#clock').textContent = `${(time / 1000).toFixed(1)} / ${(figure.duration / 1000).toFixed(1)} s`;
   q('#play').textContent = playing ? 'Pause' : 'Play';
-  q('#contact').textContent = `${state.chalkDown ? '● CHALK DOWN' : '○ CHALK LIFTED'} / ${state.reason === 'blocked' ? 'BLOCKED: VERTICAL / JOINT REACH' : state.kind.toUpperCase()}`;
+  q('#contact').textContent = `${state.chalkDown ? '● CHALK DOWN' : '○ CHALK LIFTED'} / ${state.reason === 'blocked' ? 'BLOCKED: NO FORWARD WRITING STANCE' : state.kind.toUpperCase()}`;
   q('#arm-lengths').textContent = `${figure.arm.upper.toFixed(1)} / ${figure.arm.forearm.toFixed(1)}`;
   q('#body-origin').textContent = figure.currentBody.origin.map(n => n.toFixed(1)).join(', ');
   q('#shoulder-value').textContent = figure.arm.shoulder.map(n => Number(n.toFixed(2))).join(', ');
@@ -589,7 +616,7 @@ function load(json) {
   raw = structuredClone(json); time = 0; playing = false; previous = null; refresh();
 }
 function statusMessage() {
-  return figure.plan.blocked.length ? `${figure.plan.blocked.length} portion(s) blocked: horizontal movement cannot satisfy vertical reach or joint limits. No chalk is drawn there.` : (raw.fallbacks?.length ? 'Unsupported characters use font fallback, not traced strokes.' : 'Ready. Writing coordinates fixed; moves and reaches add playback time.');
+  return figure.plan.blocked.length ? `${figure.plan.blocked.length} portion(s) blocked: no reachable forward-writing stance at this height / joint limits. No chalk is drawn there.` : (raw.fallbacks?.length ? 'Unsupported characters use font fallback, not traced strokes.' : 'Ready. Writing coordinates fixed; moves and reaches add playback time.');
 }
 function loadWriting() {
   try {

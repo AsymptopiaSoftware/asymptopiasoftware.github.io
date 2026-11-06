@@ -23,26 +23,35 @@ function validPlacement12(points, arm) {
   }
   return points.every(p=>distance(p,arm.shoulder)<=outer+1e-7);
 }
-/** Find the nearest feasible horizontal shoulder placement, with extension reserve. */
-export function placementFor(points, body, rig, currentOffset=0) {
+/** Internal posture band, in world units. No new UI or joint constraints. */
+export function writingRange(body, rig={}) {
+  const arm=attachedArm(body,rig),reach=arm.upper+arm.forearm+arm.tip;
+  return {min:.18*reach,max:.82*reach,preferred:.5*reach};
+}
+/** Keep a valid placement; otherwise center the forward-writing band. */
+export function placementFor(points, body={}, rig={}, currentOffset=0) {
+  body=configureBody(body);
   const base=attachedArm(body,rig), R=base.upper+base.forearm+base.tip;
-  const current=attachedArm(translatedBody(body,currentOffset),rig);
-  if(validPlacement12(points,current))return currentOffset;
+  const current=attachedArm(translatedBody(body,currentOffset),rig),band=writingRange(body,rig);
+  const comfortable=arm=>points.every(p=>p[0]-arm.shoulder[0]>=band.min-1e-7&&p[0]-arm.shoulder[0]<=band.max+1e-7);
+  if(comfortable(current)&&validPlacement12(points,current))return currentOffset;
   for(const radius of [R*.94,R]) {
     let lo=-Infinity,hi=Infinity;
     for(const p of points) {
       const dy=p[1]-base.shoulder[1];
       if(Math.abs(dy)>radius+1e-8){lo=1;hi=0;break;}
       const dx=Math.sqrt(Math.max(0,radius*radius-dy*dy));
-      lo=Math.max(lo,p[0]-dx-base.shoulder[0]);hi=Math.min(hi,p[0]+dx-base.shoulder[0]);
+      lo=Math.max(lo,p[0]-dx-base.shoulder[0],p[0]-band.max-base.shoulder[0]);
+      hi=Math.min(hi,p[0]+dx-base.shoulder[0],p[0]-band.min-base.shoulder[0]);
     }
     if(lo>hi+1e-8)continue;
-    const preferred=clamp12(currentOffset,lo,hi),candidates=[preferred,lo,hi,(lo+hi)/2];
+    const targetCenter=(Math.min(...points.map(p=>p[0]))+Math.max(...points.map(p=>p[0])))/2;
+    const preferred=clamp12(targetCenter-band.preferred-base.shoulder[0],lo,hi),candidates=[preferred,lo,hi,(lo+hi)/2];
     // Bounded search also handles inner dead zones and explicit joint limits.
     const n=Math.max(1,Math.ceil((hi-lo)/2));
     for(let i=0;i<=n;i++)candidates.push(lo+(hi-lo)*i/n);
-    candidates.sort((a,b)=>Math.abs(a-currentOffset)-Math.abs(b-currentOffset));
-    for(const x of candidates)if(validPlacement12(points,attachedArm(translatedBody(body,x),rig)))return x;
+    candidates.sort((a,b)=>Math.abs(a-preferred)-Math.abs(b-preferred));
+    for(const x of candidates)if(comfortable(attachedArm(translatedBody(body,x),rig))&&validPlacement12(points,attachedArm(translatedBody(body,x),rig)))return x;
   }
   return null;
 }
@@ -59,9 +68,9 @@ export function planWriting(timeline, bodyOptions={}, rig={}) {
   const restPose=pose;
   const add=(phase,duration)=>{const p={...phase,at:cursor,duration};phases.push(p);cursor+=duration;if(!Number.isFinite(cursor))throw new RangeError('Planned playback duration overflow');return p;};
   const hold=(duration,sourceTime,reason='gap')=>{if(duration>0)add({kind:'hold',offset,angles:angles12(pose),sourceTime,reason},duration);};
-  function writePiece(points,duration,sourceAt,pen=true) {
+  function writePiece(points,duration,sourceAt,pen=true,clusterOffset=null) {
     if(++operations>5000)throw new RangeError('Timeline exceeds the 5000-piece planning budget');
-    const next=placementFor(points,body,rig,offset);
+    const next=placementFor(points,body,rig,clusterOffset??offset);
     if(next===null){blocked.push({sourceAt,points});hold(duration,sourceAt,'blocked');return;}
     if(Math.abs(next-offset)>1e-7) {
       const from=offset,angles=angles12(pose);
@@ -79,9 +88,27 @@ export function planWriting(timeline, bodyOptions={}, rig={}) {
     const p=add({kind:'write',offset,arm,stroke,sourceAt,sourceTime:sourceAt},duration);writes.push(p);
     pose=solveIK(arm,points.at(-1));
   }
-  for(const s of timeline.strokes) {
+  let clusterUntil=-1,clusterOffset=null;
+  for(const [index,s] of timeline.strokes.entries()) {
     hold(s.at-sourceEnd,sourceEnd);
-    if(placementFor(s.points,body,rig,offset)!==null)writePiece(s.points,s.duration,s.at,s.pen!==false);
+    if(index>clusterUntil) {
+      clusterUntil=index;clusterOffset=placementFor(s.points,body,rig,offset);
+      if(clusterOffset!==null) {
+        let points=[...s.points];
+        // Reserve one stance for a small spatial/temporal cluster. Commit its end
+        // so repeated lookahead cannot cause creeping moves at every stroke.
+        for(let j=index+1;j<Math.min(timeline.strokes.length,index+24);j++) {
+          const next=timeline.strokes[j],previous=timeline.strokes[j-1];
+          if(next.at-previous.at-previous.duration>250||next.pen===false||s.pen===false)break;
+          const candidate=[...points,...next.points],ys=candidate.map(p=>p[1]);
+          if(Math.max(...ys)-Math.min(...ys)>.3*(initial.upper+initial.forearm+initial.tip))break;
+          const stance=placementFor(candidate,body,rig,offset);
+          if(stance===null)break;
+          points=candidate;clusterUntil=j;clusterOffset=stance;
+        }
+      }
+    }
+    if(placementFor(s.points,body,rig,offset)!==null)writePiece(s.points,s.duration,s.at,s.pen!==false,clusterOffset);
     else {
       // A path wider than one workspace is split on its original straight edges.
       // No points are rescaled or shifted; reposition at lifted-chalk boundaries.

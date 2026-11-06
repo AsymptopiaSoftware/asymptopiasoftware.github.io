@@ -1,4 +1,4 @@
-# B1.2 coordinates, anatomy and motion contract
+# B1.3 coordinates, anatomy and motion contract
 
 ## Three independent spaces
 
@@ -62,7 +62,11 @@ The adapter overrides supplied rig length/shoulder fields with these derived val
 
 ## Planning and playback
 
-`planWriting(compiledSource,body,rig)` returns a separate deterministic schedule. It checks complete polylines at the current root before deciding to move. Reach tests use original `solveIK`, endpoint outer-radius constraints, exact segment-to-shoulder inner-annulus checks and intermediate solver checks at ≤2 world-unit spacing. A horizontal interval from the outer reach circle is intersected over stroke vertices. The planner first tries a 6% extension reserve, then full reach; bounded candidate sampling handles inner dead zones and configured joint limits. Candidate sampling resolution is at most 2 world units. This is a bounded prototype planner, not a general collision-aware optimization system.
+B1.3 adds a horizontal posture interval in body placement only. For total world tool reach `R = upper + forearm + tip`, every writing point must satisfy `0.18R <= target.x - shoulder.x <= 0.82R`. The bounds are internal, scale with the body, and add no UI or joint constraints. Intersect this interval with the original physical reach interval over all stroke vertices. Because each vector segment is linear, its horizontal offset stays inside the same band between vertices. A current stance is retained only if both the forward band and original IK reach tests pass. When repositioning, prefer the middle of that feasible writing interval (`target center - 0.5R`). The band is not relaxed when no feasible placement exists: block the portion rather than reach backward.
+
+To avoid intra-cluster repositioning, reserve a stance for a maximal compatible prefix of up to 24 strokes. Stop lookahead at a gap greater than 250 ms, an explicit pen-up stroke, a vertical bounding span greater than `0.3R`, or lack of a common placement. Cache that prefix end and offset so successive strokes do not repeatedly extend the window and creep the body forward. Nearby strokes use the same offset; a currently valid stance is kept without moving merely to center it. There is no word recognition or extra semantic timeline metadata.
+
+`planWriting(compiledSource,body,rig)` returns a separate deterministic schedule. It checks complete polylines at the current root before deciding to move. Reach tests use original `solveIK`, endpoint outer-radius constraints, exact segment-to-shoulder inner-annulus checks and intermediate solver checks at ≤2 world-unit spacing. A horizontal interval from the outer reach circle and the forward writing band is intersected over stroke vertices. For a required move the planner first tries a 6% extension reserve, then full reach (always inside the forward band); bounded candidate sampling handles inner dead zones and configured joint limits. Candidate sampling resolution is at most 2 world units. This is a bounded prototype planner, not a general collision-aware optimization system.
 
 Phases:
 

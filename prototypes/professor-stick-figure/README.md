@@ -1,4 +1,4 @@
-# Professor B1.2 development tool
+# Professor B1.3 development tool
 
 Short body-derived arms, reach-driven grounded horizontal repositioning, and curved SVG limbs. The view remains rear three-quarter, facing the board, with the writing arm attached to the right shoulder. No character artwork, facial behavior, personality or lesson system.
 
@@ -22,9 +22,13 @@ Body-local lengths are `upper = .65 × torsoLength`, `forearm = .55 × torsoLeng
 
 ## Reach-driven movement
 
-`src/locomotion.js` plans around the unchanged engine. It checks the complete next stroke at the current shoulder. If it cannot be reached, it finds a horizontal root offset before writing, translates the entire body/shoulder/feet smoothly at fixed floor height, and keeps chalk lifted. A pen-up angle interpolation then reaches the next writing point before ink resumes. The default equation makes seven horizontal moves, completes every stroke, and takes about 15.38 s instead of 4.80 s of source writing time.
+B1.3 requires a forward writing band: the target must stay **18%–82% of total tool reach to the right of the shoulder** throughout each writing portion. At default proportions this is approximately 25.7–116.9 world units. Reachable backward or directly-overhead targets no longer count as a suitable stance. The change only chooses body X positions; it introduces no collision detector, joint constraints or UI controls.
 
-Movement is a grounded horizontal glide, not an articulated walking gait. Both feet remain on the ground and move with the root. The body stays stationary within every writing phase. There is no teleportation, limb stretching, automatic board relocation or source-point scaling. Very long paths split along their original straight edges, with lifted-chalk moves between portions. Previous chalk stays in world coordinates, independent of later root positions.
+Before moving, the planner looks ahead over up to 24 nearby strokes, stopping at a source gap over 250 ms, an explicit pen-up stroke, a vertical span over 30% of reach, or an incompatible shared stance. It commits that cluster boundary and uses one position for the whole cluster. An already suitable stance is retained; a necessary move aims near the center of the feasible forward band rather than its edge. This avoids repeated small corrections within a compact word or glyph cluster. Words wider than one comfortable workspace still require movement.
+
+`src/locomotion.js` plans around the unchanged engine. It checks the complete next stroke at the current shoulder. If it cannot be reached, it finds a horizontal root offset before writing, translates the entire body/shoulder/feet smoothly at fixed floor height, and keeps chalk lifted. A pen-up angle interpolation then reaches the next writing point before ink resumes. The default equation makes six horizontal moves, completes every stroke, and takes about 17.38 s instead of 4.80 s of source writing time.
+
+Movement is a grounded horizontal glide, not an articulated walking gait. Both feet remain on the ground and move with the root. The body stays stationary within every writing phase. There is no teleportation, limb stretching, automatic board relocation or source-point scaling. The forward band is never relaxed to allow backward writing. If it cannot coexist with the original reach/joint limits, that portion is blocked. Very long paths split along their original straight edges, with lifted-chalk moves between portions. Previous chalk stays in world coordinates, independent of later root positions.
 
 Horizontal movement cannot repair excessive vertical separation or every joint-limit restriction. Such portions are explicitly marked **blocked**, never drawn, and summarized in the tool's status. The default equation has no blocked portions. The planner is bounded to 5000 pieces and 100,000 spatial subdivision probes and fails atomically if that budget is exceeded. It does not silently stretch the body or solve vertical locomotion.
 
@@ -63,7 +67,7 @@ See [coordinate/motion contract](docs/coordinates.md), the original [timeline fo
 ## Validation
 
 ```sh
-npm test                       # 18 body, motion, curve and integrity tests
+npm test                       # 22 body, motion, curve and integrity tests
 npm run build:standalone        # verifies engine hashes and generates HTML
 npm run evidence               # generates default and motion-sequence SVG evidence
 cd ../drawing-arm && npm test   # 15 original engine/renderer tests
