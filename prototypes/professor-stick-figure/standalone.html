@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor · Shoulder attachment study</title><meta name="description" content="A reduced Professor prototype: one planted SVG figure using the unchanged Drawing Arm engine."><style>:root{color-scheme:dark;--bg:#15221e;--ink:#eeeadd;--muted:#a3b1a5;--line:#3d4c3e;--accent:#e6c16e}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 system-ui,sans-serif}main{max-width:1500px;padding:0 4vw;margin:auto}header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line)}.brand{font-size:14px;letter-spacing:3px;font-weight:600}.brand span{font-weight:400;color:var(--muted)}.edition,.eyebrow,.stage-heading,footer{font:10px/1.5 ui-monospace,monospace;letter-spacing:1.5px}.edition{color:var(--muted)}.edition b{color:var(--accent);margin-left:15px}.intro{display:flex;justify-content:space-between;align-items:flex-end;padding:37px 0 33px;gap:25px}.eyebrow{margin:0 0 14px;color:var(--accent)}h1{font-weight:400;font-size:clamp(36px,4vw,60px);line-height:1.12;letter-spacing:-2px;margin:0}h1 em{font-family:Georgia,serif;color:var(--accent);font-weight:400}.lede{color:var(--muted);font-size:15px;line-height:1.8;margin:0 0 4px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 285px;border:1px solid var(--line);border-radius:8px;overflow:hidden}.stage{min-width:0;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:10px;padding:16px 20px;border-bottom:1px solid var(--line);font-size:9px;color:var(--muted)}i{display:inline-block;width:6px;height:6px;background:var(--accent);border-radius:50%;margin-right:6px}#scene{display:block;width:100%;height:auto}.transport{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:5px 20px 18px}button,select,textarea{font:inherit;color:var(--ink);border:1px solid #58634b;background:#26362b;padding:9px 12px;border-radius:4px}button{cursor:pointer}button:hover{border-color:var(--accent);background:#34422c}.primary{background:var(--accent);color:#202b1e;font-weight:600;border-color:var(--accent)}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.transport label{font-size:11px;display:flex;align-items:center;gap:9px}.scrubber{flex:1;min-width:135px}.scrubber input{width:100%;min-width:60px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}.speed-label select{padding:6px}.stage-footer{padding:15px 20px;border-top:1px solid var(--line);display:flex;gap:12px;justify-content:space-between;align-items:center;color:var(--muted);font-size:10px}.stage-footer label{display:flex;align-items:center;gap:5px;font-size:10px;margin:0}#contact{font-family:ui-monospace,monospace}aside{padding:22px;border-left:1px solid var(--line);background:#1c2b22}label{display:block;font-size:11px;margin-bottom:7px}textarea{width:100%;resize:vertical;min-height:85px;font:17px/1.5 ui-monospace,monospace;margin-bottom:12px}.wide{width:100%}#message,.hint{font-size:11px;color:var(--muted);line-height:1.65}#message{min-height:38px}.file-actions{display:flex;gap:8px;flex-wrap:wrap}.file-actions button,.file-label{font-size:10px}.file-label{margin:0;padding:9px 11px;border:1px solid #58634b;border-radius:4px;cursor:pointer;position:relative;overflow:hidden}.file-label input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent);outline-offset:3px}hr{border:0;border-top:1px solid var(--line);margin:24px 0}.slider{margin:16px 0}.slider label{display:flex;justify-content:space-between}.slider output{font:11px ui-monospace,monospace;color:var(--accent)}.slider input{width:100%;cursor:pointer}#restore{font-size:11px}dl{display:grid;grid-template-columns:1fr 1fr;gap:5px;font:10px ui-monospace,monospace;color:var(--muted);margin:20px 0 0}dd{margin:0;text-align:right;color:var(--accent)}.notes{display:grid;grid-template-columns:1fr 1.2fr .8fr;gap:35px;align-items:center;padding:34px 0;border-bottom:1px solid var(--line)}.notes h2{font:24px/1.25 Georgia,serif;margin:0}.notes p:not(.eyebrow){font-size:12px;color:var(--muted);max-width:400px}.links a{display:block;font-size:11px;margin:12px 0;color:var(--accent);text-underline-offset:4px}footer{padding:21px 0;color:var(--muted);font-size:9px;display:flex;justify-content:space-between;gap:12px}@media(max-width:900px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:0 24px}aside>*{grid-column:1/-1}aside .slider{grid-column:auto}.notes{grid-template-columns:1fr 1fr}.links{grid-column:1/-1;display:flex;gap:25px}}@media(max-width:550px){main{padding:0 16px}header{padding:18px 0}.brand{font-size:11px;letter-spacing:2px}.edition{font-size:8px;letter-spacing:1px}.intro{display:block;padding:28px 0}.lede{font-size:13px;margin-top:20px}.stage-heading{font-size:7px;padding:12px}.transport{padding:6px 12px 14px;gap:7px}.transport button{padding:8px}.stage-footer{padding:12px;align-items:flex-start;flex-direction:column}.notes{grid-template-columns:1fr;gap:14px}.links{grid-column:auto;display:block}footer{font-size:8px;flex-direction:column}}
+</style></head>
+<body><main>
+<header><span class="brand">ASYMPTOPIA <span>/ LAB</span></span><span class="edition">ASSEMBLY STUDY <b>02</b></span></header>
+<section class="intro"><div><p class="eyebrow">REDUCED PROFESSOR PROTOTYPE</p><h1>A shoulder.<br>A stroke. <em>A start.</em></h1></div><p class="lede">One planted figure, one borrowed arm.<br>A small study in attaching writing motion to a body.</p></section>
+<div class="experiment"><section class="stage" aria-label="Professor writing demonstration">
+<div class="stage-heading"><span><i></i> REAR THREE-QUARTER VIEW</span><span>FACING SCREEN-RIGHT →</span></div>
+<svg id="scene" viewBox="0 0 960 570" role="img" aria-label="Back-facing stick figure standing still, writing with its right arm on the board to its right">
+<defs><pattern id="board-grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#cfdec9" stroke-opacity=".055"/></pattern></defs>
+<path d="M95 510H905" stroke="#66746a" stroke-width="1"/><ellipse cx="238" cy="514" rx="78" ry="7" fill="#0b1512" opacity=".5"/>
+<rect x="310" y="75" width="590" height="300" rx="7" fill="#574b38"/><rect x="320" y="85" width="570" height="280" rx="4" fill="#17392e"/><rect x="320" y="85" width="570" height="280" rx="4" fill="url(#board-grid)"/>
+<path d="M314 378H905" stroke="#857054" stroke-width="7" stroke-linecap="round"/><path d="M355 166H855M355 210H855" stroke="#d2dec9" stroke-opacity=".1" stroke-dasharray="3 6"/>
+<text x="343" y="109" fill="#94b2a0" font-family="monospace" font-size="9" letter-spacing="2">BOARD / WORLD SPACE</text>
+<g id="professor"></g>
+<g id="board-anchor" visibility="hidden" pointer-events="none"><circle cx="355" cy="140" r="7" fill="none" stroke="#8dbca7"/><text x="365" y="130" fill="#a5c9b8" font-family="monospace" font-size="11">board origin</text></g>
+<text x="124" y="551" fill="#9bada2" font-family="monospace" font-size="10" letter-spacing="1">FEET PLANTED · RIGHT SHOULDER ATTACHED</text>
+</svg>
+<div class="transport"><button id="play" class="primary">Play</button><button id="reset">Reset</button><label class="scrubber">Timeline<input id="seek" type="range" min="0" max="1" value="0" aria-label="Timeline position"></label><output id="clock">0.0 / 0.0 s</output><label class="speed-label">Speed<select id="speed"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div>
+<div class="stage-footer"><span id="contact" role="status">Ready</span><label><input id="anchors" type="checkbox"> Show coordinate anchors</label></div>
+</section><aside><p class="eyebrow">01 / WRITING</p><label for="writing">Shared Drawing Arm instructions</label><textarea id="writing" rows="2" spellcheck="false">2 × (3 + 4)
+= 14</textarea><button id="load" class="primary wide">Load writing ↗</button><p id="message" role="status">Original timeline format. Original drawing engine.</p><div class="file-actions"><button id="export">Export JSON ↓</button><label for="import" class="file-label">Import JSON<input id="import" type="file" accept=".json,application/json"></label></div>
+<hr><p class="eyebrow">02 / ATTACHMENT</p><p class="hint">Adjust the pose at rest. Playback moves only the drawing arm.</p><div class="slider"><label for="lean">Upper-body offset<output id="lean-value">0</output></label><input id="lean" type="range" min="-25" max="25" value="0" step="1"></div><div class="slider"><label for="upper">Upper arm<output id="upper-value">195</output></label><input id="upper" type="range" min="130" max="240" value="195" step="1"></div><div class="slider"><label for="forearm">Forearm<output id="forearm-value">180</output></label><input id="forearm" type="range" min="130" max="240" value="180" step="1"></div><button id="restore" class="wide">Restore attachment</button><dl><dt>Right shoulder</dt><dd id="shoulder-value"></dd><dt>Body origin</dt><dd>230, 505</dd></dl></aside></div>
+<section class="notes"><div><p class="eyebrow">THE REUSABLE PIECE</p><h2>Body coordinates in.<br>Shoulder anchor out.</h2></div><p>A local shoulder landmark becomes a world-space anchor. The unchanged Drawing Arm engine handles every stroke and joint. Replace the silhouette later without changing the writing interface.</p><div class="links"><a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/reduced-professor-stick-figure/prototypes/professor-stick-figure/README.md">Prototype documentation ↗</a><a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/reduced-professor-stick-figure/prototypes/professor-stick-figure/docs/coordinates.md">Coordinate contract ↗</a></div></section>
+<footer><span>PROFESSOR / REDUCED STUDY</span><span>SVG FIGURE + DRAWING ARM A.01</span></footer>
+</main><script type="module">
+
+// SOURCE: ../drawing-arm/src/kinematics.js
+/** Character-independent planar two-link IK. Angles are radians, SVG y points down. */
+const TAU = 2 * Math.PI;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+const point = (p, name) => {
+  if (!Array.isArray(p) || p.length !== 2 || !p.every(Number.isFinite)) throw new TypeError(`${name} must be [finite x, finite y]`);
+  return [...p];
+};
+function configureArm(options = {}) {
+  const c = { upper: 190, forearm: 170, shoulder: [80, 280], side: 'right', elbow: 'positive', tip: 8,
+    limits: { shoulder: [-Math.PI, Math.PI], elbow: [-Math.PI, Math.PI] }, ...options };
+  for (const key of ['upper', 'forearm']) if (!Number.isFinite(c[key]) || c[key] <= 0) throw new RangeError(`${key} must be positive`);
+  if (!Number.isFinite(c.tip) || c.tip < 0) throw new RangeError('tip must be nonnegative');
+  c.shoulder = point(c.shoulder, 'shoulder');
+  if (!['left', 'right'].includes(c.side) || !['positive', 'negative'].includes(c.elbow)) throw new RangeError('Invalid side or elbow orientation');
+  c.limits = { shoulder: [-Math.PI, Math.PI], elbow: [-Math.PI, Math.PI], ...c.limits };
+  for (const key of ['shoulder', 'elbow']) {
+    const range = point(c.limits[key], `${key} limits`);
+    if (range[0] > range[1] || range[1] - range[0] > TAU + 1e-10) throw new RangeError('Limits must be ordered and span at most 2π');
+    c.limits[key] = range;
+  }
+  return c;
+}
+function forward(arm, shoulderAngle, elbowAngle) {
+  const c = configureArm(arm), s = c.shoulder;
+  const elbow = [s[0] + c.upper * Math.cos(shoulderAngle), s[1] + c.upper * Math.sin(shoulderAngle)];
+  const angle = shoulderAngle + elbowAngle;
+  const wrist = [elbow[0] + c.forearm * Math.cos(angle), elbow[1] + c.forearm * Math.sin(angle)];
+  const tip = [wrist[0] + c.tip * Math.cos(angle), wrist[1] + c.tip * Math.sin(angle)];
+  return { shoulder: [...s], elbow, wrist, tip, angles: { shoulder: shoulderAngle, elbow: elbowAngle } };
+}
+// Pick the equivalent angle closest to the configured interval, including seam crossings.
+function fit(angle, range) {
+  const center = (range[0] + range[1]) / 2;
+  const a = angle + TAU * Math.round((center - angle) / TAU);
+  return clamp(a, ...range);
+}
+function solveIK(arm, target) {
+  const c = configureArm(arm); point(target, 'target');
+  const dx = target[0] - c.shoulder[0], dy = target[1] - c.shoulder[1];
+  const r = Math.hypot(dx, dy), a = c.upper, b = c.forearm + c.tip;
+  const projectedRadius = clamp(r, Math.abs(a - b), a + b);
+  const direction = r < 1e-12 ? 0 : Math.atan2(dy, dx);
+  const bend = Math.acos(clamp((projectedRadius ** 2 - a * a - b * b) / (2 * a * b), -1, 1));
+  const sign = (c.elbow === 'positive' ? 1 : -1) * (c.side === 'left' ? -1 : 1);
+  const candidates = [sign, -sign].map(s => {
+    const e = s * bend;
+    const sh = direction - Math.atan2(b * Math.sin(e), a + b * Math.cos(e));
+    return [sh, e];
+  });
+  // Exact preferred branch, or exact opposite branch when required by limits.
+  let chosen = null;
+  for (const [sh, e] of candidates) {
+    const fitted = [fit(sh, c.limits.shoulder), fit(e, c.limits.elbow)];
+    const pose = forward(c, ...fitted);
+    if (distance(pose.tip, target) <= 1e-6) { chosen = pose; break; }
+  }
+  if (!chosen) {
+    // Global closest point on the rectangular joint domain: an interior optimum
+    // is analytic IK (above), otherwise at least one joint lies on a boundary.
+    const poses = [];
+    const add = (sh, e) => poses.push(forward(c, fit(sh, c.limits.shoulder), fit(e, c.limits.elbow)));
+    for (const [sh, e] of candidates) add(sh, e);
+    for (const e of c.limits.elbow) add(direction - Math.atan2(b * Math.sin(e), a + b * Math.cos(e)), e);
+    for (const sh of c.limits.shoulder) {
+      const ex = c.shoulder[0] + a * Math.cos(sh), ey = c.shoulder[1] + a * Math.sin(sh);
+      add(sh, Math.atan2(target[1] - ey, target[0] - ex) - sh);
+      for (const e of c.limits.elbow) add(sh, e);
+    }
+    chosen = poses.reduce((best, p) => distance(p.tip, target) < distance(best.tip, target) - 1e-9 ? p : best);
+  }
+  const error = distance(chosen.tip, target), radialReachable = r >= Math.abs(a - b) - 1e-7 && r <= a + b + 1e-7;
+  return { ...chosen, target: [...target], error, reachable: error <= 1e-6,
+    reason: error <= 1e-6 ? 'reachable' : radialReachable ? 'joint-limits' : 'out-of-reach' };
+}
+function boardToWorld(p, board = {}) {
+  point(p, 'board point');
+  const { origin = [0, 0], scale = 1, rotation = 0 } = board; point(origin, 'board origin');
+  if (!Number.isFinite(scale) || scale <= 0 || !Number.isFinite(rotation)) throw new RangeError('Invalid board transform');
+  return [origin[0] + scale * (p[0] * Math.cos(rotation) - p[1] * Math.sin(rotation)),
+    origin[1] + scale * (p[0] * Math.sin(rotation) + p[1] * Math.cos(rotation))];
+}
+
+
+// SOURCE: ../drawing-arm/src/glyphs.js
+/** Original single-line polyline glyphs. Local cell is 1 × 1. */
+const GLYPHS = {
+ '0': [[[.2,0],[.8,0],[1,.2],[1,.8],[.8,1],[.2,1],[0,.8],[0,.2],[.2,0]]],
+ '1': [[[.2,.2],[.5,0],[.5,1]],[[.2,1],[.8,1]]],
+ '2': [[[0,.2],[.2,0],[.8,0],[1,.2],[1,.4],[0,1],[1,1]]],
+ '3': [[[0,0],[.8,0],[1,.2],[.6,.5],[1,.7],[1,.8],[.8,1],[0,1]],[[.3,.5],[.6,.5]]],
+ '4': [[[.8,1],[.8,0],[0,.65],[1,.65]]],
+ '5': [[[1,0],[0,0],[0,.5],[.8,.5],[1,.7],[1,.8],[.8,1],[0,1]]],
+ '6': [[[1,0],[.3,0],[0,.3],[0,.8],[.2,1],[.8,1],[1,.8],[1,.6],[.8,.5],[0,.5]]],
+ '7': [[[0,0],[1,0],[.3,1]]],
+ '8': [[[.2,.5],[0,.3],[0,.2],[.2,0],[.8,0],[1,.2],[1,.3],[.8,.5],[.2,.5],[0,.7],[0,.8],[.2,1],[.8,1],[1,.8],[1,.7],[.8,.5]]],
+ '9': [[[1,.5],[.2,.5],[0,.3],[0,.2],[.2,0],[.8,0],[1,.2],[1,.7],[.7,1],[0,1]]],
+ '+': [[[0,.5],[1,.5]],[[.5,0],[.5,1]]],
+ '-': [[[0,.5],[1,.5]]], '−': [[[0,.5],[1,.5]]],
+ '×': [[[0,0],[1,1]],[[1,0],[0,1]]], '*': [[[0,0],[1,1]],[[1,0],[0,1]]],
+ '=': [[[0,.3],[1,.3]],[[0,.7],[1,.7]]],
+ '/': [[[1,0],[0,1]]], '÷': [[[0,.5],[1,.5]],[[.5,.1],[.5,.15]],[[.5,.85],[.5,.9]]],
+ '(': [[[.7,0],[.35,.2],[.2,.5],[.35,.8],[.7,1]]],
+ ')': [[[.3,0],[.65,.2],[.8,.5],[.65,.8],[.3,1]]],
+ '.': [[[.5,.95],[.5,1]]]
+};
+
+
+// SOURCE: ../drawing-arm/src/timeline.js
+const finite = (v, name, min = -Infinity) => { if (!Number.isFinite(v) || v < min) throw new RangeError(`Invalid ${name}`); };
+function validateTimeline(input) {
+  if (input?.version !== 1 || !Array.isArray(input.strokes)) throw new TypeError('Expected timeline version 1 and strokes array');
+  const t = structuredClone(input); boardToWorld([0,0], t.board);
+  let end = 0;
+  for (const s of t.strokes) {
+    finite(s.at, 'stroke start', end); finite(s.duration, 'stroke duration', Number.MIN_VALUE);
+    if (!Array.isArray(s.points) || s.points.length < 2) throw new TypeError('Stroke needs at least two points');
+    s.points.forEach(p => boardToWorld(p));
+    if (s.pen !== undefined && typeof s.pen !== 'boolean') throw new TypeError('pen must be boolean');
+    end = s.at + s.duration; finite(end, 'stroke end');
+  }
+  if (t.fallbacks !== undefined) {
+    if (!Array.isArray(t.fallbacks)) throw new TypeError('fallbacks must be an array');
+    for (const f of t.fallbacks) {
+      finite(f.at, 'fallback start', 0); finite(f.size, 'fallback size', Number.MIN_VALUE); boardToWorld(f.position);
+      if (typeof f.text !== 'string') throw new TypeError('fallback text must be a string');
+    }
+  }
+  t.duration = Math.max(end, ...(t.fallbacks ?? []).map(f => f.at), 0);
+  return t;
+}
+/** Compile once; points interpolate at constant arc-length speed within each stroke. */
+function compileTimeline(input) {
+  const t = validateTimeline(input);
+  t.strokes = t.strokes.map(s => {
+    const points = s.points.map(p => boardToWorld(p, t.board)), lengths = [0];
+    for (let i = 1; i < points.length; i++) lengths.push(lengths.at(-1) + distance(points[i-1], points[i]));
+    return { ...s, points, lengths, length: lengths.at(-1) };
+  });
+  return t;
+}
+function strokePoint(stroke, fraction) {
+  const d = Math.max(0, Math.min(1, fraction)) * stroke.length;
+  for (let i = 1; i < stroke.points.length; i++) {
+    if (d <= stroke.lengths[i]) {
+      const span = stroke.lengths[i] - stroke.lengths[i-1], f = span ? (d - stroke.lengths[i-1]) / span : 0;
+      return stroke.points[i-1].map((v, j) => v + f * (stroke.points[i][j] - v));
+    }
+  }
+  return [...stroke.points.at(-1)];
+}
+function sampleTimeline(timeline, time) {
+  finite(time, 'time');
+  const strokes = timeline.strokes;
+  if (!strokes.length) return { point: null, penDown: false, index: -1, progress: 0, done: time >= timeline.duration };
+  let previous = strokes[0].points[0], previousEnd = 0;
+  for (let i = 0; i < strokes.length; i++) {
+    const s = strokes[i];
+    if (time < s.at) {
+      const f = Math.max(0, (time - previousEnd) / (s.at - previousEnd || 1));
+      return { point: previous.map((v,j) => v + f * (s.points[0][j] - v)), penDown: false, index: i, progress: 0, done: false };
+    }
+    if (time < s.at + s.duration) {
+      const progress = (time - s.at) / s.duration;
+      return { point: strokePoint(s, progress), penDown: s.pen !== false, index: i, progress, done: false };
+    }
+    previous = s.points.at(-1); previousEnd = s.at + s.duration;
+  }
+  return { point: [...previous], penDown: false, index: strokes.length - 1, progress: 1, done: time >= timeline.duration };
+}
+function sampleArm(timeline, time, arm) {
+  const sample = sampleTimeline(timeline, time), pose = sample.point ? solveIK(arm, sample.point) : null;
+  return { ...sample, pose, chalkDown: sample.penDown && !!pose?.reachable };
+}
+function textTimeline(text, options = {}) {
+  const { x = 150, y = 100, size = 36, speed = 120, lift = 100, lineHeight = 1.8, board } = options;
+  [x,y].forEach(v => finite(v, 'text origin')); finite(size,'size',Number.MIN_VALUE); finite(speed,'speed',Number.MIN_VALUE); finite(lift,'lift',0); finite(lineHeight,'lineHeight',Number.MIN_VALUE);
+  if (typeof text !== 'string') throw new TypeError('text must be a string');
+  const strokes = [], fallbacks = []; let at = 0, col = 0, row = 0;
+  for (const char of text) {
+    if (char === '\n') { col = 0; row++; continue; }
+    const origin = [x + col * size * .95, y + row * size * lineHeight];
+    if (char !== ' ') {
+      if (!GLYPHS[char]) fallbacks.push({ text: char, position: origin, size, at });
+      else for (const path of GLYPHS[char]) {
+        const points = path.map(p => [origin[0] + p[0] * size * .62, origin[1] + p[1] * size]);
+        const length = points.slice(1).reduce((n,p,i) => n + distance(p,points[i]), 0);
+        const duration = Math.max(1, length / speed * 1000);
+        strokes.push({ at, duration, points, pen: true }); at += duration + lift;
+      }
+    }
+    col++;
+  }
+  return validateTimeline({ version: 1, board: board ?? { origin: [0,0], scale: 1, rotation: 0 }, strokes, fallbacks });
+}
+
+
+// SOURCE: ../drawing-arm/src/svg-renderer.js
+const NS = 'http://www.w3.org/2000/svg';
+function element(tag, attrs, parent) {
+  const el = document.createElementNS(NS, tag);
+  for (const [k,v] of Object.entries(attrs)) el.setAttribute(k,v);
+  parent.append(el); return el;
+}
+/** Owns only the supplied group. No global DOM, character assets or clock. */
+class SVGArmRenderer {
+  constructor(group, timeline, arm, { color = '#f4c976' } = {}) {
+    this.group = group; this.timeline = timeline; this.arm = arm; this.color = color;
+    this.chalk = element('path', { fill:'none', stroke:'#eef6e8', 'stroke-width':2.5, 'stroke-linecap':'round', 'stroke-linejoin':'round' },group);
+    this.fallback = element('g', { fill:'#eef6e8', 'font-family':'Chalkboard, Chalkboard SE, cursive' }, group);
+    for (const f of timeline.fallbacks ?? []) {
+      const transform = timeline.board ?? {};
+      const p = boardToWorld(f.position, transform);
+      const el = element('text',{ x:p[0], y:p[1], 'font-size':f.size * (transform.scale ?? 1),
+        transform:`rotate(${(transform.rotation ?? 0)*180/Math.PI} ${p[0]} ${p[1]})`, 'dominant-baseline':'hanging' },this.fallback);
+      el.textContent = f.text;
+    }
+    this.links = element('path', { fill:'none', stroke:color, 'stroke-width':9, 'stroke-linecap':'round', 'stroke-linejoin':'round' }, group);
+    this.joints = Array.from({length:3},()=>element('circle',{r:6, fill:'#172e2a',stroke:color,'stroke-width':2},group));
+    this.pen = element('line', { stroke:'#fff9ce', 'stroke-width':4, 'stroke-linecap':'round' }, group);
+    this.target = element('circle',{r:5,fill:'none',stroke:'#ff8878','stroke-width':1.5},group);
+    this.setArm(arm);
+  }
+  setArm(arm) {
+    this.arm = arm; this.segments = [];
+    for (const s of this.timeline.strokes) {
+      if (s.pen === false) continue;
+      for (let i=1;i<s.points.length;i++) {
+        const p = s.points[i-1], q = s.points[i], length = distance(p,q), count = Math.max(1, Math.ceil(length/2));
+        for (let j=0;j<count;j++) {
+          const from = p.map((v,k)=>v+(q[k]-v)*j/count), to = p.map((v,k)=>v+(q[k]-v)*(j+1)/count);
+          const t0=s.at+s.duration*(s.length ? (s.lengths[i-1]+length*j/count)/s.length : 0);
+          const t1=s.at+s.duration*(s.length ? (s.lengths[i-1]+length*(j+1)/count)/s.length : 1);
+          const valid=[from,to,from.map((v,k)=>(v+to[k])/2)].every(pt=>solveIK(arm,pt).reachable);
+          this.segments.push({from,to,t0,t1,valid});
+        }
+      }
+    }
+  }
+  render(time) {
+    const sample = sampleArm(this.timeline,time,this.arm); let d='';
+    for (const s of this.segments) {
+      if (s.t0 >= time) break;
+      if (!s.valid) continue;
+      const f=Math.min(1,(time-s.t0)/(s.t1-s.t0 || 1)), p=s.from.map((v,k)=>v+f*(s.to[k]-v));
+      d+=`M${s.from}L${p}`;
+    }
+    this.chalk.setAttribute('d',d);
+    [...this.fallback.children].forEach((el,i)=>el.setAttribute('visibility',time >= this.timeline.fallbacks[i].at ? 'visible':'hidden'));
+    const pose=sample.pose;
+    for (const el of [this.links,this.pen,this.target,...this.joints]) el.setAttribute('visibility',pose?'visible':'hidden');
+    if (!pose) return sample;
+    this.links.setAttribute('d',`M${pose.shoulder}L${pose.elbow}L${pose.wrist}`);
+    [pose.shoulder,pose.elbow,pose.wrist].forEach((p,i)=>{this.joints[i].setAttribute('cx',p[0]);this.joints[i].setAttribute('cy',p[1]);});
+    for (const [key,value] of Object.entries({x1:pose.wrist[0],y1:pose.wrist[1],x2:pose.tip[0],y2:pose.tip[1]})) this.pen.setAttribute(key,value);
+    this.pen.setAttribute('opacity',sample.chalkDown ? 1 : .45);
+    this.target.setAttribute('cx',sample.point[0]);this.target.setAttribute('cy',sample.point[1]);
+    this.target.setAttribute('visibility',pose.reachable?'hidden':'visible');
+    return sample;
+  }
+  destroy() { this.group.replaceChildren(); }
+}
+
+
+// SOURCE: src/body.js
+
+/** SVG axes: +x screen-right, +y down. Origin sits on the floor between feet. */
+function configureBody(options = {}) {
+  const body = { origin: [230, 505], scale: 1, lean: 0, ...options };
+  if (!Array.isArray(body.origin) || body.origin.length !== 2 || !body.origin.every(Number.isFinite)) throw new TypeError('Body origin must be [finite x, finite y]');
+  if (!Number.isFinite(body.scale) || body.scale <= 0) throw new RangeError('Body scale must be positive');
+  if (!Number.isFinite(body.lean) || Math.abs(body.lean) > 35) throw new RangeError('Body lean must be between −35 and 35 local units');
+  return { origin: [...body.origin], scale: body.scale, lean: body.lean };
+}
+function bodyToWorld(point, config = {}) {
+  const body = configureBody(config);
+  if (!Array.isArray(point) || point.length !== 2 || !point.every(Number.isFinite)) throw new TypeError('Local point must be [finite x, finite y]');
+  return point.map((v, i) => body.origin[i] + v * body.scale);
+}
+function bodyLandmarks(config = {}) {
+  const { lean } = configureBody(config);
+  return {
+    origin: [0, 0], head: [7 + lean, -282], neck: [lean, -251],
+    rightShoulder: [24 + lean, -240], leftShoulder: [-22 + lean, -244],
+    torsoTop: [lean, -230], hips: [-3, -115],
+    leftElbow: [-34 + lean / 2, -185], leftHand: [-24, -143],
+    leftKnee: [-21, -58], rightKnee: [16, -60],
+    leftFoot: [-34, 0], rightFoot: [31, 0]
+  };
+}
+/** Rig values are body-local lengths. The shoulder is always derived, never supplied. */
+function attachedArm(bodyConfig = {}, rig = {}) {
+  const body = configureBody(bodyConfig), local = configureArm({ upper: 195, forearm: 180, tip: 10, elbow: 'negative', ...rig });
+  return configureArm({ ...local, shoulder: bodyToWorld(bodyLandmarks(body).rightShoulder, body),
+    upper: local.upper * body.scale, forearm: local.forearm * body.scale, tip: local.tip * body.scale });
+}
+
+
+// SOURCE: src/figure.js
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+function node(tag, attrs, parent) {
+  const el = document.createElementNS(SVG_NS, tag);
+  for (const [key, value] of Object.entries(attrs)) el.setAttribute(key, value);
+  parent.append(el); return el;
+}
+/** Rear three-quarter silhouette. The small profile projection points screen-right. */
+function drawBody(group, config = {}) {
+  const body = configureBody(config), p = bodyLandmarks(body), [hx, hy] = p.head;
+  group.replaceChildren();
+  group.setAttribute('transform', `translate(${body.origin}) scale(${body.scale})`);
+  group.setAttribute('data-view', 'rear-three-quarter-facing-right');
+  const line = (name, points, attrs = {}) => node('path', { 'data-part': name, d: 'M' + points.join('L'),
+    fill: 'none', stroke: '#e7e4d5', 'stroke-width': 6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', ...attrs }, group);
+  // The far arm is behind the spine; feet and hips do not depend on lean.
+  line('left-arm', [p.leftShoulder, p.leftElbow, p.leftHand], { stroke: '#9fafa6', 'stroke-width': 5 });
+  line('legs', [p.leftFoot, p.leftKnee, p.hips, p.rightKnee, p.rightFoot]);
+  line('left-foot', [p.leftFoot, [p.leftFoot[0] + 16, 0]], { 'stroke-width': 7 });
+  line('right-foot', [p.rightFoot, [p.rightFoot[0] + 19, 0]], { 'stroke-width': 7 });
+  line('torso', [p.hips, p.torsoTop, p.neck]);
+  line('shoulders', [p.leftShoulder, p.torsoTop, p.rightShoulder]);
+  node('path', { 'data-part': 'head', d: `M${hx-9},${hy+28} C${hx-32},${hy+20} ${hx-33},${hy-18} ${hx-10},${hy-28} C${hx+8},${hy-37} ${hx+25},${hy-20} ${hx+25},${hy-7} L${hx+37},${hy+1} L${hx+26},${hy+5} C${hx+25},${hy+20} ${hx+12},${hy+28} ${hx-9},${hy+28}Z`,
+    fill: '#202c29', stroke: '#e7e4d5', 'stroke-width': 4, 'stroke-linejoin': 'round' }, group);
+  // Nape mark, no face or eyes: the viewer sees the back of the head.
+  line('nape', [[hx-13, hy+21], [hx-8, hy+27]], { stroke: '#8da497', 'stroke-width': 2 });
+  return p;
+}
+
+/** Composition adapter. Writing logic and chalk rendering belong to Drawing Arm. */
+class ProfessorFigure {
+  constructor(group, json, { body = {}, rig = {} } = {}) {
+    this.group = group;
+    this.bodyGroup = node('g', { 'data-layer': 'body' }, group);
+    this.armGroup = node('g', { 'data-layer': 'drawing-arm' }, group);
+    this.debugGroup = node('g', { 'data-layer': 'anchors', 'pointer-events': 'none' }, group);
+    this.debug = false; this.time = 0;
+    this.setConfiguration(body, rig);
+    this.setTimeline(json);
+  }
+  setConfiguration(body = this.body, rig = this.rig) {
+    // Validate atomically before changing visible state.
+    const nextBody = configureBody(body), nextRig = structuredClone(rig), arm = attachedArm(nextBody, nextRig);
+    this.body = nextBody; this.rig = nextRig; this.arm = arm;
+    drawBody(this.bodyGroup, this.body);
+    this.renderer?.setArm(this.arm);
+    this.drawAnchors();
+    if (this.renderer) this.render(this.time);
+  }
+  setTimeline(json) {
+    const timeline = compileTimeline(json);
+    this.renderer?.destroy();
+    this.timeline = timeline;
+    this.renderer = new SVGArmRenderer(this.armGroup, timeline, this.arm, { color: '#e6c16e' });
+    this.render(0);
+  }
+  drawAnchors() {
+    this.debugGroup.replaceChildren();
+    for (const [label, point] of [['body origin', this.body.origin], ['right shoulder', this.arm.shoulder]]) {
+      node('circle', { cx: point[0], cy: point[1], r: 10, fill: 'none', stroke: '#e6c16e', 'stroke-dasharray': '3 3' }, this.debugGroup);
+      node('path', { d: `M${point[0]-15},${point[1]}h30M${point[0]},${point[1]-15}v30`, stroke: '#e6c16e', 'stroke-width': 1 }, this.debugGroup);
+      const text = node('text', { x: point[0]+18, y: point[1]+5, fill: '#e6c16e', 'font-size': 11, 'font-family': 'monospace' }, this.debugGroup); text.textContent = label;
+    }
+    this.debugGroup.setAttribute('visibility', this.debug ? 'visible' : 'hidden');
+  }
+  setDebug(visible) { this.debug = !!visible; this.drawAnchors(); }
+  render(time) {
+    // The body is never redrawn or transformed by the playback clock.
+    const state = this.renderer.render(time); this.time = time; return state;
+  }
+  getAnchors() {
+    const local = bodyLandmarks(this.body);
+    return Object.fromEntries(Object.entries(local).map(([key, p]) => [key, bodyToWorld(p, this.body)]));
+  }
+  destroy() { this.renderer.destroy(); this.group.replaceChildren(); }
+}
+
+
+// SOURCE: demo.js
+const q = selector => document.querySelector(selector);
+let raw, figure, time = 0, playing = false, previous = null;
+const body = { origin: [230, 505], scale: 1, lean: 0 };
+const rig = { upper: 195, forearm: 180, tip: 10, elbow: 'negative' };
+function refresh() {
+  const state = figure.render(time);
+  q('#seek').max = figure.timeline.duration || 1; q('#seek').value = time;
+  q('#clock').textContent = `${(time / 1000).toFixed(1)} / ${(figure.timeline.duration / 1000).toFixed(1)} s`;
+  q('#play').textContent = playing ? 'Pause' : 'Play';
+  q('#contact').textContent = state.pose ? `${state.chalkDown ? '● CHALK DOWN' : '○ CHALK LIFTED'} / ${state.pose.reason.toUpperCase()}` : '○ IDLE / NO VECTOR STROKES';
+  q('#shoulder-value').textContent = figure.arm.shoulder.map(n => n.toFixed(0)).join(', ');
+}
+function load(json) {
+  // Validation in setTimeline happens before the previous rendering is replaced.
+  if (figure) figure.setTimeline(json);
+  else figure = new ProfessorFigure(q('#professor'), json, { body, rig });
+  raw = structuredClone(json); time = 0; playing = false; previous = null; refresh();
+}
+function loadWriting() {
+  try {
+    if (q('#writing').value.length > 200) throw new Error('Keep this writing study to 200 characters.');
+    load(textTimeline(q('#writing').value, { x: 0, y: 0, size: 24, speed: 135, lift: 100, board: { origin: [355, 140], scale: 1, rotation: 0 } }));
+    q('#message').textContent = raw.fallbacks.length ? 'Unsupported glyphs use the engine’s font fallback; the arm does not trace them.' : 'Original timeline format. Original drawing engine.';
+  } catch (error) { q('#message').textContent = error.message; }
+}
+q('#load').onclick = loadWriting;
+q('#play').onclick = () => { if (time >= figure.timeline.duration) time = 0; playing = !playing; previous = null; refresh(); };
+q('#reset').onclick = () => { time = 0; playing = false; refresh(); };
+q('#seek').oninput = () => { time = Number(q('#seek').value); playing = false; refresh(); };
+q('#anchors').onchange = () => { figure.setDebug(q('#anchors').checked); q('#board-anchor').setAttribute('visibility', q('#anchors').checked ? 'visible' : 'hidden'); };
+function attachment() {
+  // Explicit configuration editing pauses the lesson. Playback never changes the body.
+  playing = false; body.lean = Number(q('#lean').value); rig.upper = Number(q('#upper').value); rig.forearm = Number(q('#forearm').value);
+  figure.setConfiguration(body, rig);
+  for (const key of ['lean', 'upper', 'forearm']) q(`#${key}-value`).textContent = q(`#${key}`).value;
+  refresh();
+}
+for (const key of ['lean', 'upper', 'forearm']) q(`#${key}`).oninput = attachment;
+q('#restore').onclick = () => { q('#lean').value = 0; q('#upper').value = 195; q('#forearm').value = 180; attachment(); };
+q('#export').onclick = () => {
+  const url = URL.createObjectURL(new Blob([JSON.stringify(raw, null, 2)], { type: 'application/json' }));
+  const a = document.createElement('a'); a.href = url; a.download = 'professor-timeline.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+q('#import').onchange = async event => {
+  try {
+    const file = event.target.files[0]; if (!file) return;
+    if (file.size > 1024 * 1024) throw new Error('Timeline must be smaller than 1 MB.');
+    load(JSON.parse(await file.text())); q('#message').textContent = 'Drawing Arm timeline imported without conversion.';
+  } catch (error) { q('#message').textContent = `Import failed: ${error.message}`; }
+  event.target.value = '';
+};
+function frame(now) {
+  if (playing) {
+    if (previous !== null) time = Math.min(figure.timeline.duration, time + (now - previous) * Number(q('#speed').value));
+    previous = now; if (time >= figure.timeline.duration) playing = false; refresh();
+  } else previous = null;
+  requestAnimationFrame(frame);
+}
+loadWriting(); requestAnimationFrame(frame);
+
+</script></body></html>
