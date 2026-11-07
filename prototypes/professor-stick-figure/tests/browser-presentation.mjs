@@ -38,7 +38,7 @@ export async function checkPresentationBrowser(browser,url,plan,screenshot) {
   await page.waitForTimeout(100);assert.ok(Number(await page.locator('#seek').inputValue())<p.talkEnd);assert.equal(await page.locator('#continue').isDisabled(),true);
   await page.evaluate(()=>window.__speechTest.end());await page.waitForFunction(()=>!document.querySelector('#continue').disabled);
   assert.equal(await page.locator('[data-layer="body"]').getAttribute('data-orientation'),'audience');assert.equal(await page.locator('[data-layer="chalk"]').innerHTML(),chalk);
-  await page.getByRole('button',{name:'Continue',exact:true}).click();await page.waitForFunction(end=>Number(document.querySelector('#seek').value)>end,p.end);
+  await page.getByRole('button',{name:'Continue',exact:true}).click();await page.waitForFunction(end=>Number(document.querySelector('#seek').value)>end+25&&document.querySelector('[data-layer="body"]').getAttribute('data-orientation')==='board',p.end);
   assert.equal(await page.locator('[data-layer="body"]').getAttribute('data-orientation'),'board');
   const next=plan.writes.find(w=>w.at>p.end);await seek(next.at+next.duration*.5);assert.match(await page.locator('#contact').textContent(),/CHALK DOWN/);
   await seek(p.talkAt+900);await page.getByRole('button',{name:'Play',exact:true}).click();await page.waitForFunction(()=>window.__speechTest.active);

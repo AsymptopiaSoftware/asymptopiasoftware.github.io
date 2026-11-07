@@ -31,3 +31,7 @@ Only the audited glyph stroke definitions and layout/timing adapter change. B1.5
 The Professor now consumes `mathSteps` with `teachingPlan()` after spatial planning. It replaces source inter-line gaps with lowering/rest/return phases and exposes deterministic Auto/Step playback; the reusable solver, layout, glyph paths and raw timeline above are unchanged. See [teaching cadence](teaching-cadence.md).
 
 B1.9 adds a consumer-only presentation adapter after B1.8 sequencing, using the next operation explanation as generic action text. The mathematical modules and this raw timeline format are unchanged. See [talk-and-gesture actions](presentation-actions.md).
+
+## Fraction operator alignment correction
+
+Layout row metadata now includes explicit `mathAxis` and `baseline` (`axis` remains a compatibility alias). Pure layout fraction-bar items also expose `barY`, independently positioned numerator/denominator baselines and full fraction bounds. Nested children are balanced around the mathematical axis, and operator gaps are .55 em on both sides (minimum .5 em). Equals columns still align. The unchanged adapter converts all operator glyphs and bars into ordinary timed Drawing Arm strokes; no static SVG operator decorations are added.

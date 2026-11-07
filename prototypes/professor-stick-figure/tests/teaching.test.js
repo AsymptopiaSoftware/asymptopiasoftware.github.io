@@ -16,7 +16,7 @@ test('structured boundaries produce one lower/rest per line and preserve every s
  for(let i=0;i<base.writes.length;i++){assert.deepEqual(plan.writes[i].stroke,base.writes[i].stroke);assert.equal(plan.writes[i].offset,base.writes[i].offset);}
  assert.deepEqual(plan.phases.filter(p=>p.kind==='move').map(({at,...p})=>p),base.phases.filter(p=>p.kind==='move').map(({at,...p})=>p));
  for(const [i,s] of plan.teachingSteps.entries()){
-  assert.equal(s.resume-s.gate,1500);assert.equal(s.gate-s.complete,450);
+  assert.ok(Math.abs(s.resume-s.gate-1500)<1e-8);assert.ok(Math.abs(s.gate-s.complete-450)<1e-8);
   assert.deepEqual(s.operation,raw.mathSteps[i].operation);
   const finalWrite=plan.writes.filter(p=>p.sourceAt>=s.at-1e-6&&p.sourceAt<s.end).at(-1);
   assert.equal(s.complete,finalWrite.at+finalWrite.duration);

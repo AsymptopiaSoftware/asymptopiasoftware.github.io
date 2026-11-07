@@ -66,18 +66,22 @@ Other educational apps can import only `math-problems/src/index.js`, receive str
 
 Arm dimensions still derive from torso length; the right shoulder stays forward of the body and left of the chalk target. B1.5 plans whole-line symbol runs using original reach constraints. B1.4 alternates planted stance shoes with lifted swing feet, includes the same subtle upright bob, and settles both feet before writing. Chalk is lifted through every move/reach. The writing pose, anatomical dimensions, range policy, gait source and joint limits remain unchanged. B1.9 adds a projected front-facing skeleton, static face cues and small palm outlines during presentation. Notation/glyph geometry can change the number of necessary moves, but the positioning policy and physical reach constraints are unchanged.
 
+## Fraction operator alignment
+
+The math-layout module now names the text baseline, mathematical axis, fraction-bar position and numerator/denominator baselines explicitly. Complete fraction boxes balance nested child extents about the axis. Binary plus/minus and equals stay centered on that axis, with .55-em gaps to neighboring fractions so a minus does not visually join a bar. Equals columns remain aligned across solution rows. Operators and bars remain timed arm strokes with normal chalk lifts; no solver or character behavior changes. See [layout metrics](../math-layout/README.md).
+
 ## Validation
 
 ```sh
 cd prototypes/math-problems && npm test       # 12 independent math tests
-cd ../math-layout && npm test                 # 6 layout/placement tests
-cd ../professor-stick-figure && npm test       # 52 prototype/adapter tests
+cd ../math-layout && npm test                 # 10 layout/placement tests
+cd ../professor-stick-figure && npm test       # 53 prototype/adapter tests
 npm run build:standalone
 npm run evidence
 cd ../drawing-arm && npm test                 # 15 original engine tests
 ```
 
-85 automated tests pass (12 math, 6 layout, 52 prototype/adapter, 15 Drawing Arm). Generation tests cover all three operators × all six missing slots × 16 seeds, including signed ranges. Every generated problem is solved and independently verified before release. Tests also cover exact arithmetic beyond safe Number precision, negative/reducible fractions, zero denominators, no/infinite/multiple solutions, tamper detection, source preservation, ordered timelines and unchanged walking/contact behavior.
+90 automated tests pass (12 math, 10 layout, 53 prototype/adapter, 15 Drawing Arm). Generation tests cover all three operators × all six missing slots × 16 seeds, including signed ranges. Every generated problem is solved and independently verified before release. Tests also cover exact arithmetic beyond safe Number precision, negative/reducible fractions, zero denominators, no/infinite/multiple solutions, tamper detection, source preservation, ordered timelines and unchanged walking/contact behavior.
 
 Real Chromium/Playwright integration checks passed for the modular demo **and self-contained HTML over localhost**, including example/generated solutions, walking, controls, JSON import/export and responsive layouts. Managed Chrome blocks file URLs; direct `file://` navigation could not be verified in that managed browser. The HTML itself contains all assets inline. Browser checks additionally verify turns, independent gestures, unchanged chalk, speech pause/resume/mute/cancel/replay, audio completion gates and return to writing, using a controllable speech backend. Native Chromium has no installed voices, so audible voice quality is unverified there; the native silent fallback works. A browser with an installed voice can speak using Web Speech. No external speech API is used. Screenshot evidence is in `docs/browser-evidence.svg`; `docs/solution-evidence.svg` is deterministic renderer evidence. [Math layout/timeline contract](docs/math-interface.md).
 

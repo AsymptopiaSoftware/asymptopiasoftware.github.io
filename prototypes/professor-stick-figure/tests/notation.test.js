@@ -26,3 +26,17 @@ test('stacked bars are drawn gradually by the existing arm renderer, not prepain
  f.render(writer.phase.at+writer.phase.duration);assert.notEqual(writer.renderer.chalk.getAttribute('d'),half);
  for(let i=1;i<raw.strokes.length;i++)assert.ok(raw.strokes[i].at>raw.strokes[i-1].at+raw.strokes[i-1].duration);
 });
+test('spaced operators and fraction bars remain timed arm strokes with pen lifts and incremental ink',()=>{
+ const raw=solutionToTimeline(solveEquation('x/5-4/4=2/5')),f=new ProfessorFigure(new SVGNode('g'),raw);
+ assert.equal(f.plan.blocked.length,0);
+ const selected=raw.strokes.filter(s=>s.kind==='fraction-bar'||['+','-','−','='].includes(s.symbol));
+ assert.ok(selected.some(s=>s.symbol==='-'));assert.ok(selected.some(s=>s.symbol==='+'));assert.ok(selected.some(s=>s.symbol==='='));
+ for(const stroke of selected){
+  assert.ok(Number.isFinite(stroke.at)&&stroke.duration>0&&stroke.pen);
+  const writer=f.writers.find(w=>Math.abs(w.phase.sourceAt-stroke.at)<1e-6);assert.ok(writer);
+  f.render(writer.phase.at);assert.equal(writer.renderer.chalk.getAttribute('d'),'');
+  const state=f.render(writer.phase.at+writer.phase.duration*.5),half=writer.renderer.chalk.getAttribute('d');assert.ok(state.chalkDown&&state.pose.reachable);assert.ok(half.length>0);
+  f.render(writer.phase.at+writer.phase.duration);assert.notEqual(writer.renderer.chalk.getAttribute('d'),half);
+ }
+ for(let i=1;i<raw.strokes.length;i++)assert.ok(raw.strokes[i].at>raw.strokes[i-1].at+raw.strokes[i-1].duration);
+});
