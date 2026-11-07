@@ -1,7 +1,9 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.7 · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.8 · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
 
 #math-example{width:100%;margin-bottom:12px}#operation{font-size:11px;color:var(--muted);min-height:35px}
+
+.teaching-controls{display:flex;align-items:end;gap:10px;margin:10px 0 16px}.teaching-controls label{margin:0}.teaching-controls select{display:block}button:disabled{opacity:.45;cursor:default}
 </style></head>
 <body><main>
 <div class="experiment"><section class="stage" aria-label="Professor writing demonstration">
@@ -18,8 +20,8 @@
 </svg>
 <div class="transport"><button id="play" class="primary">Play</button><button id="reset">Reset</button><label class="scrubber">Timeline<input id="seek" type="range" step="any" min="0" max="1" value="0" aria-label="Timeline position"></label><output id="clock">0.0 / 0.0 s</output><label class="speed-label">Speed<select id="speed"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div>
 <div class="stage-footer"><span id="contact" role="status">Ready</span><label><input id="anchors" type="checkbox"> Show skeleton / anchors</label></div>
-</section><aside><p class="eyebrow">B1.7 / WRITING TOOL</p><label for="math-example">Problem</label><select id="math-example" aria-label="Math problem"><option value="example">Example: x/5-4/4=2/5</option><option value="generated-0">Generated addition</option><option value="generated-1">Generated subtraction</option><option value="generated-2">Generated multiplication</option><option value="free">Free writing</option></select><label for="writing">Equation / writing instructions</label><textarea id="writing" rows="2" spellcheck="false">x/5-4/4=2/5</textarea><button id="load" class="primary wide">Solve &amp; write ↗</button><p id="message" role="status"></p><p id="operation" role="status"></p><div class="file-actions"><button id="export">Export JSON ↓</button><label for="import" class="file-label">Import JSON<input id="import" type="file" accept=".json,application/json"></label></div>
-<details id="advanced"><summary>Advanced / Body Rig</summary><div id="body-controls" class="body-controls"></div><dl><dt>Upper / forearm</dt><dd id="arm-lengths"></dd><dt>Right shoulder</dt><dd id="shoulder-value"></dd><dt>Body origin</dt><dd id="body-origin"></dd></dl><button id="restore" class="wide">Restore body rig</button></details><p class="docs"><a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/reduced-professor-stick-figure/prototypes/professor-stick-figure/README.md">Docs</a> · <a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/reduced-professor-stick-figure/prototypes/professor-stick-figure/docs/coordinates.md">Rig / motion contract</a></p></aside></div>
+</section><aside><p class="eyebrow">B1.8 / WRITING TOOL</p><label for="math-example">Problem</label><select id="math-example" aria-label="Math problem"><option value="example">Example: x/5-4/4=2/5</option><option value="generated-0">Generated addition</option><option value="generated-1">Generated subtraction</option><option value="generated-2">Generated multiplication</option><option value="free">Free writing</option></select><label for="writing">Equation / writing instructions</label><textarea id="writing" rows="2" spellcheck="false">x/5-4/4=2/5</textarea><button id="load" class="primary wide">Solve &amp; write ↗</button><p id="message" role="status"></p><p id="operation" role="status" aria-live="polite"></p><div class="teaching-controls"><label for="teaching-mode">Mode<select id="teaching-mode"><option value="auto">Auto</option><option value="step">Step</option></select></label><button id="continue" disabled>Continue</button></div><div class="file-actions"><button id="export">Export JSON ↓</button><label for="import" class="file-label">Import JSON<input id="import" type="file" accept=".json,application/json"></label></div>
+<details id="advanced"><summary>Advanced / Body Rig</summary><div id="body-controls" class="body-controls"></div><dl><dt>Upper / forearm</dt><dd id="arm-lengths"></dd><dt>Right shoulder</dt><dd id="shoulder-value"></dd><dt>Body origin</dt><dd id="body-origin"></dd></dl><button id="restore" class="wide">Restore body rig</button></details><p class="docs"><a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/professor-b1.8-teaching-cadence/prototypes/professor-stick-figure/README.md">Docs</a> · <a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/professor-b1.8-teaching-cadence/prototypes/professor-stick-figure/docs/coordinates.md">Rig / motion contract</a></p></aside></div>
 </main><script type="module">
 
 // SOURCE: ../math-problems/src/rational.js
@@ -963,6 +965,82 @@ function samplePlan(plan,time) {
 }
 
 
+// SOURCE: src/teaching.js
+
+const TEACHING_LOWER = 450, TEACHING_PAUSE = 1500;
+/** Add cadence to a spatial plan using structured solver boundaries only.
+ * Original spatial phases and writing coordinates are copied, never replanned.
+ */
+function teachingPlan(base, steps) {
+  // Old/free-writing imports without structured metadata keep their old behavior.
+  if (!Array.isArray(steps) || !steps.length) return {...base, teachingSteps: []};
+  let previousEnd = -1;
+  for (const [i, step] of steps.entries()) {
+    if (step?.index !== i || !Number.isFinite(step.at) || !Number.isFinite(step.end) ||
+        step.at < 0 || step.at <= previousEnd || step.end <= step.at ||
+        typeof step.operation?.explanation !== 'string') throw new TypeError('Invalid structured teaching step');
+    previousEnd = step.end;
+  }
+  const phases = [], teachingSteps = [], cuts = [];
+  const arm=attachedArm(base.body,base.rig), reach=arm.upper+arm.forearm+arm.tip;
+  const relaxed=solveIK(arm,[arm.shoulder[0]+.10*reach,arm.shoulder[1]+.92*reach]);
+  const rest = [relaxed.angles.shoulder,relaxed.angles.elbow];
+  for (const step of steps) {
+    const sourceStart = p => p.sourceAt ?? p.sourceTime;
+    const members = base.phases.filter(p => (p.kind==='write'||p.reason==='blocked') && sourceStart(p) >= step.at - 1e-6 && sourceStart(p)+p.duration <= step.end+1e-6);
+    if (!members.length) throw new TypeError('Teaching step has no planned writing strokes');
+    const first = members[0], last = members.at(-1);
+    if (Math.abs(sourceStart(first)-step.at)>1e-6 || Math.abs(sourceStart(last)+last.duration-step.end)>1e-6)
+      throw new TypeError('Teaching boundaries must match complete solver lines');
+    cuts.push({step, start:first.at, at:last.at+last.duration});
+  }
+  let shift = 0;
+  for (const phase of base.phases) {
+    // Replace the adapter's inter-line source gap with the explicit teaching rest.
+    if(phase.kind==='hold'&&phase.reason==='gap'&&cuts.some(c=>Math.abs(c.step.end-phase.sourceTime)<1e-6)) {shift-=phase.duration;continue;}
+    const copied = {...phase, at:phase.at+shift}; phases.push(copied);
+    const cut = cuts.find(c => Math.abs(c.at-phase.at-phase.duration)<1e-6);
+    if (!cut) continue;
+    const end = samplePlan(base, cut.at-1e-7), angles = [end.pose.angles.shoulder,end.pose.angles.elbow];
+    const final = cut.step.index === steps.length-1, complete = cut.at+shift, start=cut.start+shift;
+    const add = (kind,duration,extra) => phases.push({kind,offset:end.offset,sourceTime:cut.step.end,
+      teachingIndex:cut.step.index,at:cut.at+shift,duration,...extra});
+    add('approach',TEACHING_LOWER,{fromAngles:angles,toAngles:rest,reason:'teaching-lower'}); shift += TEACHING_LOWER;
+    const gate = cut.at+shift;
+    add('hold',TEACHING_PAUSE,{angles:rest,reason:'teaching-pause'}); shift += TEACHING_PAUSE;
+    const resume = cut.at+shift;
+    if (!final) {add('approach',TEACHING_LOWER,{fromAngles:rest,toAngles:angles,reason:'teaching-raise'});shift+=TEACHING_LOWER;}
+    teachingSteps.push({...structuredClone(cut.step),start,complete,gate,resume,final});
+  }
+  const writes = phases.filter(p => p.kind==='write');
+  const sourceToWall = source => {
+    const p = writes.find(p => source <= p.sourceAt+p.duration);
+    return p ? p.at+Math.max(0,Math.min(p.duration,source-p.sourceAt)) : base.duration+shift;
+  };
+  return {...base,phases,writes,duration:base.duration+shift,sourceToWall,teachingSteps};
+}
+
+/** Pure reconstruction: neither prior frames nor previously visited steps matter. */
+function sampleTeaching(plan,time) {
+  const state = samplePlan(plan,time);
+  const current = plan.teachingSteps?.filter(s=>s.start<=time).at(-1) ?? plan.teachingSteps?.[0];
+  const phase = plan.phases.find(p=>time>=p.at&&time<p.at+p.duration);
+  if (phase?.teachingIndex !== undefined) state.sourceTime = plan.teachingSteps[phase.teachingIndex].end;
+  return {...state,teaching:current?{...current,waiting:!current.final&&time>=current.gate&&time<current.resume}:null};
+}
+
+/** A large frame delta cannot skip a Step-mode gate. Speed scales timeline time. */
+function advanceTeaching(plan,time,delta,mode='auto') {
+  if (!Number.isFinite(time)||!Number.isFinite(delta)||delta<0) throw new RangeError('Invalid playback time');
+  const next = Math.min(plan.duration,time+delta);
+  if(mode==='step') {
+    const gate=plan.teachingSteps?.find(s=>!s.final&&s.resume>time&&s.gate<=next);
+    if(gate) return {time:Math.max(time,gate.gate),waiting:true};
+  }
+  return {time:next,waiting:false};
+}
+
+
 // SOURCE: src/figure.js
 const SVG_NS='http://www.w3.org/2000/svg';
 function node(tag,attrs,parent){const el=document.createElementNS(SVG_NS,tag);for(const [k,v]of Object.entries(attrs))el.setAttribute(k,v);parent.append(el);return el;}
@@ -1008,16 +1086,16 @@ class ProfessorFigure {
     this.fallback=new SVGArmRenderer(node('g',{},this.chalkGroup),compileTimeline(fallbackJSON),attachedArm(plan.body,plan.rig));
   }
   setConfiguration(body=this.body,rig=this.rig) {
-    const nextBody=configureBody(body),nextRig=structuredClone(rig),plan=planWriting(this.timeline,nextBody,nextRig);
+    const nextBody=configureBody(body),nextRig=structuredClone(rig),plan=teachingPlan(planWriting(this.timeline,nextBody,nextRig),this.raw.mathSteps);
     this.body=nextBody;this.rig=nextRig;drawBody(this.bodyGroup,this.body);this.installPlan(plan);this.render(Math.min(this.time,this.duration));
   }
   setTimeline(json) {
-    const timeline=compileTimeline(json),plan=planWriting(timeline,this.body,this.rig);
+    const timeline=compileTimeline(json),plan=teachingPlan(planWriting(timeline,this.body,this.rig),json.mathSteps);
     this.raw=structuredClone(json);this.timeline=timeline;drawBody(this.bodyGroup,this.body);this.installPlan(plan);this.render(0);
   }
   setDebug(visible){this.debug=!!visible;this.render(this.time);}
   render(time) {
-    const state=samplePlan(this.plan,time);this.time=time;this.currentBody=translatedBody(this.body,state.offset);this.currentBody.origin[1]+=state.bodyLift??0;this.arm=attachedArm(this.currentBody,this.rig);
+    const state=sampleTeaching(this.plan,time);this.time=time;this.currentBody=translatedBody(this.body,state.offset);this.currentBody.origin[1]+=state.bodyLift??0;this.arm=attachedArm(this.currentBody,this.rig);
     this.bodyGroup.setAttribute('transform',`translate(${this.currentBody.origin}) scale(${this.body.scale})`);
     this.localPose=walkingLandmarks(this.body,state);
     const part=name=>[...this.bodyGroup.children].find(n=>n.getAttribute('data-part')===name),p=this.localPose;
@@ -1086,9 +1164,10 @@ function refresh() {
   q('#arm-lengths').textContent = `${figure.arm.upper.toFixed(1)} / ${figure.arm.forearm.toFixed(1)}`;
   q('#body-origin').textContent = figure.currentBody.origin.map(n => n.toFixed(1)).join(', ');
   q('#shoulder-value').textContent = figure.arm.shoulder.map(n => Number(n.toFixed(2))).join(', ');
-  const mathSteps=Array.isArray(raw?.mathSteps)?raw.mathSteps.filter(s=>s&&Number.isFinite(s.at)&&Number.isInteger(s.index)&&typeof s.operation?.explanation==='string'):[];
-  const mathStep=mathSteps.filter(s=>s.at<=state.sourceTime).at(-1);
-  q('#operation').textContent=mathStep?`Step ${mathStep.index+1}/${mathSteps.length}: ${mathStep.operation.explanation}`:'';
+  const step=state.teaching;
+  q('#operation').textContent=step?`Step ${step.index+1}/${figure.plan.teachingSteps.length}: ${step.operation.explanation}`:'';
+  q('#continue').disabled=!(step?.waiting&&q('#teaching-mode').value==='step');
+
 }
 function load(json) {
   // Validation in setTimeline happens before the previous rendering is replaced.
@@ -1115,8 +1194,18 @@ function loadWriting() {
 q('#load').onclick = loadWriting;
 q('#math-example').onchange=()=>{const selected=q('#math-example').value;q('#load').textContent=selected==='free'?'Load writing ↗':'Solve & write ↗';if(selected==='example')q('#writing').value='x/5-4/4=2/5';else if(selected.startsWith('generated-'))q('#writing').value=examples[Number(selected.split('-')[1])].text;if(selected!=='free')loadWriting();};
 q('#play').onclick = () => { if (time >= figure.duration) time = 0; playing = !playing; previous = null; refresh(); };
+q('#teaching-mode').onchange = () => {
+  const waiting=figure.render(time).teaching?.waiting;
+  if(waiting) playing=q('#teaching-mode').value==='auto';
+  previous=null;refresh();
+};
+q('#continue').onclick = () => {
+  const step=figure.render(time).teaching;
+  if(q('#teaching-mode').value!=='step'||!step?.waiting)return;
+  time=step.resume;playing=true;previous=null;refresh();
+};
 q('#reset').onclick = () => { time = 0; playing = false; refresh(); };
-q('#seek').oninput = () => { const value=Number(q('#seek').value);time=Math.abs(value-figure.duration)<1e-6?figure.duration:value;playing=false;refresh(); };
+q('#seek').oninput = () => { const value=Number(q('#seek').value);const boundaries=[figure.duration,...figure.plan.teachingSteps.flatMap(s=>[s.start,s.complete,s.gate,s.resume])];time=boundaries.find(t=>Math.abs(value-t)<1e-6)??value;playing=false;refresh(); };
 q('#anchors').onchange = () => { figure.setDebug(q('#anchors').checked); q('#board-anchor').setAttribute('visibility', q('#anchors').checked ? 'visible' : 'hidden'); };
 // UI values are body-local. The adapter alone converts the shoulder to world units.
 const bodyFields = [
@@ -1173,7 +1262,10 @@ q('#import').onchange = async event => {
 };
 function frame(now) {
   if (playing) {
-    if (previous !== null) time = Math.min(figure.duration, time + (now - previous) * Number(q('#speed').value));
+    if (previous !== null) {
+      const next=advanceTeaching(figure.plan,time,(now-previous)*Number(q('#speed').value),q('#teaching-mode').value);
+      time=next.time;if(next.waiting)playing=false;
+    }
     previous = now; if (time >= figure.duration) playing = false; refresh();
   } else previous = null;
   requestAnimationFrame(frame);

@@ -2,6 +2,7 @@ import { textTimeline } from '../drawing-arm/src/timeline.js';
 import { solveEquation } from '../math-problems/src/solver.js';
 import { generateProblem } from '../math-problems/src/generator.js';
 import { solutionToTimeline } from './src/math-timeline.js';
+import { advanceTeaching } from './src/teaching.js';
 import { ProfessorFigure } from './src/figure.js';
 import { configureBody } from './src/body.js';
 const q = selector => document.querySelector(selector);
@@ -19,9 +20,10 @@ function refresh() {
   q('#arm-lengths').textContent = `${figure.arm.upper.toFixed(1)} / ${figure.arm.forearm.toFixed(1)}`;
   q('#body-origin').textContent = figure.currentBody.origin.map(n => n.toFixed(1)).join(', ');
   q('#shoulder-value').textContent = figure.arm.shoulder.map(n => Number(n.toFixed(2))).join(', ');
-  const mathSteps=Array.isArray(raw?.mathSteps)?raw.mathSteps.filter(s=>s&&Number.isFinite(s.at)&&Number.isInteger(s.index)&&typeof s.operation?.explanation==='string'):[];
-  const mathStep=mathSteps.filter(s=>s.at<=state.sourceTime).at(-1);
-  q('#operation').textContent=mathStep?`Step ${mathStep.index+1}/${mathSteps.length}: ${mathStep.operation.explanation}`:'';
+  const step=state.teaching;
+  q('#operation').textContent=step?`Step ${step.index+1}/${figure.plan.teachingSteps.length}: ${step.operation.explanation}`:'';
+  q('#continue').disabled=!(step?.waiting&&q('#teaching-mode').value==='step');
+
 }
 function load(json) {
   // Validation in setTimeline happens before the previous rendering is replaced.
@@ -48,8 +50,18 @@ function loadWriting() {
 q('#load').onclick = loadWriting;
 q('#math-example').onchange=()=>{const selected=q('#math-example').value;q('#load').textContent=selected==='free'?'Load writing ↗':'Solve & write ↗';if(selected==='example')q('#writing').value='x/5-4/4=2/5';else if(selected.startsWith('generated-'))q('#writing').value=examples[Number(selected.split('-')[1])].text;if(selected!=='free')loadWriting();};
 q('#play').onclick = () => { if (time >= figure.duration) time = 0; playing = !playing; previous = null; refresh(); };
+q('#teaching-mode').onchange = () => {
+  const waiting=figure.render(time).teaching?.waiting;
+  if(waiting) playing=q('#teaching-mode').value==='auto';
+  previous=null;refresh();
+};
+q('#continue').onclick = () => {
+  const step=figure.render(time).teaching;
+  if(q('#teaching-mode').value!=='step'||!step?.waiting)return;
+  time=step.resume;playing=true;previous=null;refresh();
+};
 q('#reset').onclick = () => { time = 0; playing = false; refresh(); };
-q('#seek').oninput = () => { const value=Number(q('#seek').value);time=Math.abs(value-figure.duration)<1e-6?figure.duration:value;playing=false;refresh(); };
+q('#seek').oninput = () => { const value=Number(q('#seek').value);const boundaries=[figure.duration,...figure.plan.teachingSteps.flatMap(s=>[s.start,s.complete,s.gate,s.resume])];time=boundaries.find(t=>Math.abs(value-t)<1e-6)??value;playing=false;refresh(); };
 q('#anchors').onchange = () => { figure.setDebug(q('#anchors').checked); q('#board-anchor').setAttribute('visibility', q('#anchors').checked ? 'visible' : 'hidden'); };
 // UI values are body-local. The adapter alone converts the shoulder to world units.
 const bodyFields = [
@@ -106,7 +118,10 @@ q('#import').onchange = async event => {
 };
 function frame(now) {
   if (playing) {
-    if (previous !== null) time = Math.min(figure.duration, time + (now - previous) * Number(q('#speed').value));
+    if (previous !== null) {
+      const next=advanceTeaching(figure.plan,time,(now-previous)*Number(q('#speed').value),q('#teaching-mode').value);
+      time=next.time;if(next.waiting)playing=false;
+    }
     previous = now; if (time >= figure.duration) playing = false; refresh();
   } else previous = null;
   requestAnimationFrame(frame);

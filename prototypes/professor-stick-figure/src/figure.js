@@ -1,8 +1,9 @@
 import { configureBody, bodyLandmarks, bodyToWorld, attachedArm } from './body.js';
 import { compileTimeline } from '../../drawing-arm/src/timeline.js';
 import { SVGArmRenderer } from '../../drawing-arm/src/svg-renderer.js';
-import { planWriting, samplePlan, translatedBody } from './locomotion.js';
+import { planWriting, translatedBody } from './locomotion.js';
 import { limbOutline } from './curves.js';
+import { teachingPlan, sampleTeaching } from './teaching.js';
 import { walkingLandmarks } from './gait.js';
 const SVG_NS='http://www.w3.org/2000/svg';
 function node(tag,attrs,parent){const el=document.createElementNS(SVG_NS,tag);for(const [k,v]of Object.entries(attrs))el.setAttribute(k,v);parent.append(el);return el;}
@@ -48,16 +49,16 @@ export class ProfessorFigure {
     this.fallback=new SVGArmRenderer(node('g',{},this.chalkGroup),compileTimeline(fallbackJSON),attachedArm(plan.body,plan.rig));
   }
   setConfiguration(body=this.body,rig=this.rig) {
-    const nextBody=configureBody(body),nextRig=structuredClone(rig),plan=planWriting(this.timeline,nextBody,nextRig);
+    const nextBody=configureBody(body),nextRig=structuredClone(rig),plan=teachingPlan(planWriting(this.timeline,nextBody,nextRig),this.raw.mathSteps);
     this.body=nextBody;this.rig=nextRig;drawBody(this.bodyGroup,this.body);this.installPlan(plan);this.render(Math.min(this.time,this.duration));
   }
   setTimeline(json) {
-    const timeline=compileTimeline(json),plan=planWriting(timeline,this.body,this.rig);
+    const timeline=compileTimeline(json),plan=teachingPlan(planWriting(timeline,this.body,this.rig),json.mathSteps);
     this.raw=structuredClone(json);this.timeline=timeline;drawBody(this.bodyGroup,this.body);this.installPlan(plan);this.render(0);
   }
   setDebug(visible){this.debug=!!visible;this.render(this.time);}
   render(time) {
-    const state=samplePlan(this.plan,time);this.time=time;this.currentBody=translatedBody(this.body,state.offset);this.currentBody.origin[1]+=state.bodyLift??0;this.arm=attachedArm(this.currentBody,this.rig);
+    const state=sampleTeaching(this.plan,time);this.time=time;this.currentBody=translatedBody(this.body,state.offset);this.currentBody.origin[1]+=state.bodyLift??0;this.arm=attachedArm(this.currentBody,this.rig);
     this.bodyGroup.setAttribute('transform',`translate(${this.currentBody.origin}) scale(${this.body.scale})`);
     this.localPose=walkingLandmarks(this.body,state);
     const part=name=>[...this.bodyGroup.children].find(n=>n.getAttribute('data-part')===name),p=this.localPose;

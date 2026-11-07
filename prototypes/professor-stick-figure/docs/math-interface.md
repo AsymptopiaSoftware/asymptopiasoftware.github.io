@@ -20,8 +20,12 @@ Returned JSON:
 
 Stroke records are unchanged v1 polylines with optional annotations (`kind`, `symbol`, `role`, `row`, `item`, `stroke`). The Drawing Arm engine can ignore those annotations. `kind:'fraction-bar'` is a normal timed pen stroke, not an SVG decoration. Every separate glyph path and bar is separated by a positive lift interval. Source `at/end` still differ from playback time when the existing planner inserts movement/reaching.
 
-Defaults preserve board origin `[355,140]`, width 515, height 220, root size up to 24 (minimum 12), writing speed 135, lift 100 ms and inter-step pause 650 ms. Rows use measured heights plus a .5-root-size gap, with equals alignment. A legacy explicit `lineHeight` option maps to `max(.1,lineHeight-1)` row gap; `rowGap` takes precedence. Very large solutions that cannot fit at the minimum size fail explicitly for a future paged consumer. No font-size control or other UI control is added.
+Defaults preserve board origin `[355,140]`, width 515, height 220, root size up to 24 (minimum 12), writing speed 135, lift 100 ms and inter-step pause 650 ms. Rows use measured heights plus a .5-root-size gap, with equals alignment. A legacy explicit `lineHeight` option maps to `max(.1,lineHeight-1)` row gap; `rowGap` takes precedence. Very large solutions that cannot fit at the minimum size fail explicitly for a future paged consumer. The layout/adapter adds no font-size control.
 
 The requested four-step example fits at size 24, has eight actual fraction-bar strokes and no slash glyphs. New source example: `examples/solution-timeline.json`. Numerators/denominators can contain numbers, x, signs, simple expressions and nested fractions; precedence parentheses outside a bar remain explicit.
 
 Only the audited glyph stroke definitions and layout/timing adapter change. B1.5 writing ranges, B1.4 gait, shoulder/body rig, original IK and chalk renderer consume the new polylines unchanged. See [handwriting audit](handwriting.md).
+
+## B1.8 playback consumer
+
+The Professor now consumes `mathSteps` with `teachingPlan()` after spatial planning. It replaces source inter-line gaps with lowering/rest/return phases and exposes deterministic Auto/Step playback; the reusable solver, layout, glyph paths and raw timeline above are unchanged. See [teaching cadence](teaching-cadence.md).
