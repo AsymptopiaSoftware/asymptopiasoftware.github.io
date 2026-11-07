@@ -1,22 +1,27 @@
-# B1.6 math-to-writing contract
+# B1.7 math → layout → strokes → writing
 
-Pure math API: [math-problems README](../../math-problems/README.md). Source provenance: [NOTICE](../../math-problems/NOTICE.md). The independent package implements the fraction-toggle-OFF approach of `ccosse/crosswordbuilder/jsrc/config_table_stuff.js`, with exact arithmetic and deterministic seeds.
+Pure algebra remains in [math-problems](../../math-problems/README.md), byte-for-byte unchanged from B1.6. The solver returns ASTs, canonical text and explanatory operation metadata; it has no coordinates or font knowledge.
 
-`solveEquation()` returns JSON-safe equation ASTs, ordered steps, exact solutions and original denominator restrictions. Each step supplies an operation kind, operand, explanation, optional nonzero conditions and exact calculation metadata. `verifySolution()` re-derives classifications, verifies every equation/operation and substitutes the answer into the original input. The renderer must never invent a step or treat a nonunique result as one solved value.
+The new [math-layout package](../../math-layout/README.md) supplies two pure stages:
 
-`solutionToTimeline(result, options)` is the sole math/drawing boundary. It requires status `unique` and fresh verification success, then passes each step's text through Drawing Arm's existing glyph/timeline interface. It assigns increasing source times, pen-up gaps and board-space line positions. It preserves the input solution object. The default transform remains `{origin:[355,140],scale:1,rotation:0}`.
+1. `layoutEquations(stepEquations, bounds)` recursively measures expressions, stacks every division as a fraction, centers numerator/denominator boxes, aligns operators/equals signs and places nonoverlapping rows.
+2. `positionStrokes(layout, suppliedGlyphs)` maps reusable normalized vector strokes to those positions and emits explicit fraction-bar paths. No timing, SVG, body or IK is involved.
+
+`src/math-timeline.js` is the only timing adapter. It requires a freshly verified unique solution, calls those two stages, assigns normal v1 stroke starts/durations and pen-up gaps, and retains `mathSteps` explanation metadata. It no longer typesets `step.text` or counts slash-string characters. `step.text` stays canonical B1.6 notation for logs/input/export; the board uses the equation AST.
 
 Returned JSON:
 
 ```
-{ version: 1, board, strokes, fallbacks,
-  mathSteps: [{ index, at, end, text, operation }],
-  layout: { size, lineHeight },
-  math: { version: 1, status: 'unique', problem, solutions } }
+{ version:1, board, strokes, fallbacks:[],
+  mathSteps:[{index,at,end,text,operation}],
+  layout:{notation:'stacked-fractions',size,width,height,rows},
+  math:{version:1,status:'unique',problem,solutions} }
 ```
 
-`strokes` and `fallbacks` are unchanged Drawing Arm v1 records. The optional `mathSteps` metadata is consumed only by the prototype explanation line. Other v1 consumers may ignore it. These timing fields belong to the adapter, not the independent math package. Source time differs from playback time when the existing planner inserts walking/reaching.
+Stroke records are unchanged v1 polylines with optional annotations (`kind`, `symbol`, `role`, `row`, `item`, `stroke`). The Drawing Arm engine can ignore those annotations. `kind:'fraction-bar'` is a normal timed pen stroke, not an SVG decoration. Every separate glyph path and bar is separated by a positive lift interval. Source `at/end` still differ from playback time when the existing planner inserts movement/reaching.
 
-Default layout uses width 515, height 220, maximum size 24, minimum size 12, line-height factor 1.8, original writing speed 135, pen-up lifts 100 ms and inter-step pause 650 ms. Size is the minimum of the width/height fit and maximum size. A solution too large for the minimum size fails explicitly instead of overflowing the board or producing unreachable hidden rows. A future consumer can page the same structured steps without changing the math module.
+Defaults preserve board origin `[355,140]`, width 515, height 220, root size up to 24 (minimum 12), writing speed 135, lift 100 ms and inter-step pause 650 ms. Rows use measured heights plus a .5-root-size gap, with equals alignment. A legacy explicit `lineHeight` option maps to `max(.1,lineHeight-1)` row gap; `rowGap` takes precedence. Very large solutions that cannot fit at the minimum size fail explicitly for a future paged consumer. No font-size control or other UI control is added.
 
-Only the required lowercase-x glyph was added to Drawing Arm. The original operator glyphs, exact IK, reachability/contact gate, board transform and all body/walking code are unchanged. Existing source-range/gait tests remain authoritative.
+The requested four-step example fits at size 24, has eight actual fraction-bar strokes and no slash glyphs. New source example: `examples/solution-timeline.json`. Numerators/denominators can contain numbers, x, signs, simple expressions and nested fractions; precedence parentheses outside a bar remain explicit.
+
+Only the audited glyph stroke definitions and layout/timing adapter change. B1.5 writing ranges, B1.4 gait, shoulder/body rig, original IK and chalk renderer consume the new polylines unchanged. See [handwriting audit](handwriting.md).

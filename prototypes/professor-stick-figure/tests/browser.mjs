@@ -1,5 +1,7 @@
 // Browser integration: existing rig/gait plus exact-math UI and file:// bundle.
 import assert from 'node:assert/strict';
+import {compileTimeline} from '../../drawing-arm/src/timeline.js';
+import {planWriting} from '../src/locomotion.js';
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
 import {resolve,extname,sep} from 'node:path';
@@ -17,6 +19,14 @@ try{
  assert.equal(await page.locator('#writing').inputValue(),'x/5-4/4=2/5');assert.match(await page.locator('#operation').textContent(),/Step 1\/4/);
  const expected=['x/5-4/4=2/5','x/5=2/5+4/4','x/5=7/5','x=7'],initial=await exportJSON();
  assert.deepEqual(initial.mathSteps.map(s=>s.text),expected);assert.equal(initial.fallbacks.length,0);
+ assert.equal(initial.layout.notation,'stacked-fractions');assert.equal(initial.strokes.filter(s=>s.kind==='fraction-bar').length,8);assert.ok(!initial.strokes.some(s=>s.symbol==='/'));
+ const planned=planWriting(compileTimeline(initial)),firstBar=initial.strokes.find(s=>s.kind==='fraction-bar'),barIndex=planned.writes.findIndex(p=>Math.abs(p.sourceAt-firstBar.at)<1e-6),bar=planned.writes[barIndex];
+ const chalkBar=page.locator('[data-layer="chalk"] > g').nth(barIndex).locator('path').first();
+ const seekTo=async time=>page.locator('#seek').evaluate((el,value)=>{el.value=String(value);el.dispatchEvent(new Event('input',{bubbles:true}));},time);
+ await seekTo(Math.max(0,bar.at-.01));assert.equal(await chalkBar.getAttribute('d'),'');
+ await seekTo(bar.at+bar.duration*.5);const halfBar=await chalkBar.getAttribute('d');assert.ok(halfBar.length>0);assert.match(await page.locator('#contact').textContent(),/CHALK DOWN/);
+ await seekTo(bar.at+bar.duration+.001);assert.notEqual(await chalkBar.getAttribute('d'),halfBar);await page.getByRole('button',{name:'Reset',exact:true}).click();
+
  const before=await page.locator('[data-layer="body"]').getAttribute('transform');
  await page.getByRole('button',{name:'Play',exact:true}).click();await page.waitForFunction(()=>Number(document.querySelector('#seek').value)>150);
  const leg=await page.locator('[data-part="right-leg"]').getAttribute('d');await page.waitForFunction(()=>Number(document.querySelector('#seek').value)>300);await page.getByRole('button',{name:'Pause',exact:true}).click();
@@ -43,5 +53,5 @@ try{
  await page.locator('#seek').evaluate(el=>{el.value=el.max;el.dispatchEvent(new Event('input',{bubbles:true}));});
  assert.match(await page.locator('#contact').textContent(),/CHALK LIFTED \/ DONE/);
  if(process.env.SCREENSHOT_PATH)await page.screenshot({path:process.env.SCREENSHOT_PATH,fullPage:true});
- assert.deepEqual(errors,[]);console.log(`B1.6 browser checks passed: modular + self-contained (${standaloneTransport}), math, generation, walking, controls, import/export and responsive layout`);
+ assert.deepEqual(errors,[]);console.log(`B1.7 browser checks passed: modular + self-contained (${standaloneTransport}), stacked fractions, incremental arm-drawn bars, math, generation, walking, controls, import/export and responsive layout`);
 }finally{await browser?.close();await new Promise(done=>server.close(done));}

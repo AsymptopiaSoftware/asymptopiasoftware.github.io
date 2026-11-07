@@ -103,3 +103,7 @@ No collision avoidance or general occlusion correction is added. In this rear vi
 ## B1.6 math adapter
 
 The independent math module has no body, SVG, board or time concepts. `src/math-timeline.js` converts verified equation steps into this same world/board contract. It preserves origin `[355,140]`, places successive solution lines inside the existing board, adds pen-up source pauses and exposes optional operation metadata. All range planning, arm proportions, walking joints and contact gates above remain unchanged. See [math interface](math-interface.md). A single authorized lowercase-x glyph extension replaces the earlier font fallback; no drawing algorithms change.
+
+## B1.7 stacked notation
+
+The same fixed board transform now receives geometry from the independent math-layout module. Expression boxes, centered numerator/denominator pairs and ordinary fraction-bar paths replace slash-string typesetting in verified-math mode. No body, gait, range-planning or IK source changes. Canonical B1.6 text/ASTs remain untouched. See [math interface](math-interface.md) and [handwriting audit](handwriting.md).

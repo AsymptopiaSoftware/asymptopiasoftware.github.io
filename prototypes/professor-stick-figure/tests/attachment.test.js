@@ -8,7 +8,7 @@ import { SVGNode, installDOM } from '../../drawing-arm/tests/dom-fixture.js';
 import { textTimeline } from '../../drawing-arm/src/timeline.js';
 installDOM();
 export const writing12=()=>textTimeline('2 × (3 + 4)\n= 14',{x:0,y:0,size:24,speed:135,lift:100,board:{origin:[355,140],scale:1,rotation:0}});
-test('Drawing Arm algorithms and approved x-glyph extension match pinned hashes',async()=>{
+test('Drawing Arm algorithms and approved handwriting paths match pinned hashes',async()=>{
  const lock=JSON.parse(await readFile(new URL('../engine-lock.json',import.meta.url),'utf8'));
  for(const f of lock.files){const data=await readFile(new URL('../../drawing-arm/'+f.path,import.meta.url));assert.equal(createHash('sha1').update(`blob ${data.length}\0`).update(data).digest('hex'),f.sha);}
 });

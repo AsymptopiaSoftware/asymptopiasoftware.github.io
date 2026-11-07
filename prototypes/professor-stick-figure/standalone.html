@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.6 · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.7 · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
 
 #math-example{width:100%;margin-bottom:12px}#operation{font-size:11px;color:var(--muted);min-height:35px}
 </style></head>
@@ -18,7 +18,7 @@
 </svg>
 <div class="transport"><button id="play" class="primary">Play</button><button id="reset">Reset</button><label class="scrubber">Timeline<input id="seek" type="range" step="any" min="0" max="1" value="0" aria-label="Timeline position"></label><output id="clock">0.0 / 0.0 s</output><label class="speed-label">Speed<select id="speed"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div>
 <div class="stage-footer"><span id="contact" role="status">Ready</span><label><input id="anchors" type="checkbox"> Show skeleton / anchors</label></div>
-</section><aside><p class="eyebrow">B1.6 / WRITING TOOL</p><label for="math-example">Problem</label><select id="math-example" aria-label="Math problem"><option value="example">Example: x/5-4/4=2/5</option><option value="generated-0">Generated addition</option><option value="generated-1">Generated subtraction</option><option value="generated-2">Generated multiplication</option><option value="free">Free writing</option></select><label for="writing">Equation / writing instructions</label><textarea id="writing" rows="2" spellcheck="false">x/5-4/4=2/5</textarea><button id="load" class="primary wide">Solve &amp; write ↗</button><p id="message" role="status"></p><p id="operation" role="status"></p><div class="file-actions"><button id="export">Export JSON ↓</button><label for="import" class="file-label">Import JSON<input id="import" type="file" accept=".json,application/json"></label></div>
+</section><aside><p class="eyebrow">B1.7 / WRITING TOOL</p><label for="math-example">Problem</label><select id="math-example" aria-label="Math problem"><option value="example">Example: x/5-4/4=2/5</option><option value="generated-0">Generated addition</option><option value="generated-1">Generated subtraction</option><option value="generated-2">Generated multiplication</option><option value="free">Free writing</option></select><label for="writing">Equation / writing instructions</label><textarea id="writing" rows="2" spellcheck="false">x/5-4/4=2/5</textarea><button id="load" class="primary wide">Solve &amp; write ↗</button><p id="message" role="status"></p><p id="operation" role="status"></p><div class="file-actions"><button id="export">Export JSON ↓</button><label for="import" class="file-label">Import JSON<input id="import" type="file" accept=".json,application/json"></label></div>
 <details id="advanced"><summary>Advanced / Body Rig</summary><div id="body-controls" class="body-controls"></div><dl><dt>Upper / forearm</dt><dd id="arm-lengths"></dd><dt>Right shoulder</dt><dd id="shoulder-value"></dd><dt>Body origin</dt><dd id="body-origin"></dd></dl><button id="restore" class="wide">Restore body rig</button></details><p class="docs"><a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/reduced-professor-stick-figure/prototypes/professor-stick-figure/README.md">Docs</a> · <a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/reduced-professor-stick-figure/prototypes/professor-stick-figure/docs/coordinates.md">Rig / motion contract</a></p></aside></div>
 </main><script type="module">
 
@@ -282,6 +282,92 @@ function generateProblem(options={}){return createProblemGenerator(options)();}
 function generateProblems(options={}){const {count=3,...rest}=options;if(!Number.isInteger(count)||count<1||count>1000)throw new MathProblemError('INVALID_COUNT','count must be 1…1000');const next=createProblemGenerator(rest);return Array.from({length:count},()=>next());}
 
 
+// SOURCE: ../math-layout/src/layout.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+const metrics17={glyphWidth:.62,advance:.95,operatorGap:.25,fractionScale:.78,fractionGap:.15,fractionPadding:.16};
+const shift17=(items,x,y,role)=>items.map(item=>({...item,x:item.x+x,y:item.y+y,...(item.points?{points:item.points.map(p=>[p[0]+x,p[1]+y])}:{}),role:role?`${role}/${item.role??'content'}`:item.role}));
+function textBox17(text,size,m){
+ const width=text.length?(text.length-1)*m.advance*size+m.glyphWidth*size:0;
+ return {width,height:size,axis:size/2,items:[...text].map((text,i)=>({kind:'glyph',text,x:i*m.advance*size,y:0,width:m.glyphWidth*size,height:size,role:'glyph'}))};
+}
+function rowBox17(boxes,gap=0){
+ const axis=Math.max(...boxes.map(b=>b.axis)),below=Math.max(...boxes.map(b=>b.height-b.axis));let x=0;const items=[];
+ for(const [i,b]of boxes.entries()){if(i)x+=gap;items.push(...shift17(b.items,x,axis-b.axis));x+=b.width;}
+ return {width:x,height:axis+below,axis,items};
+}
+function parentheses17(box,size,m){
+ const width=.35*size,left={kind:'glyph',text:'(',x:0,y:0,width,height:box.height,role:'parenthesis'};
+ return {width:box.width+2*width+.16*size,height:box.height,axis:box.axis,items:[left,...shift17(box.items,width+.08*size,0),{...left,text:')',x:box.width+width+.16*size}]};
+}
+const precedence17=node=>node.type==='binary'?(node.op==='+'||node.op==='-'?1:2):3;
+function expressionBox17(node,size,m){
+ if(node.type==='integer')return textBox17(node.value,size,m);
+ if(node.type==='variable')return textBox17('x',size,m);
+ if(node.type==='negate'){
+  let child=expressionBox17(node.operand,size,m);
+  if(node.operand.type==='binary'&&node.operand.op!=='/')child=parentheses17(child,size,m);
+  return rowBox17([textBox17('-',size,m),child],.1*size);
+ }
+ if(node.op==='/'){
+  const n=expressionBox17(node.left,size*m.fractionScale,m),d=expressionBox17(node.right,size*m.fractionScale,m);
+  const padding=m.fractionPadding*size,gap=m.fractionGap*size,width=Math.max(n.width,d.width)+2*padding,axis=n.height+gap,denY=axis+gap;
+  return {width,height:denY+d.height,axis,items:[...shift17(n.items,(width-n.width)/2,0,'numerator'),
+   {kind:'fraction-bar',x:0,y:axis,width,height:0,points:[[0,axis],[width,axis]],role:'fraction-bar'},
+   ...shift17(d.items,(width-d.width)/2,denY,'denominator')]};
+ }
+ let left=expressionBox17(node.left,size,m),right=expressionBox17(node.right,size,m);
+ if(precedence17(node.left)<precedence17(node))left=parentheses17(left,size,m);
+ if(node.right.type==='negate'||(node.right.type==='integer'&&node.right.value.startsWith('-'))||precedence17(node.right)<precedence17(node)||(node.op==='-'&&precedence17(node.right)===precedence17(node)))right=parentheses17(right,size,m);
+ return rowBox17([left,textBox17(node.op==='*'?'×':node.op,size,m),right],m.operatorGap*size);
+}
+function options17(options){const {size=24,...custom}=options;const m={...metrics17,...custom};if(!Number.isFinite(size)||size<=0||Object.values(m).some(v=>!Number.isFinite(v)||v<=0)||m.fractionScale>=1)throw new RangeError('Invalid math layout metrics');return {size,m};}
+/** Pure boxes/positioned symbols; no font paths, SVG or animation clocks. */
+function layoutExpression(expression,options={}){
+ const node=validateEquation({type:'equation',left:expression,right:{type:'integer',value:'0'}}).left;
+ const {size,m}=options17(options);return {version:1,...expressionBox17(node,size,m),size};
+}
+function layoutEquation(input,options={}){
+ const eq=validateEquation(input),{size,m}=options17(options),left=expressionBox17(eq.left,size,m),right=expressionBox17(eq.right,size,m),equals=textBox17('=',size,m);
+ return {version:1,...rowBox17([left,equals,right],m.operatorGap*size),size,equalsX:left.width+m.operatorGap*size};
+}
+/** Size/line placement uses measured expression boxes, not slash-string lengths. */
+function layoutEquations(equations,options={}){
+ const {maxSize=24,minSize=12,width=515,height=220,rowGap=.5,alignEquals=true}=options;
+ if(!Array.isArray(equations)||!equations.length)throw new TypeError('At least one equation is required');
+ if(![maxSize,minSize,width,height,rowGap].every(v=>Number.isFinite(v)&&v>0)||maxSize<minSize)throw new RangeError('Invalid equation layout bounds');
+ const units=equations.map(eq=>layoutEquation(eq,{size:1})),eqX=Math.max(...units.map(b=>b.equalsX));
+ const unitWidth=Math.max(...units.map(b=>b.width+(alignEquals?eqX-b.equalsX:0))),unitHeight=units.reduce((sum,b)=>sum+b.height,0)+(units.length-1)*rowGap;
+ const size=Math.min(maxSize,width/unitWidth,height/unitHeight);if(size<minSize)throw new RangeError('Solution has too many/large expressions for this board; use a paged consumer');
+ const rows=[],items=[];let y=0;
+ for(const [row,eq]of equations.entries()){
+  const box=layoutEquation(eq,{size}),x=alignEquals?eqX*size-box.equalsX:0;
+  rows.push({index:row,x,y,width:box.width,height:box.height,axis:y+box.axis,equalsX:x+box.equalsX});
+  items.push(...shift17(box.items,x,y).map(item=>({...item,row})));y+=box.height+rowGap*size;
+ }
+ return {version:1,width:unitWidth*size,height:unitHeight*size,size,rows,items};
+}
+
+
+// SOURCE: ../math-layout/src/strokes.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+/** Geometry placement is separate from layout and separate from timing/rendering.
+ * The consumer supplies its own normalized [0..1] reusable vector glyph set. */
+function positionStrokes(layout,glyphs){
+ if(!layout||!Array.isArray(layout.items)||!glyphs)throw new TypeError('Layout items and a vector glyph set are required');
+ const strokes=[];
+ for(const [itemIndex,item]of layout.items.entries()){
+  if(![item.x,item.y,item.width,item.height].every(Number.isFinite)||item.width<0||item.height<0)throw new RangeError('Invalid positioned math bounds');
+  if(item.kind==='fraction-bar')strokes.push({points:item.points.map(p=>[...p]),pen:true,kind:'fraction-bar',role:item.role,row:item.row,item:itemIndex});
+  else if(item.kind==='glyph'){
+   const paths=glyphs[item.text];if(!paths)throw new RangeError(`Missing vector glyph: ${item.text}`);
+   for(const path of paths)if(!Array.isArray(path)||path.length<2||path.some(p=>!Array.isArray(p)||p.length!==2||!p.every(Number.isFinite)))throw new RangeError(`Invalid vector glyph: ${item.text}`);
+   for(const [stroke,path]of paths.entries())strokes.push({points:path.map(p=>[item.x+p[0]*item.width,item.y+p[1]*item.height]),pen:true,kind:'glyph',symbol:item.text,role:item.role,row:item.row,item:itemIndex,stroke});
+  }else throw new TypeError('Unsupported positioned math item');
+ }
+ return {version:1,width:layout.width,height:layout.height,strokes};
+}
+
+
 // SOURCE: ../drawing-arm/src/kinematics.js
 /** Character-independent planar two-link IK. Angles are radians, SVG y points down. */
 const TAU = 2 * Math.PI;
@@ -374,18 +460,18 @@ const GLYPHS = {
  '0': [[[.2,0],[.8,0],[1,.2],[1,.8],[.8,1],[.2,1],[0,.8],[0,.2],[.2,0]]],
  '1': [[[.2,.2],[.5,0],[.5,1]],[[.2,1],[.8,1]]],
  '2': [[[0,.2],[.2,0],[.8,0],[1,.2],[1,.4],[0,1],[1,1]]],
- '3': [[[0,0],[.8,0],[1,.2],[.6,.5],[1,.7],[1,.8],[.8,1],[0,1]],[[.3,.5],[.6,.5]]],
- '4': [[[.8,1],[.8,0],[0,.65],[1,.65]]],
- '5': [[[1,0],[0,0],[0,.5],[.8,.5],[1,.7],[1,.8],[.8,1],[0,1]]],
+ '3': [[[0,.15],[.25,0],[.75,0],[1,.2],[.85,.4],[.5,.5],[.85,.6],[1,.8],[.75,1],[.25,1],[0,.85]]],
+ '4': [[[.25,0],[0,.6],[1,.6]],[[.75,0],[.75,1]]],
+ '5': [[[0,0],[0,.48],[.65,.48],[.95,.62],[1,.82],[.8,1],[.1,1]],[[0,0],[1,0]]],
  '6': [[[1,0],[.3,0],[0,.3],[0,.8],[.2,1],[.8,1],[1,.8],[1,.6],[.8,.5],[0,.5]]],
  '7': [[[0,0],[1,0],[.3,1]]],
  '8': [[[.2,.5],[0,.3],[0,.2],[.2,0],[.8,0],[1,.2],[1,.3],[.8,.5],[.2,.5],[0,.7],[0,.8],[.2,1],[.8,1],[1,.8],[1,.7],[.8,.5]]],
- '9': [[[1,.5],[.2,.5],[0,.3],[0,.2],[.2,0],[.8,0],[1,.2],[1,.7],[.7,1],[0,1]]],
+ '9': [[[.9,.1],[.7,0],[.25,0],[0,.2],[0,.4],[.25,.55],[.7,.55],[1,.35],[.9,.1],[1,.65],[.75,1]]],
  '+': [[[0,.5],[1,.5]],[[.5,0],[.5,1]]],
  '-': [[[0,.5],[1,.5]]], '−': [[[0,.5],[1,.5]]],
  '×': [[[0,0],[1,1]],[[1,0],[0,1]]], '*': [[[0,0],[1,1]],[[1,0],[0,1]]],
  '=': [[[0,.3],[1,.3]],[[0,.7],[1,.7]]],
- '/': [[[1,0],[0,1]]], '÷': [[[0,.5],[1,.5]],[[.5,.1],[.5,.15]],[[.5,.85],[.5,.9]]],
+ '/': [[[1,0],[0,1]]], '÷': [[[.5,.1],[.5,.15]],[[0,.5],[1,.5]],[[.5,.85],[.5,.9]]],
  '(': [[[.7,0],[.35,.2],[.2,.5],[.35,.8],[.7,1]]],
  ')': [[[.3,0],[.65,.2],[.8,.5],[.65,.8],[.3,1]]],
  '.': [[[.5,.95],[.5,1]]]
@@ -963,21 +1049,24 @@ class ProfessorFigure {
 
 
 // SOURCE: src/math-timeline.js
-/** Thin presentation adapter. The math module has no knowledge of this interface. */
+/** Verified algebra → pure math boxes → font strokes → existing timeline v1. */
 function solutionToTimeline(solution,options={}) {
   if(solution.status!=='unique'||!verifySolution(solution).valid)throw new TypeError('Only verified unique solutions can be written as solution timelines');
-  const {maxSize=24,minSize=12,width=515,height=220,lineHeight=1.8,pause=650,speed=135,lift=100,board={origin:[355,140],scale:1,rotation:0}}=options;
-  if(![maxSize,minSize,width,height,lineHeight,speed].every(v=>Number.isFinite(v)&&v>0)||maxSize<minSize||!Number.isFinite(pause)||pause<0)throw new RangeError('Invalid solution layout options');
-  const lines=solution.steps.map(s=>s.text),longest=Math.max(1,...lines.map(t=>t.length));
-  const size=Math.min(maxSize,width/(longest*.95),height/(1+(lines.length-1)*lineHeight));
-  if(size<minSize)throw new RangeError('Solution has too many/long steps for this board; use a paged consumer');
-  const strokes=[],fallbacks=[],mathSteps=[];let at=0;
+  const {maxSize=24,minSize=12,width=515,height=220,pause=650,speed=135,lift=100,board={origin:[355,140],scale:1,rotation:0}}=options;
+  if(options.lineHeight!==undefined&&(!Number.isFinite(options.lineHeight)||options.lineHeight<=0))throw new RangeError('Invalid legacy line-height option');
+  const rowGap=options.rowGap??(options.lineHeight === undefined ? .5 : Math.max(.1,options.lineHeight-1));
+  if(!Number.isFinite(speed)||speed<=0||!Number.isFinite(lift)||lift<=0||!Number.isFinite(pause)||pause<0)throw new RangeError('Invalid solution timing options');
+  const layout=layoutEquations(solution.steps.map(s=>s.equation),{maxSize,minSize,width,height,rowGap});
+  const geometry=positionStrokes(layout,GLYPHS),strokes=[],mathSteps=[];let at=0;
   for(const [index,step]of solution.steps.entries()){
-    const row=textTimeline(step.text,{x:0,y:index*size*lineHeight,size,speed,lift});
-    strokes.push(...row.strokes.map(s=>({...s,at:s.at+at})));fallbacks.push(...row.fallbacks.map(f=>({...f,at:f.at+at})));
-    mathSteps.push({index,at,end:at+row.duration,text:step.text,operation:structuredClone(step.operation)});at+=row.duration+pause;
+    const start=at;let end=at;
+    for(const stroke of geometry.strokes.filter(s=>s.row===index)){
+      const length=stroke.points.slice(1).reduce((sum,p,i)=>sum+Math.hypot(p[0]-stroke.points[i][0],p[1]-stroke.points[i][1]),0);
+      const duration=Math.max(1,length/speed*1000);strokes.push({...stroke,at,duration});end=at+duration;at=end+lift;
+    }
+    mathSteps.push({index,at:start,end,text:step.text,operation:structuredClone(step.operation)});at=end+Math.max(pause,lift);
   }
-  return validateTimeline({version:1,board,strokes,fallbacks,mathSteps,layout:{size,lineHeight},math:{version:1,status:solution.status,problem:solution.steps[0].text,solutions:structuredClone(solution.solutions)}});
+  return validateTimeline({version:1,board,strokes,fallbacks:[],mathSteps,layout:{notation:'stacked-fractions',size:layout.size,width:layout.width,height:layout.height,rows:layout.rows},math:{version:1,status:solution.status,problem:solution.steps[0].text,solutions:structuredClone(solution.solutions)}});
 }
 
 
