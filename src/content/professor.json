@@ -1,0 +1,19 @@
+{
+  "title": "Professor",
+  "pageTitle": "Professor | Asymptopia Software",
+  "description": "A reusable SVG character that writes and presents step-by-step fraction solutions.",
+  "demoLabel": "Animated Professor fraction solution",
+  "sourceUrl": "https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/tree/main/prototypes/professor-stick-figure",
+  "liveUrl": "/professor/standalone.html",
+  "pageUrl": "/projects/professor/",
+  "problem": "x/5-4/4=2/5",
+  "backLabel": "← Asymptopia Software",
+  "sourceLabel": "GitHub source",
+  "liveLabel": "Full writing application",
+  "homeLabel": "Homepage demo",
+  "paragraphs": [
+    "The Professor combines a reusable SVG character and presentation rig with a two-link drawing arm. The character walks into writing range, lifts the chalk between strokes, and turns toward the viewer to explain each transformation.",
+    "An independent exact-rational mathematics engine generates and verifies fraction problems and solution steps. A separate layout engine positions stacked fractions and aligned equals signs before converting them into timed handwriting strokes.",
+    "The compact homepage demonstration runs silently and loops automatically. The full writing application includes problem selection, speech, step-by-step playback, timeline seeking, and body-rig controls. Both use the same engines, with a static completed scene for reduced-motion visitors in compact mode."
+  ]
+}

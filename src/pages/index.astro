@@ -2,6 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SlotMachineOriginal from '../components/slotmachine/SlotMachineOriginal.vue';
 import ProjectDemoActions from '../components/ProjectDemoActions.astro';
+import ProfessorDemo from '../components/ProfessorDemo.astro';
+import professor from '../content/professor.json';
 import brand from '../content/brand.json';
 
 const buildNumber = import.meta.env.PUBLIC_BUILD_NUMBER || 'local';
@@ -26,6 +28,11 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber;
         pageUrl="/projects/slotmachine/"
       />
     </section>
+    <section class="professor-embed" aria-label={professor.demoLabel}>
+      <ProfessorDemo problem={professor.problem} label={professor.demoLabel} />
+      <ProjectDemoActions title={professor.title} sourceUrl={professor.sourceUrl}
+        liveUrl={professor.liveUrl} pageUrl={professor.pageUrl} />
+    </section>
   </main>
   <footer class="site-footer">
     <div class="build-info">
@@ -33,3 +40,7 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber;
     </div>
   </footer>
 </BaseLayout>
+
+<style>
+.professor-embed {position:relative;width:100%;height:clamp(280px,44vw,420px);margin:24px 0;overflow:hidden;border-radius:20px;background:#303030;}
+</style>
