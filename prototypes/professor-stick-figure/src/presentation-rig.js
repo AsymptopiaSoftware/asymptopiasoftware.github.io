@@ -1,25 +1,9 @@
-import {audienceArmPose} from './audience-arm.js';
+import {audienceGestureTargets} from './thoughtful-pose.js';
 import {characterFacing,projectAnatomical,liftProjected,projectSkeleton,turnBone,armDepthOrder} from './orientation.js';
 import { bodyLandmarks, configureBody, bodyToWorld, attachedArm } from './body.js';
-import { solveIK, forward, distance } from '../../drawing-arm/src/kinematics.js';
+import { distance } from '../../drawing-arm/src/kinematics.js';
 const mixPresentation=(a,b,t)=>a.map((v,i)=>v+(b[i]-v)*t);
 const smoothPresentation=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
-/** Targets are in the character's anatomical x/y plane, never screen left/right.
- * A small single conversational phrase, with independent targets and gentle emphasis.
- * Poses enter and leave idle, so holding a Step gate never creates endless waving.
- */
-export function gestureAngles(action,elapsed,side,arm) {
-  const reach=arm.upper+arm.forearm+arm.tip,sign=side==='right'?1:-1;
-  const idle=[.28,.80],targets={explain:side==='right'?[.64,.38]:[.52,.48],
-    emphasize:side==='right'?[.34,-.20]:[.36,.68],count:side==='right'?[.30,-.10]:[.26,.70],
-    present:side==='left'?[.80,.05]:[.38,.62],idle};
-  const duration=action.duration,t=Math.max(0,Math.min(duration,elapsed));
-  const envelope=smoothPresentation(t/500)*smoothPresentation((duration-t)/500);
-  const target=targets[action.gesture],sway=action.gesture==='idle'?0:Math.sin(2*Math.PI*t/duration)*(side==='right'?.035:-.022);
-  const x=idle[0]+(target[0]-idle[0])*envelope,y=idle[1]+(target[1]-idle[1])*envelope+sway*envelope;
-  const pose=solveIK({...arm,elbow:side==='right'?'negative':'positive'},[arm.shoulder[0]+sign*x*reach,arm.shoulder[1]+y*reach]);
-  return [pose.angles.shoulder,pose.angles.elbow];
-}
 /** Calibrate the existing rear projection without changing its coordinates.
  * The right writing arm lifts in a camera-parallel plane; the left rest pose
  * recovers its foreshortened depth while preserving the original board silhouette.
@@ -48,10 +32,11 @@ export function presentationRig(config,state,base,rig={}) {
   const elapsed=state.presentation?.stage==='talk'?state.presentation.elapsed:0;
   const joints={...r.joints},anatomicalArms={};
   const local=p=>p.map((v,i)=>(v-b.origin[i])/b.scale),subtract=(p,q)=>p.map((v,i)=>v-q[i]),add=(p,q)=>p.map((v,i)=>v+q[i]);
+  const armDefinitions={right:{shoulder:joints.rightShoulder,upper:.65*b.torsoLength,forearm:.55*b.torsoLength,tip:.04*b.torsoLength},
+    left:{shoulder:joints.leftShoulder,upper:Math.max(.65*b.torsoLength,distance(original.leftShoulder,original.leftElbow)),forearm:Math.max(.55*b.torsoLength,distance(original.leftElbow,original.leftHand)),tip:0}};
+  const targets=audienceGestureTargets(armDefinitions,action,elapsed);
   for(const side of ['left','right']){
-    const right=side==='right',shoulder=joints[side+'Shoulder'];
-    const lengths=right?{upper:.65*b.torsoLength,forearm:.55*b.torsoLength,tip:.04*b.torsoLength}:
-      {upper:Math.max(.65*b.torsoLength,distance(original.leftShoulder,original.leftElbow)),forearm:Math.max(.55*b.torsoLength,distance(original.leftElbow,original.leftHand)),tip:0};
+    const right=side==='right',shoulder=joints[side+'Shoulder'],definition=armDefinitions[side],lengths={upper:definition.upper,forearm:definition.forearm,tip:definition.tip};
     const boardDepth=projectAnatomical(shoulder,r.board).depth;
     const start=right?{shoulder:local(state.pose.shoulder),elbow:local(state.pose.elbow),wrist:local(state.pose.wrist)}:
       {shoulder:original.leftShoulder,elbow:original.leftElbow,wrist:original.leftHand};
@@ -60,15 +45,11 @@ export function presentationRig(config,state,base,rig={}) {
     const upperDepth=right?0:Math.sqrt(Math.max(0,lengths.upper**2-distance(start.shoulder,start.elbow)**2));
     const foreDepth=right?0:Math.sqrt(Math.max(0,lengths.forearm**2-distance(start.elbow,start.wrist)**2));
     const lifted={shoulder:liftProjected(start.shoulder,boardDepth,r.board),elbow:liftProjected(start.elbow,boardDepth+upperDepth,r.board),wrist:liftProjected(start.wrist,boardDepth+upperDepth+foreDepth,r.board)};
-    const arm={...rig,...lengths,shoulder:shoulder.slice(0,2),elbow:right?'negative':'positive'};
-    // Preserve the gesture's wrist/tool target; the audience pole, not this 2D
-    // endpoint calculation's branch, determines the actual anatomical elbow.
-    const endpoint=forward(arm,...gestureAngles(action,elapsed,side,arm)).tip;
-    const target=audienceArmPose({...lengths,shoulder},[...endpoint,0],side,{elbowPreference:action.elbowPreference??'outward'});
+    const target=targets[side];
     const targetUpper=subtract(target.elbow,target.shoulder),targetFore=subtract(target.wrist,target.elbow);
-    const upper=turnBone(subtract(lifted.elbow,lifted.shoulder),targetUpper,a),fore=turnBone(subtract(lifted.wrist,lifted.elbow),targetFore,a);
-    const elbow=add(shoulder,upper),wrist=add(elbow,fore),tip=add(wrist,fore.map(v=>v*lengths.tip/lengths.forearm));
-    anatomicalArms[side]={id:side,shoulder:[...shoulder],elbow,wrist,hand:[...wrist],tip,lengths,elbowPreference:target.elbowPreference,pole:target.pole};
+    const upperBone=turnBone(subtract(lifted.elbow,lifted.shoulder),targetUpper,a),fore=turnBone(subtract(lifted.wrist,lifted.elbow),targetFore,a);
+    const elbow=add(shoulder,upperBone),wrist=add(elbow,fore),tip=add(wrist,fore.map(v=>v*lengths.tip/lengths.forearm));
+    anatomicalArms[side]={id:side,shoulder:[...shoulder],elbow,wrist,hand:[...wrist],tip,lengths,elbowPreference:target.elbowPreference,pole:target.pole,role:target.role,allowsCrossing:!!target.allowsCrossing};
     for(const [name,p]of Object.entries({Shoulder:shoulder,Elbow:elbow,Wrist:wrist,Hand:wrist,Tip:tip}))joints[side+name]=p;
   }
   const projected=projectSkeleton(joints,facing),p=structuredClone(r.base),arms={};
@@ -80,7 +61,12 @@ export function presentationRig(config,state,base,rig={}) {
     arms[side]={id:side,shoulder,elbow,wrist,tip:world('Tip'),angles:{shoulder:angle,elbow:Math.atan2(wrist[1]-elbow[1],wrist[0]-elbow[0])-angle}};
   }
   if(a===0)arms.right={...state.pose,id:'right'};
-  return {landmarks:p,arms,anatomical:{joints,arms:anatomicalArms},projected,facing,depthOrder:armDepthOrder(projected,facing,.06*b.torsoLength)};
+  let supportContact;
+  if(targets.supportContact){
+    const offset=subtract(targets.supportContact.target,targets.right.elbow),contact=add(anatomicalArms.right.elbow,offset);
+    supportContact={...targets.supportContact,target:contact,gap:Math.hypot(...subtract(anatomicalArms.left.wrist,contact)),active:a===1};
+  }
+  return {landmarks:p,arms,anatomical:{joints,arms:anatomicalArms,...(supportContact?{supportContact}:{})},projected,facing,depthOrder:armDepthOrder(projected,facing,.06*b.torsoLength)};
 }
 /** Identical Bézier topology allows a continuous rear-profile → frontal head morph. */
 export function presentationHead(p,headSize,audience=0) {

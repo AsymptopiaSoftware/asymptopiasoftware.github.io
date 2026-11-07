@@ -13,19 +13,20 @@ Baseline: B1.8 PR #12, commit `394e5db7d57a46643cf5245ebf83261f0699aa03`. Develo
 }
 ```
 
-`src/presentation-action.js` is independent of lessons, mathematics, SVG, the arm engine and browser speech. `presentationAction(input)` validates and normalizes the record. Text is required (1–4000 characters); `gesture` defaults to `explain`, orientation to `audience`, and optional `count` to 1 (integer 1–20). Optional `duration` supplies the deterministic visual speech slot, 1000–120000 ms. Otherwise the slot is at least 2400 ms, estimated from word count. Long narratives should use multiple actions.
+`src/presentation-action.js` is independent of lessons, mathematics, SVG, the arm engine and browser speech. `presentationAction(input)` validates and normalizes the record. Text is required (1–4000 characters); `gesture` defaults to `thoughtful-explain`, orientation to `audience`, and optional `count` to 1 (integer 1–20). Optional `duration` supplies the deterministic visual speech slot, 1000–120000 ms. Otherwise the slot is at least 2400 ms, estimated from word count. Long narratives should use multiple actions.
 
 Vocabulary:
 
 | Gesture | Behavior |
 | --- | --- |
-| `explain` | Both hands open conversationally, with different left/right targets. |
-| `emphasize` | Right hand rises; left hand gives a smaller supporting movement. |
-| `count` | Right hand rises beside a small count marker; left supports the explanation. `count` supplies the number. |
-| `present` | Anatomical left hand opens toward the screen-right chalkboard in audience view; right supports. |
-| `idle` | Both arms remain relaxed. |
+| `thoughtful-explain` | Preferred default. Left hand supports the right elbow across the torso; raised right forearm makes a small indicating gesture. |
+| `present` | Left hand gestures toward the screen-right board; right remains relaxed. |
+| `emphasize` | One compact raised-hand cue; the other arm stays relaxed. |
+| `idle` | Relaxed neutral stance with small outward elbow clearance. |
 
-Gestures ease in and out over 500 ms and use one subtle conversational sweep, rather than an endless waving loop. Every action returns to idle before its pause. B1.9.3 gives each arm permanent anatomical joints and preserves true 3D segment lengths through the turn; projected lengths foreshorten. Rear-facing writing uses the original IK and configured limits. Audience postures use a separate outward 3D elbow-pole preference with relaxed extension.
+Legacy `explain` normalizes to `thoughtful-explain`, preventing old explanation records from producing a wide arms-out pose. Explicit legacy `count` uses a compact raised-hand cue and retains its count marker. The public `GESTURES` list contains the four primary names above.
+
+Thoughtful explanations hold a coordinated base pose through the turn and pause; only the indicating hand and a tiny following elbow motion animate while speaking. Explicit present/emphasize gestures ease from and back to neutral. All true anatomical link lengths remain fixed. Rear writing still uses the original IK; audience poses use anatomical target construction and pole solving where needed.
 
 ## Use without mathematics
 
@@ -35,7 +36,7 @@ import { compilePresentationAction, samplePresentationAction }
 const clip = compilePresentationAction({
   type: 'talk-and-gesture',
   text: 'Once upon a time, a gardener planted a seed.',
-  gesture: 'explain', orientation: 'audience'
+  gesture: 'thoughtful-explain', orientation: 'audience'
 }, { at: 0, id: 'story-introduction', turn: 700, wait: 1500 });
 const sample = samplePresentationAction(clip, elapsedMs);
 // sample: { orientation, audience, presentation }
@@ -44,7 +45,7 @@ const sample = samplePresentationAction(clip, elapsedMs);
 // presentation: action, stage, elapsed, timing and id (or null outside clip)
 ```
 
-`compilePresentationAction` returns `{id,action,at,talkAt,talkEnd,gate,resume,end}`. It requires no teaching plan. `samplePresentationAction` is pure and reconstructs any time directly. Another application can consume these values with its own renderer. `examples/presentation-actions.json` contains story/chart examples of all five gestures.
+`compilePresentationAction` returns `{id,action,at,talkAt,talkEnd,gate,resume,end}`. It requires no teaching plan. `samplePresentationAction` is pure and reconstructs any time directly. Another application can consume these values with its own renderer. `examples/presentation-actions.json` contains story/chart examples of the four primary gestures.
 
 For the current skeleton, `presentationRig(body, state, baseLandmarks, rig)` in `src/presentation-rig.js` takes the sampled orientation/presentation plus the board arm's `state.pose`, and returns anatomical 3D joints, facing/depth data, projected local landmarks and world-space left/right skeletal poses. `presentationHead` provides the continuous head outline. This renderer adapter reuses the original IK; the generic action module does not import it. Front shoulders and head are centered; two static face dots and a frontal head outline identify the audience view. Feet and hips keep their existing floor anchors.
 
@@ -85,3 +86,7 @@ Anatomical right is now viewer-left in front view, while remaining the same rig/
 ## B1.9.3a elbow preference
 
 All audience actions default to laterally outward elbows, including the idle/held pose. Wrist targets and gesture timing remain unchanged except for a more relaxed bent neutral target. Optional `elbowPreference:'inward'` explicitly permits a deliberately crossing gesture; invalid preference names are rejected. This adds no controls. The pole is solved in anatomy space before projection, preserving side identity and depth order. See [audience pole](orientation.md#outward-audience-elbow-preference-b193a).
+
+## B1.9.3b coordinated explanation pose
+
+Default actions and all ordinary lesson explanations use `thoughtful-explain`. Supporting/indicating arm roles and the exact support target are sampled from time, without speech or pose history. The supporting arm intentionally crosses the torso; other gestures retain compact outward bias. Hand cues are small and the pause stays still. See [thoughtful pose](thoughtful-pose.md).

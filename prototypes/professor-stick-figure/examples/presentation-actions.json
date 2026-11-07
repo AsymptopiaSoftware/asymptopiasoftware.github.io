@@ -1,10 +1,29 @@
 {
   "version": 1,
   "actions": [
-    {"type":"talk-and-gesture","text":"Let us begin the story in a small garden.","gesture":"explain","orientation":"audience"},
-    {"type":"talk-and-gesture","text":"Notice how much taller the plant has grown.","gesture":"emphasize","orientation":"audience"},
-    {"type":"talk-and-gesture","text":"Here is the third part of our story.","gesture":"count","count":3,"orientation":"audience"},
-    {"type":"talk-and-gesture","text":"This chart shows the changes throughout the week.","gesture":"present","orientation":"audience"},
-    {"type":"talk-and-gesture","text":"Take a moment to look at what we have learned.","gesture":"idle","orientation":"audience"}
+    {
+      "type": "talk-and-gesture",
+      "text": "Let us begin the story in a small garden.",
+      "gesture": "thoughtful-explain",
+      "orientation": "audience"
+    },
+    {
+      "type": "talk-and-gesture",
+      "text": "Notice how much taller the plant has grown.",
+      "gesture": "emphasize",
+      "orientation": "audience"
+    },
+    {
+      "type": "talk-and-gesture",
+      "text": "This chart shows the changes throughout the week.",
+      "gesture": "present",
+      "orientation": "audience"
+    },
+    {
+      "type": "talk-and-gesture",
+      "text": "Take a moment to look at what we have learned.",
+      "gesture": "idle",
+      "orientation": "audience"
+    }
   ]
 }

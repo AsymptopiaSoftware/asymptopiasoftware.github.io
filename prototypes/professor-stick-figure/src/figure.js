@@ -83,6 +83,10 @@ export class ProfessorFigure {
       groups[side].setAttribute('data-depth',order.arms[side].depth);
       groups[side].setAttribute('data-depth-layer',order.arms[side].layer);
       groups[side].setAttribute('data-shoulder-x',presentation.arms[side].shoulder[0]);
+      groups[side].setAttribute('data-hand-role',presentation.anatomical.arms[side].role??'relaxed');
+      groups[side].setAttribute('data-shoulder-y',presentation.arms[side].shoulder[1]);
+      groups[side].setAttribute('data-elbow-y',presentation.arms[side].elbow[1]);
+      groups[side].setAttribute('data-wrist-y',presentation.arms[side].wrist[1]);
       groups[side].setAttribute('data-elbow-x',presentation.arms[side].elbow[0]);
       groups[side].setAttribute('data-wrist-x',presentation.arms[side].wrist[0]);
     }
@@ -115,7 +119,12 @@ export class ProfessorFigure {
       hand.setAttribute('d','');
       if(state.audience>0){
         const [x,y]=presentation.arms[side].wrist,s=this.body.scale,sign=(side==='right'?1:-1)*this.facing.cos;
-        hand.setAttribute('d',`M${x},${y}q${sign*8*s},${-7*s} ${sign*11*s},0q${sign*-3*s},${8*s} ${sign*-9*s},${3*s}`);
+        const role=presentation.anatomical.arms[side].role;
+        if(role==='indicating'){
+          const elbow=presentation.arms[side].elbow,dx=x-elbow[0],dy=y-elbow[1],length=Math.hypot(dx,dy)||1;
+          hand.setAttribute('d',`M${x},${y}q${sign*4*s},${-4*s} ${sign*6*s},${-1*s}q${sign*-1*s},${4*s} ${sign*-5*s},${3*s} M${x},${y}q${dx/length*4*s},${dy/length*4*s} ${dx/length*8*s},${dy/length*8*s}`);
+        }else if(role==='supporting')hand.setAttribute('d',`M${x-5*s},${y}q${5*s},${-3*s} ${10*s},0q${-5*s},${5*s} ${-10*s},0`);
+        else hand.setAttribute('d',`M${x},${y}q${sign*8*s},${-7*s} ${sign*11*s},0q${sign*-3*s},${8*s} ${sign*-9*s},${3*s}`);
       }
     }
     const counting=state.presentation?.stage==='talk'&&state.presentation.action.gesture==='count'&&state.presentation.elapsed>500&&state.presentation.elapsed<state.presentation.action.duration-500;

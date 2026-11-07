@@ -1,8 +1,8 @@
-# Professor B1.9.3a — outward audience elbows
+# Professor B1.9.3b — thoughtful explanations
 
 The new [math-problems ES module](../math-problems/README.md) generates and solves fraction equations without any Professor, Drawing Arm, SVG, DOM or clock dependency. The board now typesets those ASTs as centered stacked fractions using a separate reusable math-layout package, then writes their paths using the existing body, B1.5 range planner and B1.4 gait.
 
-After writing a line, the Professor lifts and lowers the chalk, turns toward the viewer, and speaks the **next transformation** while gesturing with both arms. **Auto** proceeds after the explanation and 1.5 s pause; **Step** waits for **Continue** with the figure facing the viewer and arms at rest. He then turns back and continues from the same writing position. Play/Pause, Reset, seeking, speed and the collapsed Advanced panel remain available. **Mute** is the only new control and defaults off.
+After writing a line, the Professor lifts and lowers the chalk, turns toward the viewer, and speaks the **next transformation** in a thoughtful supported-elbow pose. **Auto** proceeds after the explanation and 1.5 s pause; **Step** waits for **Continue** with the figure facing the viewer and holding the supported pose calmly. He then turns back and continues from the same writing position. Play/Pause, Reset, seeking, speed and the collapsed Advanced panel remain available. **Mute** is the only new control and defaults off.
 
 The general-purpose [talk-and-gesture interface](docs/presentation-actions.md) also supports arbitrary stories or chart explanations. It is separate from mathematics and from speech side effects. B1.8 PR #12 remains unchanged on its own branch; this work is on `feature/professor-b1.9-talk-gesture`.
 
@@ -37,6 +37,7 @@ The sidebar displays the solver operation while writing, and the next operation 
 - `src/math-timeline.js`: validates a unique solution and assigns those paths normal Drawing Arm v1 durations and lift intervals. Canonical solver text remains unchanged; the AST supplies the board notation.
 - `src/teaching.js`: unchanged B1.8 structured cadence and Continue gates.
 - `src/presentation-action.js`: standalone action schema, clip timing and pure sampling without mathematics, SVG or audio.
+- `src/thoughtful-pose.js`: coordinated support contact, subtle hand cue, compact emphasis and relaxed neutral poses.
 - `src/audience-arm.js`: audience-only two-link pole preference and relaxed extension limit.
 - `src/orientation.js`: pure anatomical projection, bone-direction interpolation and arm depth ordering.
 - `src/presentation-plan.js`: thin lesson adapter and live-audio transport guard; `src/presentation-rig.js`: oriented skeleton and independent arm poses.
@@ -68,9 +69,13 @@ Other educational apps can import only `math-problems/src/index.js`, receive str
 
 Arm dimensions still derive from torso length; the right shoulder stays forward of the body and left of the chalk target. B1.5 plans whole-line symbol runs using original reach constraints. B1.4 alternates planted stance shoes with lifted swing feet, includes the same subtle upright bob, and settles both feet before writing. Chalk is lifted through every move/reach. The board writing pose, body proportion controls, range policy, gait source and joint limits remain unchanged. B1.9.3 projects a permanent anatomical skeleton through intermediate views and puts each arm/palm in its own depth layer. Existing face cues and limb artwork remain. Notation/glyph geometry can change the number of necessary moves, but the positioning policy and physical reach constraints are unchanged.
 
+## B1.9.3b thoughtful explainer
+
+`thoughtful-explain` is now the preferred default for every spoken explanation. Anatomical left crosses the torso and supports the right elbow; the raised right forearm and hand make a small, soft indicating gesture. Support follows the elbow rather than using an independent approximate wrist target. The pose remains held calmly at a Continue gate and releases during the existing return turn. Primary gestures are `thoughtful-explain`, `present`, `emphasize` and `idle`. Legacy `explain` aliases the thoughtful pose; explicit `count` remains supported. No controls are added. See [thoughtful pose](docs/thoughtful-pose.md).
+
 ## B1.9.3a outward elbow preference
 
-Audience arms now use a lateral 3D elbow pole, keeping both elbows away from the torso through idle/hold, explain, emphasize, count and present. Wrist targets still vary by gesture; the pole follows their motion smoothly instead of switching planar IK branches. A bent neutral pose and extension cap keep hands relaxed. Deliberate crossing can explicitly opt into `elbowPreference:'inward'`; all default gestures remain outward. Rear writing, arm identity, depth layers, lesson timing and math are unchanged. See [elbow preference](docs/orientation.md#outward-audience-elbow-preference-b193a).
+B1.9.3a introduced a reusable lateral 3D elbow pole. It remains available for explicit reach/support solving and outward bias in uncrossed poses. B1.9.3b makes the thoughtful supporting forearm a deliberate crossing exception and uses a calmer, downward neutral stance. Original rear writing, arm identity, depth layers, timing and mathematics remain unchanged. See [elbow preference](docs/orientation.md#outward-audience-elbow-preference-b193a).
 
 ## B1.9.3 anatomical facing
 
@@ -93,13 +98,13 @@ The math-layout module now names the text baseline, mathematical axis, fraction-
 ```sh
 cd prototypes/math-problems && npm test       # 15 independent math tests
 cd ../math-layout && npm test                 # 12 layout/placement tests
-cd ../professor-stick-figure && npm test       # 65 prototype/adapter tests
+cd ../professor-stick-figure && npm test       # 70 prototype/adapter tests
 npm run build:standalone
 npm run evidence
 cd ../drawing-arm && npm test                 # 15 original engine tests
 ```
 
-107 automated tests pass (15 math, 12 layout, 65 prototype/adapter, 15 Drawing Arm). Generation tests cover all three operators × all six missing slots × 16 seeds, including signed ranges. Every generated problem is solved and independently verified before release. Tests also cover exact arithmetic beyond safe Number precision, negative/reducible fractions, zero denominators, no/infinite/multiple solutions, tamper detection, source preservation, ordered timelines and unchanged walking/contact behavior.
+112 automated tests pass (15 math, 12 layout, 70 prototype/adapter, 15 Drawing Arm). Generation tests cover all three operators × all six missing slots × 16 seeds, including signed ranges. Every generated problem is solved and independently verified before release. Tests also cover exact arithmetic beyond safe Number precision, negative/reducible fractions, zero denominators, no/infinite/multiple solutions, tamper detection, source preservation, ordered timelines and unchanged walking/contact behavior.
 
 Real Chromium/Playwright integration checks passed for the modular demo **and self-contained HTML over localhost**, including example/generated solutions, walking, controls, JSON import/export and responsive layouts. Managed Chrome blocks file URLs; direct `file://` navigation could not be verified in that managed browser. The HTML itself contains all assets inline. Browser checks additionally verify turns, independent gestures, unchanged chalk, speech pause/resume/mute/cancel/replay, audio completion gates and return to writing, using a controllable speech backend. Native Chromium has no installed voices, so audible voice quality is unverified there; the native silent fallback works. A browser with an installed voice can speak using Web Speech. No external speech API is used. Screenshot evidence is in `docs/browser-evidence.svg`; `docs/solution-evidence.svg` is deterministic renderer evidence. [Math layout/timeline contract](docs/math-interface.md).
 

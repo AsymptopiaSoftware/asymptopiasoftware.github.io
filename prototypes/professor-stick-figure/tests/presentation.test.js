@@ -52,7 +52,7 @@ test('all gestures articulate both arms independently with invariant anatomical 
      assert.ok(Math.abs(bone(anatomical.elbow,anatomical.wrist)-anatomical.lengths.forearm)<1e-6);
     }
    }
-   if(gesture!=='idle'){assert.notDeepEqual(rigs[2].arms.left.wrist,rigs[3].arms.left.wrist);assert.notDeepEqual(rigs[2].arms.right.wrist,rigs[3].arms.right.wrist);}
+   if(gesture!=='idle'){assert.ok(JSON.stringify(rigs[2].arms.left.wrist)!==JSON.stringify(rigs[3].arms.left.wrist)||JSON.stringify(rigs[2].arms.right.wrist)!==JSON.stringify(rigs[3].arms.right.wrist));}
    assert.deepEqual(rigs[2].arms,rigs[4].arms);
   }
  }

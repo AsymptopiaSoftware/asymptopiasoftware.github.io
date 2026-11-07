@@ -22,16 +22,20 @@ export async function checkPresentationBrowser(browser,url,plan,screenshot) {
   const rear=await shoulders();assert.ok(rear.right>rear.left);
   const seek=async t=>page.locator('#seek').evaluate((el,t)=>{el.value=t;el.dispatchEvent(new Event('input',{bubbles:true}));},t);
   const calls=()=>page.evaluate(()=>window.__speechTest.calls);
-  const assertOutward=async()=>{
-    const elbows=await page.evaluate(()=>['left','right'].map(side=>{const group=window.__anatomicalNodes[side];return {side,shoulder:Number(group.getAttribute('data-shoulder-x')),elbow:Number(group.getAttribute('data-elbow-x'))};}));
-    for(const p of elbows)assert.ok((p.side==='right'?-1:1)*(p.elbow-p.shoulder)>10,`${p.side} audience elbow turns inward`);
+  const assertThoughtful=async()=>{
+    const arms=await page.evaluate(()=>Object.fromEntries(['left','right'].map(side=>{const g=window.__anatomicalNodes[side];return [side,{role:g.getAttribute('data-hand-role'),shoulder:[Number(g.getAttribute('data-shoulder-x')),Number(g.getAttribute('data-shoulder-y'))],elbow:[Number(g.getAttribute('data-elbow-x')),Number(g.getAttribute('data-elbow-y'))],wrist:[Number(g.getAttribute('data-wrist-x')),Number(g.getAttribute('data-wrist-y'))]}];})));
+    assert.equal(arms.left.role,'supporting');assert.equal(arms.right.role,'indicating');
+    assert.ok(Math.hypot(arms.left.wrist[0]-arms.right.elbow[0],arms.left.wrist[1]-arms.right.elbow[1])<8);
+    assert.ok(arms.right.wrist[1]<arms.right.elbow[1]-30);
+    assert.ok(arms.right.elbow[1]>arms.right.shoulder[1]+40);
+    assert.ok(arms.left.wrist[0]<arms.left.shoulder[0]);
   };
   assert.equal(await page.getByRole('checkbox',{name:'Mute',exact:true}).isChecked(),false);
   await page.locator('#teaching-mode').selectOption('step');
   await seek(p.at+300);assert.equal(await page.locator('[data-layer="body"]').getAttribute('data-orientation'),'transitioning');
   assert.equal(await page.locator('[data-layer="left-arm"]').getAttribute('data-depth-layer'),'far');assert.equal(await page.locator('[data-layer="drawing-arm"]').getAttribute('data-depth-layer'),'near');
   await seek(p.talkAt+900);assert.equal(await page.locator('[data-layer="body"]').getAttribute('data-orientation'),'audience');
-  const front=await shoulders();assert.ok(front.right<front.left);await assertOutward();
+  const front=await shoulders();assert.ok(front.right<front.left);await assertThoughtful();
   assert.equal(await page.evaluate(()=>window.__anatomicalNodes.right===document.querySelector('[data-layer="drawing-arm"]')&&window.__anatomicalNodes.left===document.querySelector('[data-layer="left-arm"]')),true);
   assert.equal(await page.locator('[data-layer="drawing-arm"]').getAttribute('data-anatomical-side'),'right');
   assert.equal(await page.locator('[data-layer="left-arm"]').getAttribute('data-anatomical-side'),'left');
@@ -51,7 +55,7 @@ export async function checkPresentationBrowser(browser,url,plan,screenshot) {
   await page.waitForTimeout(100);assert.ok(Number(await page.locator('#seek').inputValue())<p.talkEnd);assert.equal(await page.locator('#continue').isDisabled(),true);
   await page.evaluate(()=>window.__speechTest.end());await page.waitForFunction(()=>!document.querySelector('#continue').disabled);
   assert.equal(await page.locator('[data-layer="body"]').getAttribute('data-orientation'),'audience');assert.equal(await page.locator('[data-layer="chalk"]').innerHTML(),chalk);
-  await assertOutward();
+  await assertThoughtful();
   await page.getByRole('button',{name:'Continue',exact:true}).click();await page.waitForFunction(end=>Number(document.querySelector('#seek').value)>end+25&&document.querySelector('[data-layer="body"]').getAttribute('data-orientation')==='board',p.end);
   assert.equal(await page.locator('[data-layer="body"]').getAttribute('data-orientation'),'board');
   const returned=await shoulders();assert.ok(returned.right>returned.left);assert.equal(await page.evaluate(()=>window.__anatomicalNodes.right===document.querySelector('[data-layer="drawing-arm"]')),true);

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.9.3a · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.9.3b · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
 
 #math-example{width:100%;margin-bottom:12px}#operation{font-size:11px;color:var(--muted);min-height:35px}
 
@@ -22,7 +22,7 @@
 </svg>
 <div class="transport"><button id="play" class="primary">Play</button><button id="reset">Reset</button><label class="scrubber">Timeline<input id="seek" type="range" step="any" min="0" max="1" value="0" aria-label="Timeline position"></label><output id="clock">0.0 / 0.0 s</output><label class="speed-label">Speed<select id="speed"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div>
 <div class="stage-footer"><span id="contact" role="status">Ready</span><label><input id="anchors" type="checkbox"> Show skeleton / anchors</label></div>
-</section><aside><p class="eyebrow">B1.9.3a / WRITING TOOL</p><label for="math-example">Problem</label><select id="math-example" aria-label="Math problem"><option value="example">Example: x/5-4/4=2/5</option><option value="regression">Regression: 1/4-7/x=-5/8</option><option value="generated-0">Generated addition</option><option value="generated-1">Generated subtraction</option><option value="generated-2">Generated multiplication</option><option value="free">Free writing</option></select><label for="writing">Equation / writing instructions</label><textarea id="writing" rows="2" spellcheck="false">x/5-4/4=2/5</textarea><button id="load" class="primary wide">Solve &amp; write ↗</button><p id="message" role="status"></p><p id="operation" role="status" aria-live="polite"></p><div class="teaching-controls"><label for="teaching-mode">Mode<select id="teaching-mode"><option value="auto">Auto</option><option value="step">Step</option></select></label><button id="continue" disabled>Continue</button><label class="mute-label"><input id="mute" type="checkbox"> Mute</label></div><p id="speech-status" role="status"></p><div class="file-actions"><button id="export">Export JSON ↓</button><label for="import" class="file-label">Import JSON<input id="import" type="file" accept=".json,application/json"></label></div>
+</section><aside><p class="eyebrow">B1.9.3b / WRITING TOOL</p><label for="math-example">Problem</label><select id="math-example" aria-label="Math problem"><option value="example">Example: x/5-4/4=2/5</option><option value="regression">Regression: 1/4-7/x=-5/8</option><option value="generated-0">Generated addition</option><option value="generated-1">Generated subtraction</option><option value="generated-2">Generated multiplication</option><option value="free">Free writing</option></select><label for="writing">Equation / writing instructions</label><textarea id="writing" rows="2" spellcheck="false">x/5-4/4=2/5</textarea><button id="load" class="primary wide">Solve &amp; write ↗</button><p id="message" role="status"></p><p id="operation" role="status" aria-live="polite"></p><div class="teaching-controls"><label for="teaching-mode">Mode<select id="teaching-mode"><option value="auto">Auto</option><option value="step">Step</option></select></label><button id="continue" disabled>Continue</button><label class="mute-label"><input id="mute" type="checkbox"> Mute</label></div><p id="speech-status" role="status"></p><div class="file-actions"><button id="export">Export JSON ↓</button><label for="import" class="file-label">Import JSON<input id="import" type="file" accept=".json,application/json"></label></div>
 <details id="advanced"><summary>Advanced / Body Rig</summary><div id="body-controls" class="body-controls"></div><dl><dt>Upper / forearm</dt><dd id="arm-lengths"></dd><dt>Right shoulder</dt><dd id="shoulder-value"></dd><dt>Body origin</dt><dd id="body-origin"></dd></dl><button id="restore" class="wide">Restore body rig</button></details><p class="docs"><a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/professor-b1.9-talk-gesture/prototypes/professor-stick-figure/README.md">Docs</a> · <a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/professor-b1.9-talk-gesture/prototypes/professor-stick-figure/docs/coordinates.md">Rig / motion contract</a></p></aside></div>
 </main><script type="module">
 
@@ -1140,13 +1140,14 @@ function advanceTeaching(plan,time,delta,mode='auto') {
 
 // SOURCE: src/presentation-action.js
 /** General-purpose presentation data. No lesson, mathematics, SVG or audio dependency. */
-const GESTURES = Object.freeze(['explain','emphasize','count','present','idle']);
+const GESTURES = Object.freeze(['thoughtful-explain','present','emphasize','idle']);
 function presentationAction(input) {
   if(input?.type!=='talk-and-gesture'||typeof input.text!=='string'||!input.text.trim()||input.text.length>4000)
     throw new TypeError('A talk-and-gesture action needs nonempty text (up to 4000 characters)');
   if(input.elbowPreference!==undefined&&!['outward','inward'].includes(input.elbowPreference))throw new TypeError('Invalid elbow preference');
-  const {gesture='explain',orientation='audience',count=1}=input;
-  if(!GESTURES.includes(gesture)||orientation!=='audience'||!Number.isInteger(count)||count<1||count>20)
+  const {orientation='audience',count=1}=input;
+  const gesture=input.gesture==='explain'?'thoughtful-explain':input.gesture??'thoughtful-explain';
+  if((!GESTURES.includes(gesture)&&gesture!=='count')||orientation!=='audience'||!Number.isInteger(count)||count<1||count>20)
     throw new TypeError('Invalid presentation gesture, orientation or count');
   // A deterministic visual slot. Actual browser audio may hold its final instant.
   const duration=input.duration??Math.max(2400,input.text.trim().split(/\s+/u).length*440+1000);
@@ -1180,7 +1181,7 @@ function presentationPlan(base, actions) {
     // Explain the NEXT transformation after its prerequisite line is on the board.
     const next=base.teachingSteps[i+1]??step;
     return {action:presentationAction(actions?.[i]??{type:'talk-and-gesture',text:next.operation.explanation,
-      gesture:i===0?'explain':i===1?'emphasize':i===2?'present':'idle',count:next.index+1}),explanationIndex:next.index};
+      gesture:'thoughtful-explain',count:next.index+1}),explanationIndex:next.index};
   });
   if(actions&&actions.length!==base.teachingSteps.length)throw new RangeError('Expected one presentation action per teaching pause');
   const phases=[],presentations=[],shifts=[];let shift=0;
@@ -1300,25 +1301,65 @@ function audienceArmPose(arm,target,side,{elbowPreference='outward',maxExtension
 }
 
 
+// SOURCE: src/thoughtful-pose.js
+const unitThoughtful=v=>{const n=Math.hypot(...v);return v.map(x=>x/n);};
+const addThoughtful=(a,b)=>a.map((v,i)=>v+b[i]);
+const subtractThoughtful=(a,b)=>a.map((v,i)=>v-b[i]);
+const smoothThoughtful=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
+function fromBonesThoughtful(arm,upper,forearm,extra={}){
+ const elbow=addThoughtful(arm.shoulder,upper),wrist=addThoughtful(elbow,forearm),tip=addThoughtful(wrist,forearm.map(v=>v*(arm.tip??0)/arm.forearm));
+ return {shoulder:[...arm.shoulder],elbow,wrist,tip,elbowPreference:'outward',...extra};
+}
+function relaxedAudienceArm(arm,side){
+ const sign=side==='right'?1:-1;
+ return fromBonesThoughtful(arm,unitThoughtful([sign*.14,.98,.12]).map(v=>v*arm.upper),unitThoughtful([-sign*.36,.90,.25]).map(v=>v*arm.forearm),{role:'relaxed'});
+}
+function blendThoughtful(arm,from,to,t){
+ return fromBonesThoughtful(arm,turnBone(subtractThoughtful(from.elbow,from.shoulder),subtractThoughtful(to.elbow,to.shoulder),t),
+  turnBone(subtractThoughtful(from.wrist,from.elbow),subtractThoughtful(to.wrist,to.elbow),t),{role:to.role??'indicating'});
+}
+/** Coupled, length-preserving pose: anatomical left supports anatomical right.
+ * The contact follows the small elbow motion, rather than two unrelated targets.
+ */
+function thoughtfulArms(arms,elapsed,duration,{emphasis=false}={}){
+ const t=Math.max(0,Math.min(duration,elapsed)),envelope=smoothThoughtful(t/500)*smoothThoughtful((duration-t)/500),wave=Math.sin(2*Math.PI*t/duration)*envelope;
+ const raised=arms.right,support=arms.left,reach=support.upper+support.forearm;
+ let choice;
+ // Prefer a small outward flare; adapt inward only for broad/short-arm proportions.
+ for(const lateral of [.28,.22,.14,.08,.02,-.08,-.2,-.35,-.5,-.7,-.85,-.95]){
+  const yz=Math.sqrt(1-lateral*lateral),upper=unitThoughtful([lateral+.008*wave,.94*yz,.34*yz]).map(v=>v*raised.upper);
+  const fore=unitThoughtful([-.64+(emphasis?.09:.05)*wave,-.72,.26+.015*wave]).map(v=>v*raised.forearm);
+  const right=fromBonesThoughtful(raised,upper,fore,{role:'indicating'}),contact=addThoughtful(right.elbow,[0,.045*support.forearm,.06*support.forearm]);
+  const baseUpper=unitThoughtful([lateral,.94*yz,.34*yz]).map(v=>v*raised.upper),baseContact=addThoughtful(addThoughtful(raised.shoulder,baseUpper),[0,.045*support.forearm,.06*support.forearm]);
+  const score=Math.hypot(...subtractThoughtful(baseContact,support.shoulder));
+  if(!choice||score<choice.score)choice={right,contact,score};
+  if(score+raised.upper*.015<=reach*.96&&score>Math.abs(support.upper-support.forearm)+1e-7)break;
+ }
+ const left=audienceArmPose(support,choice.contact,'left',{maxExtension:.96});left.role='supporting';left.allowsCrossing=true;
+ const gap=Math.hypot(...subtractThoughtful(left.wrist,choice.contact));
+ return {right:choice.right,left,supportContact:{supporting:'left',supported:'right',target:choice.contact,gap,reachable:gap<1e-6}};
+}
+/** Reusable vocabulary; no lesson, SVG or speech dependency. */
+function audienceGestureTargets(arms,action,elapsed){
+ const duration=action.duration,t=Math.max(0,Math.min(duration,elapsed));
+ if(action.gesture==='thoughtful-explain'||action.gesture==='explain')return thoughtfulArms(arms,t,duration);
+ const targets={left:relaxedAudienceArm(arms.left,'left'),right:relaxedAudienceArm(arms.right,'right')};
+ const envelope=smoothThoughtful(t/500)*smoothThoughtful((duration-t)/500);
+ if(action.gesture==='emphasize'||action.gesture==='count'){
+  const indicating=thoughtfulArms(arms,t,duration,{emphasis:true}).right;
+  targets.right=blendThoughtful(arms.right,targets.right,indicating,envelope);
+ }else if(action.gesture==='present'){
+  const arm=arms.left,reach=arm.upper+arm.forearm+(arm.tip??0),wave=Math.sin(2*Math.PI*t/duration)*envelope;
+  const pointing=audienceArmPose(arm,addThoughtful(arm.shoulder,[-.80*reach,(.06+.012*wave)*reach,0]),'left',{elbowPreference:action.elbowPreference??'outward'});pointing.role='presenting';
+  targets.left=blendThoughtful(arm,targets.left,pointing,envelope);
+ }
+ return targets;
+}
+
+
 // SOURCE: src/presentation-rig.js
 const mixPresentation=(a,b,t)=>a.map((v,i)=>v+(b[i]-v)*t);
 const smoothPresentation=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
-/** Targets are in the character's anatomical x/y plane, never screen left/right.
- * A small single conversational phrase, with independent targets and gentle emphasis.
- * Poses enter and leave idle, so holding a Step gate never creates endless waving.
- */
-function gestureAngles(action,elapsed,side,arm) {
-  const reach=arm.upper+arm.forearm+arm.tip,sign=side==='right'?1:-1;
-  const idle=[.28,.80],targets={explain:side==='right'?[.64,.38]:[.52,.48],
-    emphasize:side==='right'?[.34,-.20]:[.36,.68],count:side==='right'?[.30,-.10]:[.26,.70],
-    present:side==='left'?[.80,.05]:[.38,.62],idle};
-  const duration=action.duration,t=Math.max(0,Math.min(duration,elapsed));
-  const envelope=smoothPresentation(t/500)*smoothPresentation((duration-t)/500);
-  const target=targets[action.gesture],sway=action.gesture==='idle'?0:Math.sin(2*Math.PI*t/duration)*(side==='right'?.035:-.022);
-  const x=idle[0]+(target[0]-idle[0])*envelope,y=idle[1]+(target[1]-idle[1])*envelope+sway*envelope;
-  const pose=solveIK({...arm,elbow:side==='right'?'negative':'positive'},[arm.shoulder[0]+sign*x*reach,arm.shoulder[1]+y*reach]);
-  return [pose.angles.shoulder,pose.angles.elbow];
-}
 /** Calibrate the existing rear projection without changing its coordinates.
  * The right writing arm lifts in a camera-parallel plane; the left rest pose
  * recovers its foreshortened depth while preserving the original board silhouette.
@@ -1347,10 +1388,11 @@ function presentationRig(config,state,base,rig={}) {
   const elapsed=state.presentation?.stage==='talk'?state.presentation.elapsed:0;
   const joints={...r.joints},anatomicalArms={};
   const local=p=>p.map((v,i)=>(v-b.origin[i])/b.scale),subtract=(p,q)=>p.map((v,i)=>v-q[i]),add=(p,q)=>p.map((v,i)=>v+q[i]);
+  const armDefinitions={right:{shoulder:joints.rightShoulder,upper:.65*b.torsoLength,forearm:.55*b.torsoLength,tip:.04*b.torsoLength},
+    left:{shoulder:joints.leftShoulder,upper:Math.max(.65*b.torsoLength,distance(original.leftShoulder,original.leftElbow)),forearm:Math.max(.55*b.torsoLength,distance(original.leftElbow,original.leftHand)),tip:0}};
+  const targets=audienceGestureTargets(armDefinitions,action,elapsed);
   for(const side of ['left','right']){
-    const right=side==='right',shoulder=joints[side+'Shoulder'];
-    const lengths=right?{upper:.65*b.torsoLength,forearm:.55*b.torsoLength,tip:.04*b.torsoLength}:
-      {upper:Math.max(.65*b.torsoLength,distance(original.leftShoulder,original.leftElbow)),forearm:Math.max(.55*b.torsoLength,distance(original.leftElbow,original.leftHand)),tip:0};
+    const right=side==='right',shoulder=joints[side+'Shoulder'],definition=armDefinitions[side],lengths={upper:definition.upper,forearm:definition.forearm,tip:definition.tip};
     const boardDepth=projectAnatomical(shoulder,r.board).depth;
     const start=right?{shoulder:local(state.pose.shoulder),elbow:local(state.pose.elbow),wrist:local(state.pose.wrist)}:
       {shoulder:original.leftShoulder,elbow:original.leftElbow,wrist:original.leftHand};
@@ -1359,15 +1401,11 @@ function presentationRig(config,state,base,rig={}) {
     const upperDepth=right?0:Math.sqrt(Math.max(0,lengths.upper**2-distance(start.shoulder,start.elbow)**2));
     const foreDepth=right?0:Math.sqrt(Math.max(0,lengths.forearm**2-distance(start.elbow,start.wrist)**2));
     const lifted={shoulder:liftProjected(start.shoulder,boardDepth,r.board),elbow:liftProjected(start.elbow,boardDepth+upperDepth,r.board),wrist:liftProjected(start.wrist,boardDepth+upperDepth+foreDepth,r.board)};
-    const arm={...rig,...lengths,shoulder:shoulder.slice(0,2),elbow:right?'negative':'positive'};
-    // Preserve the gesture's wrist/tool target; the audience pole, not this 2D
-    // endpoint calculation's branch, determines the actual anatomical elbow.
-    const endpoint=forward(arm,...gestureAngles(action,elapsed,side,arm)).tip;
-    const target=audienceArmPose({...lengths,shoulder},[...endpoint,0],side,{elbowPreference:action.elbowPreference??'outward'});
+    const target=targets[side];
     const targetUpper=subtract(target.elbow,target.shoulder),targetFore=subtract(target.wrist,target.elbow);
-    const upper=turnBone(subtract(lifted.elbow,lifted.shoulder),targetUpper,a),fore=turnBone(subtract(lifted.wrist,lifted.elbow),targetFore,a);
-    const elbow=add(shoulder,upper),wrist=add(elbow,fore),tip=add(wrist,fore.map(v=>v*lengths.tip/lengths.forearm));
-    anatomicalArms[side]={id:side,shoulder:[...shoulder],elbow,wrist,hand:[...wrist],tip,lengths,elbowPreference:target.elbowPreference,pole:target.pole};
+    const upperBone=turnBone(subtract(lifted.elbow,lifted.shoulder),targetUpper,a),fore=turnBone(subtract(lifted.wrist,lifted.elbow),targetFore,a);
+    const elbow=add(shoulder,upperBone),wrist=add(elbow,fore),tip=add(wrist,fore.map(v=>v*lengths.tip/lengths.forearm));
+    anatomicalArms[side]={id:side,shoulder:[...shoulder],elbow,wrist,hand:[...wrist],tip,lengths,elbowPreference:target.elbowPreference,pole:target.pole,role:target.role,allowsCrossing:!!target.allowsCrossing};
     for(const [name,p]of Object.entries({Shoulder:shoulder,Elbow:elbow,Wrist:wrist,Hand:wrist,Tip:tip}))joints[side+name]=p;
   }
   const projected=projectSkeleton(joints,facing),p=structuredClone(r.base),arms={};
@@ -1379,7 +1417,12 @@ function presentationRig(config,state,base,rig={}) {
     arms[side]={id:side,shoulder,elbow,wrist,tip:world('Tip'),angles:{shoulder:angle,elbow:Math.atan2(wrist[1]-elbow[1],wrist[0]-elbow[0])-angle}};
   }
   if(a===0)arms.right={...state.pose,id:'right'};
-  return {landmarks:p,arms,anatomical:{joints,arms:anatomicalArms},projected,facing,depthOrder:armDepthOrder(projected,facing,.06*b.torsoLength)};
+  let supportContact;
+  if(targets.supportContact){
+    const offset=subtract(targets.supportContact.target,targets.right.elbow),contact=add(anatomicalArms.right.elbow,offset);
+    supportContact={...targets.supportContact,target:contact,gap:Math.hypot(...subtract(anatomicalArms.left.wrist,contact)),active:a===1};
+  }
+  return {landmarks:p,arms,anatomical:{joints,arms:anatomicalArms,...(supportContact?{supportContact}:{})},projected,facing,depthOrder:armDepthOrder(projected,facing,.06*b.torsoLength)};
 }
 /** Identical Bézier topology allows a continuous rear-profile → frontal head morph. */
 function presentationHead(p,headSize,audience=0) {
@@ -1524,6 +1567,10 @@ class ProfessorFigure {
       groups[side].setAttribute('data-depth',order.arms[side].depth);
       groups[side].setAttribute('data-depth-layer',order.arms[side].layer);
       groups[side].setAttribute('data-shoulder-x',presentation.arms[side].shoulder[0]);
+      groups[side].setAttribute('data-hand-role',presentation.anatomical.arms[side].role??'relaxed');
+      groups[side].setAttribute('data-shoulder-y',presentation.arms[side].shoulder[1]);
+      groups[side].setAttribute('data-elbow-y',presentation.arms[side].elbow[1]);
+      groups[side].setAttribute('data-wrist-y',presentation.arms[side].wrist[1]);
       groups[side].setAttribute('data-elbow-x',presentation.arms[side].elbow[0]);
       groups[side].setAttribute('data-wrist-x',presentation.arms[side].wrist[0]);
     }
@@ -1556,7 +1603,12 @@ class ProfessorFigure {
       hand.setAttribute('d','');
       if(state.audience>0){
         const [x,y]=presentation.arms[side].wrist,s=this.body.scale,sign=(side==='right'?1:-1)*this.facing.cos;
-        hand.setAttribute('d',`M${x},${y}q${sign*8*s},${-7*s} ${sign*11*s},0q${sign*-3*s},${8*s} ${sign*-9*s},${3*s}`);
+        const role=presentation.anatomical.arms[side].role;
+        if(role==='indicating'){
+          const elbow=presentation.arms[side].elbow,dx=x-elbow[0],dy=y-elbow[1],length=Math.hypot(dx,dy)||1;
+          hand.setAttribute('d',`M${x},${y}q${sign*4*s},${-4*s} ${sign*6*s},${-1*s}q${sign*-1*s},${4*s} ${sign*-5*s},${3*s} M${x},${y}q${dx/length*4*s},${dy/length*4*s} ${dx/length*8*s},${dy/length*8*s}`);
+        }else if(role==='supporting')hand.setAttribute('d',`M${x-5*s},${y}q${5*s},${-3*s} ${10*s},0q${-5*s},${5*s} ${-10*s},0`);
+        else hand.setAttribute('d',`M${x},${y}q${sign*8*s},${-7*s} ${sign*11*s},0q${sign*-3*s},${8*s} ${sign*-9*s},${3*s}`);
       }
     }
     const counting=state.presentation?.stage==='talk'&&state.presentation.action.gesture==='count'&&state.presentation.elapsed>500&&state.presentation.elapsed<state.presentation.action.duration-500;

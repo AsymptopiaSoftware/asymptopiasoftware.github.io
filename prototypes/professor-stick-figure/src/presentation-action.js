@@ -1,11 +1,12 @@
 /** General-purpose presentation data. No lesson, mathematics, SVG or audio dependency. */
-export const GESTURES = Object.freeze(['explain','emphasize','count','present','idle']);
+export const GESTURES = Object.freeze(['thoughtful-explain','present','emphasize','idle']);
 export function presentationAction(input) {
   if(input?.type!=='talk-and-gesture'||typeof input.text!=='string'||!input.text.trim()||input.text.length>4000)
     throw new TypeError('A talk-and-gesture action needs nonempty text (up to 4000 characters)');
   if(input.elbowPreference!==undefined&&!['outward','inward'].includes(input.elbowPreference))throw new TypeError('Invalid elbow preference');
-  const {gesture='explain',orientation='audience',count=1}=input;
-  if(!GESTURES.includes(gesture)||orientation!=='audience'||!Number.isInteger(count)||count<1||count>20)
+  const {orientation='audience',count=1}=input;
+  const gesture=input.gesture==='explain'?'thoughtful-explain':input.gesture??'thoughtful-explain';
+  if((!GESTURES.includes(gesture)&&gesture!=='count')||orientation!=='audience'||!Number.isInteger(count)||count<1||count>20)
     throw new TypeError('Invalid presentation gesture, orientation or count');
   // A deterministic visual slot. Actual browser audio may hold its final instant.
   const duration=input.duration??Math.max(2400,input.text.trim().split(/\s+/u).length*440+1000);

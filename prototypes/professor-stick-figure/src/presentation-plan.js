@@ -8,7 +8,7 @@ export function presentationPlan(base, actions) {
     // Explain the NEXT transformation after its prerequisite line is on the board.
     const next=base.teachingSteps[i+1]??step;
     return {action:presentationAction(actions?.[i]??{type:'talk-and-gesture',text:next.operation.explanation,
-      gesture:i===0?'explain':i===1?'emphasize':i===2?'present':'idle',count:next.index+1}),explanationIndex:next.index};
+      gesture:'thoughtful-explain',count:next.index+1}),explanationIndex:next.index};
   });
   if(actions&&actions.length!==base.teachingSteps.length)throw new RangeError('Expected one presentation action per teaching pause');
   const phases=[],presentations=[],shifts=[];let shift=0;
