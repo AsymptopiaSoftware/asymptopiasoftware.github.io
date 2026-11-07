@@ -1,5 +1,6 @@
 import { configureBody, attachedArm } from './body.js';
 import { walkingBob } from './gait.js';
+import { groupWritingStrokes, chooseWritingRange } from './range-planning.js';
 import { distance, solveIK, forward } from '../../drawing-arm/src/kinematics.js';
 import { strokePoint } from '../../drawing-arm/src/timeline.js';
 const clamp12 = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
@@ -27,7 +28,7 @@ function validPlacement12(points, arm) {
 /** Internal posture band, in world units. No new UI or joint constraints. */
 export function writingRange(body, rig={}) {
   const arm=attachedArm(body,rig),reach=arm.upper+arm.forearm+arm.tip;
-  return {min:.18*reach,max:.82*reach,preferred:.5*reach};
+  return {min:.18*reach,max:.98*reach,preferred:.5*reach};
 }
 /** Keep a valid placement; otherwise center the forward-writing band. */
 export function placementFor(points, body={}, rig={}, currentOffset=0) {
@@ -89,27 +90,17 @@ export function planWriting(timeline, bodyOptions={}, rig={}) {
     const p=add({kind:'write',offset,arm,stroke,sourceAt,sourceTime:sourceAt},duration);writes.push(p);
     pose=solveIK(arm,points.at(-1));
   }
-  let clusterUntil=-1,clusterOffset=null;
+  const grouping=groupWritingStrokes(timeline),ranges=[];
+  let rangeUntil=-1,rangeOffset=null;
   for(const [index,s] of timeline.strokes.entries()) {
     hold(s.at-sourceEnd,sourceEnd);
-    if(index>clusterUntil) {
-      clusterUntil=index;clusterOffset=placementFor(s.points,body,rig,offset);
-      if(clusterOffset!==null) {
-        let points=[...s.points];
-        // Reserve one stance for a small spatial/temporal cluster. Commit its end
-        // so repeated lookahead cannot cause creeping moves at every stroke.
-        for(let j=index+1;j<Math.min(timeline.strokes.length,index+24);j++) {
-          const next=timeline.strokes[j],previous=timeline.strokes[j-1];
-          if(next.at-previous.at-previous.duration>250||next.pen===false||s.pen===false)break;
-          const candidate=[...points,...next.points],ys=candidate.map(p=>p[1]);
-          if(Math.max(...ys)-Math.min(...ys)>.3*(initial.upper+initial.forearm+initial.tip))break;
-          const stance=placementFor(candidate,body,rig,offset);
-          if(stance===null)break;
-          points=candidate;clusterUntil=j;clusterOffset=stance;
-        }
-      }
+    if(index>rangeUntil) {
+      const range=chooseWritingRange(grouping.groups,grouping.byStroke[index],offset,
+        (points,current)=>placementFor(points,body,rig,current));
+      rangeUntil=grouping.groups[range.end].end;rangeOffset=range.offset;
+      ranges.push({...range,firstStroke:index,lastStroke:rangeUntil});
     }
-    if(placementFor(s.points,body,rig,offset)!==null)writePiece(s.points,s.duration,s.at,s.pen!==false,clusterOffset);
+    if(placementFor(s.points,body,rig,offset)!==null)writePiece(s.points,s.duration,s.at,s.pen!==false,rangeOffset);
     else {
       // A path wider than one workspace is split on its original straight edges.
       // No points are rescaled or shifted; reposition at lifted-chalk boundaries.
@@ -129,7 +120,7 @@ export function planWriting(timeline, bodyOptions={}, rig={}) {
     const p=phases.find(p=>p.kind==='write'&&sourceTime<=p.sourceAt+p.duration);
     return p?p.at+clamp12(sourceTime-p.sourceAt,0,p.duration):cursor;
   };
-  return {body,rig:structuredClone(rig),phases,writes,blocked,duration:cursor,restPose,sourceToWall};
+  return {body,rig:structuredClone(rig),phases,writes,blocked,duration:cursor,restPose,sourceToWall,ranges,groups:grouping.groups};
 }
 export function samplePlan(plan,time) {
   if(!Number.isFinite(time))throw new RangeError('Time must be finite');

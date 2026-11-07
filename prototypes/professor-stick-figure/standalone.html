@@ -408,6 +408,70 @@ function walkingLandmarks(bodyOptions,state) {
 }
 
 
+// SOURCE: src/range-planning.js
+/** Geometry-only line/symbol inference. Source timeline/glyphs are never modified. */
+function boundsOf(points) {
+  return points.reduce((b,p)=>({minX:Math.min(b.minX,p[0]),maxX:Math.max(b.maxX,p[0]),minY:Math.min(b.minY,p[1]),maxY:Math.max(b.maxY,p[1])}),{minX:Infinity,maxX:-Infinity,minY:Infinity,maxY:-Infinity});
+}
+function unionBounds(a,b){return {minX:Math.min(a.minX,b.minX),maxX:Math.max(a.maxX,b.maxX),minY:Math.min(a.minY,b.minY),maxY:Math.max(a.maxY,b.maxY)};}
+function groupWritingStrokes(timeline) {
+  const boxes=timeline.strokes.map(s=>boundsOf(s.points));
+  const heights=boxes.map(b=>b.maxY-b.minY).filter(h=>h>1e-6).sort((a,b)=>a-b);
+  const widths=boxes.map(b=>b.maxX-b.minX).filter(w=>w>1e-6).sort((a,b)=>a-b);
+  const nominal=heights[Math.floor(heights.length/2)]??(widths[Math.floor(widths.length/2)]??24)/.62;
+  const groups=[],byStroke=[];let line=-1,lineBounds=null,previous=null;
+  for(const [i,stroke]of timeline.strokes.entries()) {
+    const box=boxes[i];
+    const newLine=!lineBounds||stroke.pen===false||previous?.pen===false||box.minY>lineBounds.maxY+.45*nominal||box.maxY<lineBounds.minY-.45*nominal;
+    if(newLine){line++;lineBounds=box;}else lineBounds=unionBounds(lineBounds,box);
+    const last=groups.at(-1),margin=.08*nominal;
+    const sameSymbol=last&&last.line===line&&box.minX<=last.bounds.maxX+margin&&box.maxX>=last.bounds.minX-margin;
+    if(sameSymbol){last.end=i;last.points.push(...stroke.points);last.bounds=unionBounds(last.bounds,box);}
+    else groups.push({line,start:i,end:i,points:[...stroke.points],bounds:{...box}});
+    byStroke[i]=groups.length-1;previous=stroke;
+  }
+  return {groups,byStroke,nominalHeight:nominal};
+}
+/** Plan against the whole remaining line, preferring natural symbol boundaries.
+ * Greedy longest feasible prefixes minimize new stances for ordered groups.
+ * Retain a free current prefix if that saves a move; on a tie pre-position once
+ * for a longer run rather than introduce an avoidable extra standing position.
+ */
+function chooseWritingRange(groups,start,currentOffset,place) {
+  const first=groups[start];if(!first)return null;
+  const cache=new Map();
+  const longest=from=>{
+    if(cache.has(from))return cache.get(from);
+    let points=[],range=null;
+    for(let j=from;j<groups.length&&groups[j].line===first.line;j++){
+      points.push(...groups[j].points);const offset=place(points,currentOffset);
+      if(offset===null)break;
+      range={start:from,end:j,offset,line:first.line};
+    }
+    cache.set(from,range);return range;
+  };
+  const movedCost=from=>{
+    let count=0;
+    while(from<groups.length&&groups[from].line===first.line){
+      const r=longest(from);if(!r)return Infinity;
+      count++;from=r.end+1;
+    }
+    return count;
+  };
+  const best=longest(start);
+  if(!best)return {start,end:start,offset:null,line:first.line};
+  let points=[],retained=null;
+  for(let j=start;j<=best.end;j++){
+    points.push(...groups[j].points);const offset=place(points,currentOffset);
+    if(offset===null||Math.abs(offset-currentOffset)>1e-7)break;
+    retained={start,end:j,offset:currentOffset,line:first.line};
+  }
+  if(!retained)return best;
+  if(retained.end===best.end)return retained;
+  return 1+movedCost(best.end+1)<=movedCost(retained.end+1)?best:retained;
+}
+
+
 // SOURCE: src/locomotion.js
 const clamp12 = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
 const ease12 = t => t * t * (3 - 2 * t);
@@ -434,7 +498,7 @@ function validPlacement12(points, arm) {
 /** Internal posture band, in world units. No new UI or joint constraints. */
 function writingRange(body, rig={}) {
   const arm=attachedArm(body,rig),reach=arm.upper+arm.forearm+arm.tip;
-  return {min:.18*reach,max:.82*reach,preferred:.5*reach};
+  return {min:.18*reach,max:.98*reach,preferred:.5*reach};
 }
 /** Keep a valid placement; otherwise center the forward-writing band. */
 function placementFor(points, body={}, rig={}, currentOffset=0) {
@@ -496,27 +560,17 @@ function planWriting(timeline, bodyOptions={}, rig={}) {
     const p=add({kind:'write',offset,arm,stroke,sourceAt,sourceTime:sourceAt},duration);writes.push(p);
     pose=solveIK(arm,points.at(-1));
   }
-  let clusterUntil=-1,clusterOffset=null;
+  const grouping=groupWritingStrokes(timeline),ranges=[];
+  let rangeUntil=-1,rangeOffset=null;
   for(const [index,s] of timeline.strokes.entries()) {
     hold(s.at-sourceEnd,sourceEnd);
-    if(index>clusterUntil) {
-      clusterUntil=index;clusterOffset=placementFor(s.points,body,rig,offset);
-      if(clusterOffset!==null) {
-        let points=[...s.points];
-        // Reserve one stance for a small spatial/temporal cluster. Commit its end
-        // so repeated lookahead cannot cause creeping moves at every stroke.
-        for(let j=index+1;j<Math.min(timeline.strokes.length,index+24);j++) {
-          const next=timeline.strokes[j],previous=timeline.strokes[j-1];
-          if(next.at-previous.at-previous.duration>250||next.pen===false||s.pen===false)break;
-          const candidate=[...points,...next.points],ys=candidate.map(p=>p[1]);
-          if(Math.max(...ys)-Math.min(...ys)>.3*(initial.upper+initial.forearm+initial.tip))break;
-          const stance=placementFor(candidate,body,rig,offset);
-          if(stance===null)break;
-          points=candidate;clusterUntil=j;clusterOffset=stance;
-        }
-      }
+    if(index>rangeUntil) {
+      const range=chooseWritingRange(grouping.groups,grouping.byStroke[index],offset,
+        (points,current)=>placementFor(points,body,rig,current));
+      rangeUntil=grouping.groups[range.end].end;rangeOffset=range.offset;
+      ranges.push({...range,firstStroke:index,lastStroke:rangeUntil});
     }
-    if(placementFor(s.points,body,rig,offset)!==null)writePiece(s.points,s.duration,s.at,s.pen!==false,clusterOffset);
+    if(placementFor(s.points,body,rig,offset)!==null)writePiece(s.points,s.duration,s.at,s.pen!==false,rangeOffset);
     else {
       // A path wider than one workspace is split on its original straight edges.
       // No points are rescaled or shifted; reposition at lifted-chalk boundaries.
@@ -536,7 +590,7 @@ function planWriting(timeline, bodyOptions={}, rig={}) {
     const p=phases.find(p=>p.kind==='write'&&sourceTime<=p.sourceAt+p.duration);
     return p?p.at+clamp12(sourceTime-p.sourceAt,0,p.duration):cursor;
   };
-  return {body,rig:structuredClone(rig),phases,writes,blocked,duration:cursor,restPose,sourceToWall};
+  return {body,rig:structuredClone(rig),phases,writes,blocked,duration:cursor,restPose,sourceToWall,ranges,groups:grouping.groups};
 }
 function samplePlan(plan,time) {
   if(!Number.isFinite(time))throw new RangeError('Time must be finite');

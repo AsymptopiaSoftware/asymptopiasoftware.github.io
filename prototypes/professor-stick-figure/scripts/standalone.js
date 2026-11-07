@@ -10,7 +10,7 @@ for (const file of lock.files) {
   if (sha !== file.sha) throw new Error(`Engine source drift: ${file.path}`);
 }
 let source = '';
-for (const path of ['../drawing-arm/src/kinematics.js', '../drawing-arm/src/glyphs.js', '../drawing-arm/src/timeline.js', '../drawing-arm/src/svg-renderer.js', 'src/body.js', 'src/curves.js', 'src/gait.js', 'src/locomotion.js', 'src/figure.js', 'demo.js']) {
+for (const path of ['../drawing-arm/src/kinematics.js', '../drawing-arm/src/glyphs.js', '../drawing-arm/src/timeline.js', '../drawing-arm/src/svg-renderer.js', 'src/body.js', 'src/curves.js', 'src/gait.js', 'src/range-planning.js', 'src/locomotion.js', 'src/figure.js', 'demo.js']) {
   const content = await readFile(new URL(path, root), 'utf8');
   source += `\n// SOURCE: ${path}\n` + content.replace(/^import .*;\n/gm, '').replace(/^export /gm, '') + '\n';
 }

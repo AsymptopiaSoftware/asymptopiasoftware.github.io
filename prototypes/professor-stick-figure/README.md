@@ -1,4 +1,4 @@
-# Professor B1.4 development tool
+# Professor B1.5 development tool
 
 Short body-derived arms, reach-driven horizontal walking, and curved SVG limbs. The view remains rear three-quarter, facing the board, with the writing arm attached to the right shoulder. No character artwork, facial behavior, personality or lesson system.
 
@@ -22,11 +22,21 @@ Body-local lengths are `upper = .65 × torsoLength`, `forearm = .55 × torsoLeng
 
 ## Reach-driven movement
 
-B1.3 requires a forward writing band: the target must stay **18%–82% of total tool reach to the right of the shoulder** throughout each writing portion. At default proportions this is approximately 25.7–116.9 world units. Reachable backward or directly-overhead targets no longer count as a suitable stance. The change only chooses body X positions; it introduces no collision detector, joint constraints or UI controls.
+B1.5 plans whole lines rather than a short moving window. The target stays **18%–98% of total reach to the right of the shoulder**, subject to the original IK/physical reach limits. The wider upper range lets the arm extend and retract naturally while retaining the same forward clearance that prevents backward/over-head writing.
 
-Before moving, the planner looks ahead over up to 24 nearby strokes, stopping at a source gap over 250 ms, an explicit pen-up stroke, a vertical span over 30% of reach, or an incompatible shared stance. It commits that cluster boundary and uses one position for the whole cluster. An already suitable stance is retained; a necessary move aims near the center of the feasible forward band rather than its edge. This avoids repeated small corrections within a compact word or glyph cluster. Words wider than one comfortable workspace still require movement.
+`src/range-planning.js` examines all upcoming stroke extents. It infers lines from vertical separation and symbols from overlapping horizontal stroke extents, so the bars of `+`/`=` and other multi-stroke glyphs stay together. It selects maximal feasible runs of consecutive symbol groups, without a 24-stroke cap. A current stance is kept when doing so saves a movement; when move counts tie, the figure pre-positions for the longer run at the line/group boundary. The arm then writes the whole run from one position. No fixed step/movement count is imposed; the unchanged gait derives its steps from each actual displacement.
 
-`src/locomotion.js` plans around the unchanged engine. It checks the complete next stroke at the current shoulder. If it cannot be reached, it finds a horizontal root offset before writing, translates the entire body/shoulder/feet smoothly at fixed floor height, and keeps chalk lifted. A pen-up angle interpolation then reaches the next writing point before ink resumes. The default equation makes six horizontal moves, completes every stroke, and takes about 17.70 s instead of 4.80 s of source writing time.
+For `4/8+7/x=5/3` at the existing 24-unit size and fixed board origin:
+
+| Existing body settings | B1.4 movements | B1.5 movements | Groups per stance |
+| --- | --- | --- | --- |
+| Default torso/leg height 115/115 | 5 | 5 | 2, 2, 2, 2, 2 |
+| Leg height 145, torso 115 | 3 | 3 | 4, 3, 3 |
+| Torso and leg height 160/160 | 3 | **1** | 4 at home, then 6 after one walk |
+
+The default's top row is 125 units above the shoulder with only 142.6 total tool reach: at that height the maximum horizontal reach is 68.6 units. Forward clearance leaves roughly 43 units of shared span. Two moves cannot cover that entire line with these unchanged proportions. An independent interval-cover oracle verifies that five movements is the minimum for the default inferred-symbol groups. The planner does not change the body, font size, board or arm lengths to force a lower number. With taller proportions, it achieves the requested one/two-movement behavior. Font-fallback `x` remains unchanged and is not counted as a traced glyph group.
+
+`src/locomotion.js` plans around the unchanged engine. It checks complete line/group extents at the current shoulder before choosing writing ranges. If it cannot be reached, it finds a horizontal root offset before writing, translates the entire body/shoulder/feet smoothly at fixed floor height, and keeps chalk lifted. A pen-up angle interpolation then reaches the next writing point before ink resumes. The built-in two-line demo (`2 × (3 + 4)`, then `= 14`) makes six horizontal moves, completes every stroke, and takes about 17.70 s instead of 4.80 s of source writing time.
 
 B1.4 replaces gliding with alternating footsteps. While one foot swings forward and lifts, the other shoe stays fixed in world space on the floor. Hips, knees, ankles and toes drive the existing curved leg/foot shapes; two fixed-length leg segments use the unchanged two-link solver. The head and torso stay upright with a subtle mid-step rise. Step count and stride derive from actual horizontal displacement and leg height, so the gait works in either direction and across body proportions. Both feet return smoothly to their resting stance before reaching/writing, and there is no gait when the root is stationary. There is no teleportation, limb stretching, automatic board relocation or source-point scaling. The forward band is never relaxed to allow backward writing. If it cannot coexist with the original reach/joint limits, that portion is blocked. Very long paths split along their original straight edges, with lifted-chalk moves between portions. Previous chalk stays in world coordinates, independent of later root positions.
 
@@ -58,6 +68,7 @@ const state = figure.render(playbackElapsedMs);
 // state.kind: move | approach | hold | write | done
 // state.chalkDown is false throughout repositioning and pen-up reaching.
 console.log(figure.duration, figure.timeline.duration, figure.plan.blocked);
+// figure.plan.groups and .ranges expose inferred symbols and selected standing runs.
 figure.setConfiguration({ ...figure.body, torsoLength: 130 });
 figure.setDebug(true);
 figure.setTimeline(otherSourceJSON);
@@ -71,12 +82,12 @@ See [coordinate/motion contract](docs/coordinates.md), the original [timeline fo
 ## Validation
 
 ```sh
-npm test                       # 27 body, motion, curve and integrity tests
+npm test                       # 32 body, motion, curve and integrity tests
 npm run build:standalone        # verifies engine hashes and generates HTML
 npm run evidence               # generates default and motion-sequence SVG evidence
 cd ../drawing-arm && npm test   # 15 original engine/renderer tests
 ```
 
-The motion/gait tests check world-space stance locking, alternating lifted feet, fixed leg bone lengths across proportions, clean rest/stop poses, upright torso, deterministic stepping, both travel directions, continuity at every phase boundary, bounded horizontal speed, stationary writing roots, exact reachable tip targets, unchanged bone lengths/JSON, long-path splitting, blocked vertical reach, persistent chalk and deterministic seeking. Curves are finite, closed and non-mutating. Original engine tests remain unchanged. B1.1's whole-timeline stationary-body expectation is intentionally superseded by movement between stationary writing phases.
+New line-range tests compare movement counts against an independent exact interval-cover oracle, verify symbol/line grouping, shared stances and no mid-glyph moves for ordinary math glyphs. The motion/gait tests check world-space stance locking, alternating lifted feet, fixed leg bone lengths across proportions, clean rest/stop poses, upright torso, deterministic stepping, both travel directions, continuity at every phase boundary, bounded horizontal speed, stationary writing roots, exact reachable tip targets, unchanged bone lengths/JSON, long-path splitting, blocked vertical reach, persistent chalk and deterministic seeking. Curves are finite, closed and non-mutating. Original engine tests remain unchanged. B1.1's whole-timeline stationary-body expectation is intentionally superseded by movement between stationary writing phases.
 
-`docs/evidence.svg`, `docs/motion.svg` and `docs/walk-cycle.svg` are deterministic adapter/original-renderer output, not browser screenshots. Their rasterized motion sequence was visually inspected. Optional browser smoke tests are included in `tests/browser.mjs` (separate Playwright installation, `PLAYWRIGHT_MODULE` and optional `CHROMIUM_PATH`), but remain unrun because authorized browser-control tools are unavailable. No hosted preview is claimed. No homepage integration, production configuration changes, merge or deployment.
+`docs/evidence.svg`, `docs/motion.svg`, `docs/walk-cycle.svg` and `docs/writing-ranges.svg` are deterministic adapter/original-renderer output, not browser screenshots. Their rasterized motion sequence was visually inspected. Optional browser smoke tests are included in `tests/browser.mjs` (separate Playwright installation, `PLAYWRIGHT_MODULE` and optional `CHROMIUM_PATH`), but remain unrun because authorized browser-control tools are unavailable. No hosted preview is claimed. No homepage integration, production configuration changes, merge or deployment.
