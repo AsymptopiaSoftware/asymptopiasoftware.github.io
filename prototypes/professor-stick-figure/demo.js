@@ -1,10 +1,15 @@
 import { textTimeline } from '../drawing-arm/src/timeline.js';
+import { solveEquation } from '../math-problems/src/solver.js';
+import { generateProblem } from '../math-problems/src/generator.js';
+import { solutionToTimeline } from './src/math-timeline.js';
 import { ProfessorFigure } from './src/figure.js';
 import { configureBody } from './src/body.js';
 const q = selector => document.querySelector(selector);
 let raw, figure, time = 0, playing = false, previous = null;
 let body = configureBody();
 const rig = { elbow: 'negative' };
+const examples = [generateProblem({seed:'B1.6-add',operator:'+',missingSlot:'a'}),generateProblem({seed:'B1.6-subtract',operator:'-',missingSlot:'e'}),generateProblem({seed:'B1.6-multiply',operator:'*',missingSlot:'f'})];
+for(const [i,p] of examples.entries())q(`#math-example option[value="generated-${i}"]`).textContent=p.text;
 function refresh() {
   const state = figure.render(time);
   q('#seek').max = figure.duration || 1; q('#seek').value = time;
@@ -14,12 +19,16 @@ function refresh() {
   q('#arm-lengths').textContent = `${figure.arm.upper.toFixed(1)} / ${figure.arm.forearm.toFixed(1)}`;
   q('#body-origin').textContent = figure.currentBody.origin.map(n => n.toFixed(1)).join(', ');
   q('#shoulder-value').textContent = figure.arm.shoulder.map(n => Number(n.toFixed(2))).join(', ');
+  const mathSteps=Array.isArray(raw?.mathSteps)?raw.mathSteps.filter(s=>s&&Number.isFinite(s.at)&&Number.isInteger(s.index)&&typeof s.operation?.explanation==='string'):[];
+  const mathStep=mathSteps.filter(s=>s.at<=state.sourceTime).at(-1);
+  q('#operation').textContent=mathStep?`Step ${mathStep.index+1}/${mathSteps.length}: ${mathStep.operation.explanation}`:'';
 }
 function load(json) {
   // Validation in setTimeline happens before the previous rendering is replaced.
+  const nextRaw=structuredClone(json);
   if (figure) figure.setTimeline(json);
   else figure = new ProfessorFigure(q('#professor'), json, { body, rig });
-  raw = structuredClone(json); time = 0; playing = false; previous = null; refresh();
+  raw = nextRaw; time = 0; playing = false; previous = null; refresh();
 }
 function statusMessage() {
   return figure.plan.blocked.length ? `${figure.plan.blocked.length} portion(s) blocked: no reachable forward-writing stance at this height / joint limits. No chalk is drawn there.` : (raw.fallbacks?.length ? 'Unsupported characters use font fallback, not traced strokes.' : 'Ready. Writing coordinates fixed; moves and reaches add playback time.');
@@ -27,14 +36,20 @@ function statusMessage() {
 function loadWriting() {
   try {
     if (q('#writing').value.length > 200) throw new Error('Keep this writing study to 200 characters.');
-    load(textTimeline(q('#writing').value, { x: 0, y: 0, size: 24, speed: 135, lift: 100, board: { origin: [355, 140], scale: 1, rotation: 0 } }));
+    if(q('#math-example').value==='free')load(textTimeline(q('#writing').value, { x: 0, y: 0, size: 24, speed: 135, lift: 100, board: { origin: [355, 140], scale: 1, rotation: 0 } }));
+    else {
+      const solution=solveEquation(q('#writing').value);
+      if(solution.status!=='unique')throw new Error(solution.error?.message??solution.explanation??`No unique solution (${solution.status})`);
+      load(solutionToTimeline(solution));
+    }
     q('#message').textContent = statusMessage();
-  } catch (error) { q('#message').textContent = error.message; }
+  } catch (error) { playing=false;previous=null;q('#play').textContent='Play';q('#message').textContent=error.message; }
 }
 q('#load').onclick = loadWriting;
+q('#math-example').onchange=()=>{const selected=q('#math-example').value;q('#load').textContent=selected==='free'?'Load writing ↗':'Solve & write ↗';if(selected==='example')q('#writing').value='x/5-4/4=2/5';else if(selected.startsWith('generated-'))q('#writing').value=examples[Number(selected.split('-')[1])].text;if(selected!=='free')loadWriting();};
 q('#play').onclick = () => { if (time >= figure.duration) time = 0; playing = !playing; previous = null; refresh(); };
 q('#reset').onclick = () => { time = 0; playing = false; refresh(); };
-q('#seek').oninput = () => { time = Number(q('#seek').value); playing = false; refresh(); };
+q('#seek').oninput = () => { const value=Number(q('#seek').value);time=Math.abs(value-figure.duration)<1e-6?figure.duration:value;playing=false;refresh(); };
 q('#anchors').onchange = () => { figure.setDebug(q('#anchors').checked); q('#board-anchor').setAttribute('visibility', q('#anchors').checked ? 'visible' : 'hidden'); };
 // UI values are body-local. The adapter alone converts the shoulder to world units.
 const bodyFields = [

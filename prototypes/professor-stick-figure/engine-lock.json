@@ -9,7 +9,9 @@
     },
     {
       "path": "src/glyphs.js",
-      "sha": "8f6081e8e16c1d1f63f521806a3348d35de36af9"
+      "sha": "19f2a3da9941f20ec562b3a8c62ea1d2d97bc68d",
+      "originalSha": "8f6081e8e16c1d1f63f521806a3348d35de36af9",
+      "extension": "B1.6: traced lowercase x for verified algebra solutions"
     },
     {
       "path": "src/timeline.js",

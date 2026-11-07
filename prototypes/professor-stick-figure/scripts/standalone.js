@@ -10,7 +10,7 @@ for (const file of lock.files) {
   if (sha !== file.sha) throw new Error(`Engine source drift: ${file.path}`);
 }
 let source = '';
-for (const path of ['../drawing-arm/src/kinematics.js', '../drawing-arm/src/glyphs.js', '../drawing-arm/src/timeline.js', '../drawing-arm/src/svg-renderer.js', 'src/body.js', 'src/curves.js', 'src/gait.js', 'src/range-planning.js', 'src/locomotion.js', 'src/figure.js', 'demo.js']) {
+for (const path of ['../math-problems/src/rational.js', '../math-problems/src/syntax.js', '../math-problems/src/algebra.js', '../math-problems/src/solver.js', '../math-problems/src/generator.js', '../drawing-arm/src/kinematics.js', '../drawing-arm/src/glyphs.js', '../drawing-arm/src/timeline.js', '../drawing-arm/src/svg-renderer.js', 'src/body.js', 'src/curves.js', 'src/gait.js', 'src/range-planning.js', 'src/locomotion.js', 'src/figure.js', 'src/math-timeline.js', 'demo.js']) {
   const content = await readFile(new URL(path, root), 'utf8');
   source += `\n// SOURCE: ${path}\n` + content.replace(/^import .*;\n/gm, '').replace(/^export /gm, '') + '\n';
 }
@@ -19,4 +19,4 @@ html = html.replace('<link rel="stylesheet" href="style.css">', `<style>${await 
   .replace('<script type="module" src="demo.js"></script>', `<script type="module">\n${source}</script>`);
 for (const path of ['README.md', 'docs/coordinates.md']) html = html.replace(`href="${path}"`, `href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/reduced-professor-stick-figure/prototypes/professor-stick-figure/${path}"`);
 await writeFile(new URL('standalone.html', root), html);
-console.log('Standalone built; all 5 original Drawing Arm module hashes verified.');
+console.log('Standalone built; all 5 approved Drawing Arm module hashes verified (B1.6 x glyph extension).');

@@ -39,7 +39,7 @@ test('movement count follows feasible line intervals, not a fixed number of step
   assert.equal(moves(plan).length,minimumMoves(plan.groups,body),JSON.stringify({body,text}));
  }
  const tight=planWriting(source('4/8+7/x=5/3'));
- assert.equal(moves(tight).length,5,'default high row physically needs five inferred-symbol stances');
+ assert.equal(moves(tight).length,6,'with the newly traced x, the default high row covers eleven glyph groups');
 });
 test('repositioning occurs between complete glyph groups whenever each glyph can fit',()=>{
  const t=source('11+33=10'),plan=planWriting(t);

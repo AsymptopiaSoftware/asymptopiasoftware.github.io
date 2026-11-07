@@ -1,5 +1,7 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.4 · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.6 · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
+
+#math-example{width:100%;margin-bottom:12px}#operation{font-size:11px;color:var(--muted);min-height:35px}
 </style></head>
 <body><main>
 <div class="experiment"><section class="stage" aria-label="Professor writing demonstration">
@@ -14,12 +16,271 @@
 <g id="board-anchor" visibility="hidden" pointer-events="none"><circle cx="355" cy="140" r="7" fill="none" stroke="#8dbca7"/><text x="365" y="130" fill="#a5c9b8" font-family="monospace" font-size="11">board origin</text></g>
 <text x="124" y="551" fill="#9bada2" font-family="monospace" font-size="10" letter-spacing="1">STEPPING GAIT · CHALK LIFTED WHILE WALKING</text>
 </svg>
-<div class="transport"><button id="play" class="primary">Play</button><button id="reset">Reset</button><label class="scrubber">Timeline<input id="seek" type="range" min="0" max="1" value="0" aria-label="Timeline position"></label><output id="clock">0.0 / 0.0 s</output><label class="speed-label">Speed<select id="speed"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div>
+<div class="transport"><button id="play" class="primary">Play</button><button id="reset">Reset</button><label class="scrubber">Timeline<input id="seek" type="range" step="any" min="0" max="1" value="0" aria-label="Timeline position"></label><output id="clock">0.0 / 0.0 s</output><label class="speed-label">Speed<select id="speed"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div>
 <div class="stage-footer"><span id="contact" role="status">Ready</span><label><input id="anchors" type="checkbox"> Show skeleton / anchors</label></div>
-</section><aside><p class="eyebrow">B1.4 / WRITING TOOL</p><label for="writing">Writing instructions</label><textarea id="writing" rows="2" spellcheck="false">2 × (3 + 4)
-= 14</textarea><button id="load" class="primary wide">Load writing ↗</button><p id="message" role="status"></p><div class="file-actions"><button id="export">Export JSON ↓</button><label for="import" class="file-label">Import JSON<input id="import" type="file" accept=".json,application/json"></label></div>
+</section><aside><p class="eyebrow">B1.6 / WRITING TOOL</p><label for="math-example">Problem</label><select id="math-example" aria-label="Math problem"><option value="example">Example: x/5-4/4=2/5</option><option value="generated-0">Generated addition</option><option value="generated-1">Generated subtraction</option><option value="generated-2">Generated multiplication</option><option value="free">Free writing</option></select><label for="writing">Equation / writing instructions</label><textarea id="writing" rows="2" spellcheck="false">x/5-4/4=2/5</textarea><button id="load" class="primary wide">Solve &amp; write ↗</button><p id="message" role="status"></p><p id="operation" role="status"></p><div class="file-actions"><button id="export">Export JSON ↓</button><label for="import" class="file-label">Import JSON<input id="import" type="file" accept=".json,application/json"></label></div>
 <details id="advanced"><summary>Advanced / Body Rig</summary><div id="body-controls" class="body-controls"></div><dl><dt>Upper / forearm</dt><dd id="arm-lengths"></dd><dt>Right shoulder</dt><dd id="shoulder-value"></dd><dt>Body origin</dt><dd id="body-origin"></dd></dl><button id="restore" class="wide">Restore body rig</button></details><p class="docs"><a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/reduced-professor-stick-figure/prototypes/professor-stick-figure/README.md">Docs</a> · <a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/reduced-professor-stick-figure/prototypes/professor-stick-figure/docs/coordinates.md">Rig / motion contract</a></p></aside></div>
 </main><script type="module">
+
+// SOURCE: ../math-problems/src/rational.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+/** Exact, normalized rational arithmetic. Public serialization uses decimal strings. */
+class MathProblemError extends Error {
+  constructor(code,message){super(message);this.name='MathProblemError';this.code=code;}
+}
+function integerValue(value) {
+  if(typeof value==='bigint')return value;
+  if(typeof value==='number'&&Number.isSafeInteger(value))return BigInt(value);
+  if(typeof value==='string'&&/^-?\d{1,128}$/.test(value))return BigInt(value);
+  throw new MathProblemError('INVALID_INTEGER','Expected a safe integer, BigInt, or decimal integer string (up to 128 digits)');
+}
+function gcd(a,b){a=a<0n?-a:a;b=b<0n?-b:b;while(b){const t=a%b;a=b;b=t;}return a;}
+class Rational {
+  constructor(numerator,denominator=1n){let n=integerValue(numerator),d=integerValue(denominator);if(d===0n)throw new MathProblemError('ZERO_DENOMINATOR','A denominator cannot be zero');if(d<0n){n=-n;d=-d;}const g=gcd(n,d);this.n=n/g;this.d=d/g;Object.freeze(this);}
+  static from(value){if(value instanceof Rational)return value;if(value&&typeof value==='object')return new Rational(value.numerator,value.denominator);return new Rational(value);}
+  add(value){const q=Rational.from(value);return new Rational(this.n*q.d+q.n*this.d,this.d*q.d);}
+  sub(value){return this.add(Rational.from(value).neg());}
+  mul(value){const q=Rational.from(value);return new Rational(this.n*q.n,this.d*q.d);}
+  div(value){const q=Rational.from(value);return new Rational(this.n*q.d,this.d*q.n);}
+  neg(){return new Rational(-this.n,this.d);}
+  equals(value){const q=Rational.from(value);return this.n===q.n&&this.d===q.d;}
+  get isZero(){return this.n===0n;}
+  toString(){return this.d===1n?String(this.n):`${this.n}/${this.d}`;}
+  toJSON(){return {numerator:String(this.n),denominator:String(this.d)};}
+}
+
+
+// SOURCE: ../math-problems/src/syntax.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+const integerNode=value=>({type:'integer',value:String(value)});
+const variableNode=()=>({type:'variable',name:'x'});
+const binaryNode=(op,left,right)=>({type:'binary',op,left,right});
+function rationalNode(value){const q=Rational.from(value);return q.d===1n?integerNode(q.n):binaryNode('/',integerNode(q.n),integerNode(q.d));}
+function parseEquation(text) {
+  if(typeof text!=='string'||text.length>2048)throw new MathProblemError('INVALID_SYNTAX','Equation must be a string of at most 2048 characters');
+  const source=text.replace(/−/g,'-').replace(/[×·]/g,'*').replace(/÷/g,'/'),tokens=[];
+  let pos=0;
+  while(pos<source.length){if(/\s/.test(source[pos])){pos++;continue;}const number=source.slice(pos).match(/^\d+/);if(number){if(number[0].length>128)throw new MathProblemError('INVALID_INTEGER','Integer literal is too long');tokens.push(number[0]);pos+=number[0].length;}else if('x+-*/()='.includes(source[pos]))tokens.push(source[pos++]);else throw new MathProblemError('INVALID_SYNTAX',`Unsupported character at position ${pos}`);}
+  if(tokens.length>256)throw new MathProblemError('TOO_COMPLEX','Equation exceeds 256 tokens');let index=0,depth=0;
+  const atom=()=>{if(++depth>48)throw new MathProblemError('TOO_COMPLEX','Equation nesting exceeds 48');let node;const token=tokens[index++];if(token==='x')node=variableNode();else if(token&&/^\d+$/.test(token))node=integerNode(token);else if(token==='+'||token==='-'){const operand=atom();node=token==='+'?operand:{type:'negate',operand};}else if(token==='('){node=expression();if(tokens[index++]!==')')throw new MathProblemError('INVALID_SYNTAX','Missing closing parenthesis');}else throw new MathProblemError('INVALID_SYNTAX','Expected an integer, x or parenthesized expression');depth--;return node;};
+  const product=()=>{let node=atom();while(tokens[index]==='*'||tokens[index]==='/'){const op=tokens[index++];node=binaryNode(op,node,atom());}return node;};
+  const expression=()=>{let node=product();while(tokens[index]==='+'||tokens[index]==='-'){const op=tokens[index++];node=binaryNode(op,node,product());}return node;};
+  const left=expression();if(tokens[index++]!=='=')throw new MathProblemError('INVALID_SYNTAX','Expected exactly one equality');const right=expression();if(index!==tokens.length)throw new MathProblemError('INVALID_SYNTAX','Unexpected trailing input');return {type:'equation',left,right};
+}
+function validateEquation(input) {
+  if(typeof input==='string')return parseEquation(input);
+  let nodes=0;
+  const check=(node,depth=0)=>{if(++nodes>256||depth>48)throw new MathProblemError('TOO_COMPLEX','AST size/depth exceeds limits');if(!node||typeof node!=='object')throw new MathProblemError('INVALID_AST','Expected an expression node');
+    if(node.type==='integer'){new Rational(node.value);return integerNode(node.value);}
+    if(node.type==='variable'&&node.name==='x')return variableNode();
+    if(node.type==='negate')return {type:'negate',operand:check(node.operand,depth+1)};
+    if(node.type==='binary'&&['+','-','*','/'].includes(node.op))return binaryNode(node.op,check(node.left,depth+1),check(node.right,depth+1));
+    throw new MathProblemError('INVALID_AST','Unsupported expression node');};
+  if(input?.type!=='equation')throw new MathProblemError('INVALID_AST','Expected an equation AST');return {type:'equation',left:check(input.left),right:check(input.right)};
+}
+function countUnknowns(node){return node.type==='variable'?1:node.type==='binary'?countUnknowns(node.left)+countUnknowns(node.right):node.type==='negate'?countUnknowns(node.operand):node.type==='equation'?countUnknowns(node.left)+countUnknowns(node.right):0;}
+function precedence(node){return node.type==='binary'?(['+','-'].includes(node.op)?1:2):node.type==='negate'?3:4;}
+function formatExpression(node){
+ if(node.type==='integer')return node.value;
+ if(node.type==='variable')return 'x';
+ if(node.type==='negate'){const value=formatExpression(node.operand);return '-'+(precedence(node.operand)<3?`(${value})`:value);}
+ const p=precedence(node),l=formatExpression(node.left),r=formatExpression(node.right);
+ const left=precedence(node.left)<p?`(${l})`:l;
+ const right=r.startsWith('-')||precedence(node.right)<p||(precedence(node.right)===p&&['-','/'].includes(node.op))||(node.op==='*'&&node.right.type==='binary'&&node.right.op==='/')?`(${r})`:r;
+ return left+node.op+right;
+}
+const formatEquation=e=>`${formatExpression(e.left)}=${formatExpression(e.right)}`;
+function evaluateExpression(node,value){
+ if(node.type==='integer')return new Rational(node.value);
+ if(node.type==='variable'){if(value===undefined)throw new MathProblemError('MISSING_VALUE','x needs a value');return Rational.from(value);}
+ if(node.type==='negate')return evaluateExpression(node.operand,value).neg();
+ const a=evaluateExpression(node.left,value),b=evaluateExpression(node.right,value);return node.op==='+'?a.add(b):node.op==='-'?a.sub(b):node.op==='*'?a.mul(b):a.div(b);
+}
+
+
+// SOURCE: ../math-problems/src/algebra.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+const Q0=new Rational(0),Q1=new Rational(1);
+function trimPolynomial(p){while(p.length>1&&p.at(-1).isZero)p.pop();return p;}
+function addPolynomial(a,b,subtract=false){return trimPolynomial(Array.from({length:Math.max(a.length,b.length)},(_,i)=>(a[i]??Q0).add(subtract?(b[i]??Q0).neg():(b[i]??Q0))));}
+function multiplyPolynomial(a,b){if(a.length+b.length-2>8)throw new MathProblemError('UNSUPPORTED_DEGREE','Polynomial degree exceeds 8');const p=Array(a.length+b.length-1).fill(Q0);for(let i=0;i<a.length;i++)for(let j=0;j<b.length;j++)p[i+j]=p[i+j].add(a[i].mul(b[j]));return trimPolynomial(p);}
+function evaluatePolynomial(p,x){let value=Q0;for(let i=p.length-1;i>=0;i--)value=value.mul(x).add(p[i]);return value;}
+const zeroPolynomial=p=>p.length===1&&p[0].isZero;
+function symbolic(node,restrictions){
+ if(node.type==='integer')return {n:[new Rational(node.value)],d:[Q1]};
+ if(node.type==='variable')return {n:[Q0,Q1],d:[Q1]};
+ if(node.type==='negate'){const r=symbolic(node.operand,restrictions);return {...r,n:r.n.map(q=>q.neg())};}
+ const a=symbolic(node.left,restrictions),b=symbolic(node.right,restrictions);
+ if(node.op==='/'){
+  if(zeroPolynomial(b.n))throw new MathProblemError('ZERO_DENOMINATOR',`Denominator ${formatExpression(node.right)} is identically zero`);
+  restrictions.push({expression:node.right,polynomial:b.n});return {n:multiplyPolynomial(a.n,b.d),d:multiplyPolynomial(a.d,b.n)};
+ }
+ if(node.op==='*')return {n:multiplyPolynomial(a.n,b.n),d:multiplyPolynomial(a.d,b.d)};
+ return {n:addPolynomial(multiplyPolynomial(a.n,b.d),multiplyPolynomial(b.n,a.d),node.op==='-'),d:multiplyPolynomial(a.d,b.d)};
+}
+function integerSqrt(n){if(n<0n)return null;if(n<2n)return n;let x=n,y=(x+1n)/2n;while(y<x){x=y;y=(x+n/x)/2n;}return x*x===n?x:null;}
+function rationalSqrt(q){if(q.n<0n)return null;const n=integerSqrt(q.n),d=integerSqrt(q.d);return n===null||d===null?null:new Rational(n,d);}
+function polynomialRoots(p){
+ if(p.length===1)return {status:p[0].isZero?'infinite':'none',roots:[]};
+ if(p.length===2)return {status:'unique',roots:[p[0].neg().div(p[1])]};
+ if(p.length===3){const [c,b,a]=p,discriminant=b.mul(b).sub(a.mul(c).mul(4));if(discriminant.n<0n)return {status:'none',roots:[]};const root=rationalSqrt(discriminant);if(!root)return {status:'unsupported',roots:[],reason:'Irrational roots require an algebraic-number extension'};const roots=[b.neg().sub(root).div(a.mul(2)),b.neg().add(root).div(a.mul(2))];return {status:roots[0].equals(roots[1])?'unique':'multiple',roots:roots[0].equals(roots[1])?[roots[0]]:roots};}
+ return {status:'unsupported',roots:[],reason:'Only affine and rational-root quadratic equations are classified'};
+}
+function analyzeEquation(input,extraRestrictions=[]) {
+ const equation=validateEquation(input);if(!countUnknowns(equation))throw new MathProblemError('MISSING_UNKNOWN','An equation problem must contain x');
+ const restrictions=[],left=symbolic(equation.left,restrictions),right=symbolic(equation.right,restrictions);
+ const polynomial=addPolynomial(multiplyPolynomial(left.n,right.d),multiplyPolynomial(right.n,left.d),true);
+ const domain=[...extraRestrictions,...restrictions],classification=polynomialRoots(polynomial);
+ const roots=classification.roots.filter(x=>domain.every(r=>!evaluatePolynomial(r.polynomial,x).isZero));
+ let status=classification.status;if(status==='unique'||status==='multiple')status=roots.length===0?'none':roots.length===1?'unique':'multiple';
+ return {equation,polynomial,restrictions:domain,status,roots,reason:classification.reason};
+}
+function serializeRestrictions(restrictions){return restrictions.map(r=>({expression:structuredClone(r.expression),text:`${formatExpression(r.expression)}!=0`,polynomial:r.polynomial.map(q=>q.toJSON())}));}
+function sameSolutionSet(a,b){
+ if(a.status!==b.status)return false;
+ if(a.status==='unsupported')return false;
+ if(a.status==='unique'||a.status==='multiple')return a.roots.length===b.roots.length&&a.roots.every(x=>b.roots.some(y=>x.equals(y)));
+ if(a.status==='none')return true;
+ // Infinite equations are equivalent only if they exclude the same rational values.
+ const exclusions=analysis=>{
+  const roots=[];for(const r of analysis.restrictions){const result=polynomialRoots(r.polynomial);if(result.status==='unsupported'||result.status==='infinite')return null;roots.push(...result.roots);}return roots;
+ };
+ const x=exclusions(a),y=exclusions(b);return !!x&&!!y&&x.every(q=>y.some(r=>r.equals(q)))&&y.every(q=>x.some(r=>r.equals(q)));
+}
+function equivalentExpressions(a,b){
+ const restrictions=[],x=symbolic(a,restrictions),y=symbolic(b,restrictions);
+ return zeroPolynomial(addPolynomial(multiplyPolynomial(x.n,y.d),multiplyPolynomial(y.n,x.d),true));
+}
+
+
+// SOURCE: ../math-problems/src/solver.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+const equationNode=(left,right)=>({type:'equation',left,right});
+function proofFor(analysis){const lead=analysis.polynomial.at(-1);return {classification:analysis.status,normalizedPolynomial:analysis.polynomial.map(q=>(lead.isZero?q:q.div(lead)).toJSON()),solutions:analysis.roots.map(q=>q.toJSON())};}
+function verifyOperation(previous,current,operation,index) {
+ if(!operation||typeof operation.explanation!=='string'||!operation.explanation)return false;
+ const same=equivalentExpressions,op=operation.kind,a=previous.equation,b=current.equation;
+ if(operation.calculation&&(!evaluateExpression(operation.calculation.expression).equals(evaluateExpression(operation.calculation.result))||!evaluateExpression(operation.calculation.result).equals(evaluateExpression(b.right))))return false;
+ if(op==='given')return index===0;
+ if(op==='swap-sides')return same(a.left,b.right)&&same(a.right,b.left);
+ if(op==='simplify-rational')return same(a.left,b.left)&&same(a.right,b.right);
+ const operations={'add-both-sides':'+','subtract-both-sides':'-','multiply-both-sides':'*','divide-both-sides':'/'};
+ if(operations[op]){
+  const operand=operation.operand;
+  if(!operand||countUnknowns(operand))return false;
+  const q=evaluateExpression(operand);if(['*','/'].includes(operations[op])&&q.isZero)return false;
+  if(!same(binaryNode(operations[op],a.left,operand),b.left)||!same(binaryNode(operations[op],a.right,operand),b.right))return false;
+ }else if(op==='isolate-denominator'){
+  if(a.left.type!=='binary'||a.left.op!=='/'||!operation.operand||!same(operation.operand,a.left.left)||!same(a.left.right,b.left)||!same(binaryNode('/',a.left.left,a.right),b.right))return false;
+ }else if(op==='collect-terms'||op==='quadratic-formula'){
+  if(JSON.stringify(operation.coefficients)!==JSON.stringify(previous.polynomial.map(q=>q.toJSON())))return false;
+  if(op==='quadratic-formula'&&previous.polynomial.length!==3)return false;
+  if(op==='collect-terms'&&(previous.polynomial.length!==2||!same(b.left,binaryNode('*',rationalNode(previous.polynomial[1]),variableNode()))||!same(b.right,rationalNode(previous.polynomial[0].neg()))))return false;
+ }else return false;
+ return true;
+}
+function verifySolution(solution) {
+ try {
+  const original=analyzeEquation(solution.equation),steps=solution.steps;
+  if(solution.status!==original.status||!Array.isArray(steps)||!steps.length)return {valid:false,reason:'Classification or steps mismatch'};
+  const expected=original.roots,reported=(solution.solutions??[]).map(q=>Rational.from(q));
+  if(reported.length!==expected.length||!expected.every(q=>reported.some(r=>q.equals(r))))return {valid:false,reason:'Reported solution mismatch'};
+  if(JSON.stringify(solution.domain)!==JSON.stringify(serializeRestrictions(original.restrictions)))return {valid:false,reason:'Original domain restrictions were changed'};
+  if(formatEquation(validateEquation(steps[0].equation))!==formatEquation(original.equation))return {valid:false,reason:'First step is not the original problem'};
+  let previous=original;const checks=[];
+  for(const step of steps){
+   const current=analyzeEquation(step.equation,original.restrictions);
+   if(step.text!==formatEquation(current.equation)||!sameSolutionSet(previous,current)||!verifyOperation(previous,current,step.operation,checks.length))return {valid:false,reason:'Step changes the equation solution set'};
+   checks.push({equivalent:true,...proofFor(current)});previous=current;
+  }
+  for(const x of expected){const l=evaluateExpression(original.equation.left,x),r=evaluateExpression(original.equation.right,x);if(!l.equals(r))return {valid:false,reason:'Substitution failed'};}
+  if(original.status==='unique'){
+   const last=steps.at(-1).equation;
+   if(last.left.type!=='variable'||countUnknowns(last.right)!==0||!evaluateExpression(last.right).equals(expected[0]))return {valid:false,reason:'Final step does not isolate x'};
+  }
+  return {valid:true,method:'exact solution-set equivalence under original denominator restrictions',steps:checks,substitution:expected.map(q=>({value:q.toJSON(),valid:true}))};
+ }catch(error){return {valid:false,reason:error.message};}
+}
+function solveEquation(input) {
+ try {
+  const equation=validateEquation(input),analysis=analyzeEquation(equation);
+  const result={version:1,status:analysis.status,equation,domain:serializeRestrictions(analysis.restrictions),solutions:analysis.roots.map(q=>q.toJSON()),steps:[]};
+  const append=(eq,operation)=>result.steps.push({index:result.steps.length,equation:structuredClone(eq),text:formatEquation(eq),operation});
+  append(equation,{kind:'given',explanation:'Start with the given equation and keep every original denominator nonzero.'});
+  if(analysis.status!=='unique'){
+   result.explanation=analysis.status==='none'?'No value satisfies the equation in its original domain.':analysis.status==='infinite'?'Every rational value in the original domain satisfies this identity.':analysis.status==='multiple'?'More than one rational value satisfies this equation.':analysis.reason;
+   result.verification=analysis.status==='unsupported'?{valid:false,reason:analysis.reason}:verifySolution(result);return result;
+  }
+  let left=equation.left,right=equation.right;
+  if(countUnknowns(equation)!==1){
+   // Normalize repeated-x affine expressions without inventing a second unknown.
+   if(analysis.polynomial.length===2){left=binaryNode('*',rationalNode(analysis.polynomial[1]),variableNode());right=rationalNode(analysis.polynomial[0].neg());append(equationNode(left,right),{kind:'collect-terms',explanation:'Clear defined denominators and collect the x terms, preserving the original domain.',coefficients:analysis.polynomial.map(q=>q.toJSON())});}
+   else {append(equationNode(variableNode(),rationalNode(analysis.roots[0])),{kind:'quadratic-formula',explanation:'Apply the exact quadratic formula and discard values outside the original domain.',coefficients:analysis.polynomial.map(q=>q.toJSON())});result.verification=verifySolution(result);return result;}
+  }
+  if(countUnknowns(left)===0){[left,right]=[right,left];append(equationNode(left,right),{kind:'swap-sides',explanation:'Swap the two sides of the equality.'});}
+  let guard=0;
+  while(left.type!=='variable'){
+   if(++guard>64)throw new MathProblemError('TOO_COMPLEX','Isolation exceeds 64 operations');
+   let next,operand,kind,explanation,conditions=[];
+   if(left.type==='negate'){next=left.operand;operand=integerNode(-1);right=binaryNode('*',right,operand);kind='multiply-both-sides';explanation='Multiply both sides by -1.';}
+   else if(left.type==='binary'){
+    const unknownLeft=countUnknowns(left.left)>0,unknown=unknownLeft?left.left:left.right,constant=unknownLeft?left.right:left.left;
+    operand=constant;next=unknown;
+    if(left.op==='+'){right=binaryNode('-',right,constant);kind='subtract-both-sides';explanation=`Subtract ${formatExpression(constant)} from both sides.`;}
+    else if(left.op==='-'&&unknownLeft){right=binaryNode('+',right,constant);kind='add-both-sides';explanation=`Add ${formatExpression(constant)} to both sides.`;}
+    else if(left.op==='-'){next={type:'negate',operand:unknown};right=binaryNode('-',right,constant);kind='subtract-both-sides';explanation=`Subtract ${formatExpression(constant)} from both sides.`;}
+    else if(left.op==='*'){const q=evaluateExpression(constant);if(q.isZero)throw new MathProblemError('INTERNAL_VERIFICATION','Cannot divide by zero');right=binaryNode('/',right,constant);kind='divide-both-sides';explanation=`Divide both sides by ${q}.`;conditions=[`${formatExpression(constant)}!=0`];}
+    else if(unknownLeft){right=binaryNode('*',right,constant);kind='multiply-both-sides';explanation=`Multiply both sides by ${formatExpression(constant)}.`;conditions=[`${formatExpression(constant)}!=0`];}
+    else {const q=evaluateExpression(right);if(q.isZero)throw new MathProblemError('INTERNAL_VERIFICATION','Cannot invert a zero right side');right=binaryNode('/',constant,right);kind='isolate-denominator';explanation='Multiply by the nonzero unknown denominator, then divide by the nonzero right side.';conditions=[`${formatExpression(unknown)}!=0`,`${q}!=0`];}
+   }else throw new MathProblemError('UNSUPPORTED_EXPRESSION','Cannot isolate this expression');
+   left=next;const unevaluated=structuredClone(right),simple=rationalNode(evaluateExpression(right));
+   if(left.type==='variable')right=simple;
+   append(equationNode(left,right),{kind,operand:structuredClone(operand),conditions,explanation,...(left.type==='variable'?{calculation:{expression:unevaluated,result:structuredClone(simple)}}:{})});
+   if(left.type!=='variable'&&formatExpression(right)!==formatExpression(simple)){right=simple;append(equationNode(left,right),{kind:'simplify-rational',explanation:'Evaluate and reduce the rational arithmetic exactly.',calculation:{expression:unevaluated,result:structuredClone(simple)}});}
+  }
+  // Input may already be x = an unsimplified rational expression.
+  const simple=rationalNode(evaluateExpression(right));if(formatExpression(simple)!==formatExpression(right)){right=simple;append(equationNode(left,right),{kind:'simplify-rational',explanation:'Reduce the rational answer exactly.'});}
+  result.verification=verifySolution(result);
+  if(!result.verification.valid)throw new MathProblemError('INTERNAL_VERIFICATION',result.verification.reason);
+  return result;
+ }catch(error){if(!(error instanceof MathProblemError))throw error;return {version:1,status:(error.code.startsWith('UNSUPPORTED')||error.code==='TOO_COMPLEX')?'unsupported':'invalid',error:{code:error.code,message:error.message},solutions:[],steps:[],verification:{valid:false,reason:error.message}};}
+}
+
+
+// SOURCE: ../math-problems/src/generator.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+/** Modernized from Charles B. Cossé's crosswordbuilder fraction-toggle-OFF algorithm.
+ * Original copyright (C) 2001-2010 Asymptopia Software, GPL. See NOTICE.md. */
+function seededRandom(seed=0){
+ if(!['number','string'].includes(typeof seed)||(typeof seed==='number'&&!Number.isFinite(seed))||String(seed).length>200)throw new MathProblemError('INVALID_SEED','Seed must be a finite number or string of at most 200 characters');
+ let state=2166136261;for(const c of String(seed)){state^=c.charCodeAt(0);state=Math.imul(state,16777619)>>>0;}
+ return ()=>{state=(state+0x6D2B79F5)>>>0;let t=state;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};
+}
+function createProblemGenerator(options={}) {
+ const {seed=0,min=1,max=9,operator,missingSlot,maxAttempts=500}=options;
+ if(!Number.isSafeInteger(min)||!Number.isSafeInteger(max)||min>max||Math.abs(min)>1000000||Math.abs(max)>1000000||(min===0&&max===0))throw new MathProblemError('INVALID_RANGE','Use an inclusive integer range within ±1000000 containing a nonzero integer');
+ if(operator!==undefined&&!['+','-','*'].includes(operator))throw new MathProblemError('INVALID_OPERATOR','Operator must be +, - or *');
+ const slots=['a','b','c','d','e','f'];if(missingSlot!==undefined&&!slots.includes(missingSlot))throw new MathProblemError('INVALID_SLOT','Unknown slot must be a, b, c, d, e or f');
+ if(!Number.isInteger(maxAttempts)||maxAttempts<1||maxAttempts>10000)throw new MathProblemError('INVALID_BUDGET','maxAttempts must be 1…10000');
+ const random=seededRandom(seed),nonzeroCount=max-min+1-(min<=0&&max>=0?1:0);
+ const sample=()=>{let value=min+Math.floor(random()*nonzeroCount);if(min<=0&&value>=0)value++;return BigInt(value);};
+ return ()=>{
+  for(let attempt=0;attempt<maxAttempts;attempt++){
+   const a=sample(),b=sample(),d=sample(),e=sample(),op=operator??['+','-','*'][Math.floor(random()*3)];
+   const first=new Rational(a,d),second=new Rational(b,e),value=op==='+'?first.add(second):op==='-'?first.sub(second):first.mul(second);
+   const values={a,b,c:value.n,d,e,f:value.d},slot=missingSlot??slots[Math.floor(random()*6)];
+   const n=key=>key===slot?variableNode():integerNode(values[key]);
+   const equation={type:'equation',left:binaryNode(op,binaryNode('/',n('a'),n('d')),binaryNode('/',n('b'),n('e'))),right:binaryNode('/',n('c'),n('f'))};
+   const solution=solveEquation(equation),answer=new Rational(values[slot]);
+   if(solution.status!=='unique'||!solution.verification.valid||!verifySolution(solution).valid||!Rational.from(solution.solutions[0]).equals(answer))continue;
+   return {version:1,text:formatEquation(equation),equation,operator:op,missingSlot:slot,answer:answer.toJSON(),completed:Object.fromEntries(Object.entries(values).map(([k,v])=>[k,String(v)])),validation:{unique:true,transformationsVerified:true,originalArithmeticValid:value.equals(new Rational(values.c,values.f))}};
+  }
+  throw new MathProblemError('GENERATION_EXHAUSTED','No unique valid problem was found within the attempt budget');
+ };
+}
+function generateProblem(options={}){return createProblemGenerator(options)();}
+function generateProblems(options={}){const {count=3,...rest}=options;if(!Number.isInteger(count)||count<1||count>1000)throw new MathProblemError('INVALID_COUNT','count must be 1…1000');const next=createProblemGenerator(rest);return Array.from({length:count},()=>next());}
+
 
 // SOURCE: ../drawing-arm/src/kinematics.js
 /** Character-independent planar two-link IK. Angles are radians, SVG y points down. */
@@ -109,6 +370,7 @@ function boardToWorld(p, board = {}) {
 // SOURCE: ../drawing-arm/src/glyphs.js
 /** Original single-line polyline glyphs. Local cell is 1 × 1. */
 const GLYPHS = {
+ 'x': [[[0,.25],[1,.95]],[[1,.25],[0,.95]]],
  '0': [[[.2,0],[.8,0],[1,.2],[1,.8],[.8,1],[.2,1],[0,.8],[0,.2],[.2,0]]],
  '1': [[[.2,.2],[.5,0],[.5,1]],[[.2,1],[.8,1]]],
  '2': [[[0,.2],[.2,0],[.8,0],[1,.2],[1,.4],[0,1],[1,1]]],
@@ -700,11 +962,32 @@ class ProfessorFigure {
 }
 
 
+// SOURCE: src/math-timeline.js
+/** Thin presentation adapter. The math module has no knowledge of this interface. */
+function solutionToTimeline(solution,options={}) {
+  if(solution.status!=='unique'||!verifySolution(solution).valid)throw new TypeError('Only verified unique solutions can be written as solution timelines');
+  const {maxSize=24,minSize=12,width=515,height=220,lineHeight=1.8,pause=650,speed=135,lift=100,board={origin:[355,140],scale:1,rotation:0}}=options;
+  if(![maxSize,minSize,width,height,lineHeight,speed].every(v=>Number.isFinite(v)&&v>0)||maxSize<minSize||!Number.isFinite(pause)||pause<0)throw new RangeError('Invalid solution layout options');
+  const lines=solution.steps.map(s=>s.text),longest=Math.max(1,...lines.map(t=>t.length));
+  const size=Math.min(maxSize,width/(longest*.95),height/(1+(lines.length-1)*lineHeight));
+  if(size<minSize)throw new RangeError('Solution has too many/long steps for this board; use a paged consumer');
+  const strokes=[],fallbacks=[],mathSteps=[];let at=0;
+  for(const [index,step]of solution.steps.entries()){
+    const row=textTimeline(step.text,{x:0,y:index*size*lineHeight,size,speed,lift});
+    strokes.push(...row.strokes.map(s=>({...s,at:s.at+at})));fallbacks.push(...row.fallbacks.map(f=>({...f,at:f.at+at})));
+    mathSteps.push({index,at,end:at+row.duration,text:step.text,operation:structuredClone(step.operation)});at+=row.duration+pause;
+  }
+  return validateTimeline({version:1,board,strokes,fallbacks,mathSteps,layout:{size,lineHeight},math:{version:1,status:solution.status,problem:solution.steps[0].text,solutions:structuredClone(solution.solutions)}});
+}
+
+
 // SOURCE: demo.js
 const q = selector => document.querySelector(selector);
 let raw, figure, time = 0, playing = false, previous = null;
 let body = configureBody();
 const rig = { elbow: 'negative' };
+const examples = [generateProblem({seed:'B1.6-add',operator:'+',missingSlot:'a'}),generateProblem({seed:'B1.6-subtract',operator:'-',missingSlot:'e'}),generateProblem({seed:'B1.6-multiply',operator:'*',missingSlot:'f'})];
+for(const [i,p] of examples.entries())q(`#math-example option[value="generated-${i}"]`).textContent=p.text;
 function refresh() {
   const state = figure.render(time);
   q('#seek').max = figure.duration || 1; q('#seek').value = time;
@@ -714,12 +997,16 @@ function refresh() {
   q('#arm-lengths').textContent = `${figure.arm.upper.toFixed(1)} / ${figure.arm.forearm.toFixed(1)}`;
   q('#body-origin').textContent = figure.currentBody.origin.map(n => n.toFixed(1)).join(', ');
   q('#shoulder-value').textContent = figure.arm.shoulder.map(n => Number(n.toFixed(2))).join(', ');
+  const mathSteps=Array.isArray(raw?.mathSteps)?raw.mathSteps.filter(s=>s&&Number.isFinite(s.at)&&Number.isInteger(s.index)&&typeof s.operation?.explanation==='string'):[];
+  const mathStep=mathSteps.filter(s=>s.at<=state.sourceTime).at(-1);
+  q('#operation').textContent=mathStep?`Step ${mathStep.index+1}/${mathSteps.length}: ${mathStep.operation.explanation}`:'';
 }
 function load(json) {
   // Validation in setTimeline happens before the previous rendering is replaced.
+  const nextRaw=structuredClone(json);
   if (figure) figure.setTimeline(json);
   else figure = new ProfessorFigure(q('#professor'), json, { body, rig });
-  raw = structuredClone(json); time = 0; playing = false; previous = null; refresh();
+  raw = nextRaw; time = 0; playing = false; previous = null; refresh();
 }
 function statusMessage() {
   return figure.plan.blocked.length ? `${figure.plan.blocked.length} portion(s) blocked: no reachable forward-writing stance at this height / joint limits. No chalk is drawn there.` : (raw.fallbacks?.length ? 'Unsupported characters use font fallback, not traced strokes.' : 'Ready. Writing coordinates fixed; moves and reaches add playback time.');
@@ -727,14 +1014,20 @@ function statusMessage() {
 function loadWriting() {
   try {
     if (q('#writing').value.length > 200) throw new Error('Keep this writing study to 200 characters.');
-    load(textTimeline(q('#writing').value, { x: 0, y: 0, size: 24, speed: 135, lift: 100, board: { origin: [355, 140], scale: 1, rotation: 0 } }));
+    if(q('#math-example').value==='free')load(textTimeline(q('#writing').value, { x: 0, y: 0, size: 24, speed: 135, lift: 100, board: { origin: [355, 140], scale: 1, rotation: 0 } }));
+    else {
+      const solution=solveEquation(q('#writing').value);
+      if(solution.status!=='unique')throw new Error(solution.error?.message??solution.explanation??`No unique solution (${solution.status})`);
+      load(solutionToTimeline(solution));
+    }
     q('#message').textContent = statusMessage();
-  } catch (error) { q('#message').textContent = error.message; }
+  } catch (error) { playing=false;previous=null;q('#play').textContent='Play';q('#message').textContent=error.message; }
 }
 q('#load').onclick = loadWriting;
+q('#math-example').onchange=()=>{const selected=q('#math-example').value;q('#load').textContent=selected==='free'?'Load writing ↗':'Solve & write ↗';if(selected==='example')q('#writing').value='x/5-4/4=2/5';else if(selected.startsWith('generated-'))q('#writing').value=examples[Number(selected.split('-')[1])].text;if(selected!=='free')loadWriting();};
 q('#play').onclick = () => { if (time >= figure.duration) time = 0; playing = !playing; previous = null; refresh(); };
 q('#reset').onclick = () => { time = 0; playing = false; refresh(); };
-q('#seek').oninput = () => { time = Number(q('#seek').value); playing = false; refresh(); };
+q('#seek').oninput = () => { const value=Number(q('#seek').value);time=Math.abs(value-figure.duration)<1e-6?figure.duration:value;playing=false;refresh(); };
 q('#anchors').onchange = () => { figure.setDebug(q('#anchors').checked); q('#board-anchor').setAttribute('visibility', q('#anchors').checked ? 'visible' : 'hidden'); };
 // UI values are body-local. The adapter alone converts the shoulder to world units.
 const bodyFields = [
