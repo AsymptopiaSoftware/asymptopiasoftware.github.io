@@ -53,7 +53,14 @@ The six slots follow the original `a/d op b/e = c/f` convention. The RHS is redu
 }
 ```
 
-Expression nodes are `{type:'integer',value:'5'}`, `{type:'variable',name:'x'}`, `{type:'negate',operand}`, and `{type:'binary',op,left,right}`. All public records serialize to JSON without BigInt values. Each step includes the complete equation, an operation kind/operand, explanatory text, nonzero conditions where needed, and an exact calculation record when simplification is combined with isolation.
+Expression nodes are `{type:'integer',value:'5'}`, `{type:'variable',name:'x'}`, `{type:'negate',operand}`, and `{type:'binary',op,left,right}`. All public records serialize to JSON without BigInt values. Each step includes the complete equation, an operation kind/operand, canonical explanatory text, nonzero conditions and any exact calculation record. B1.9.2 adds operation certificates:
+
+- `effect:'both-sides'`: `transformedEquation` explicitly applies the operand to both previous sides; `simplifiedSides` names any subsequent cancellation/reduction already shown in the displayed equation.
+- `effect:'simplification'`: `sides` names the changed sides; each must be symbolically identical to its previous expression. It never claims that a new operation was applied to only one side.
+- Denominator isolation records `transformations`: multiplication of both sides by the nonzero denominator, division of both sides by the nonzero RHS, then a side swap. Both intermediate full equations and the final simplified result are independently checked.
+- `operationExplanation(operation)` derives the narration from kind/operand/sides, rather than accepting arbitrary text. Verification rejects altered explanations, certificates, effects and condition lists.
+
+The solver certifies and verifies each candidate against the previous equation before appending it. Failure returns an invalid result with no renderable steps. Final verification repeats the checks without trusting cached flags. The math module remains independent of all rendering and speech code.
 
 Statuses:
 
@@ -70,6 +77,21 @@ The generated six-slot family has at most one occurrence of x and solves by inve
 
 ## Verification
 
-Expressions become exact polynomial rational functions. Each original denominator contributes a nonzero restriction. Cross-multiplication roots are filtered through those restrictions and then substituted into the **original** expressions. Each transformation is checked for equal solution sets under the carried original domain; inverse-operation metadata is also checked algebraically. This rejects `0/x=1`'s extraneous x=0, preserves `x/x=1`'s x≠0 domain, and distinguishes no-solution from ambiguous identities. Unknown nonlinear domain sets are not silently asserted equivalent.
+Expressions become exact polynomial rational functions. Each original denominator contributes a nonzero restriction. Cross-multiplication roots are filtered through those restrictions and then substituted into the **original** expressions. Each transformation is checked for equal solution sets under the carried original domain; inverse-operation metadata and its canonical explanation are also checked algebraically before a candidate is appended. This rejects `0/x=1`'s extraneous x=0, preserves `x/x=1`'s x≠0 domain, and distinguishes no-solution from ambiguous identities. Unknown nonlinear domain sets are not silently asserted equivalent.
 
 Run `npm test` in this directory. Tests cover independent integer cross-product identities, large exact values, requested four-step output, signs/reduction, all operators × all six slots × 16 seeds, domain/cancellation cases, invalid/ambiguous input, tamper detection, JSON AST round trips and deterministic sequences.
+
+## B1.9.2 negative-denominator regression
+
+`solveEquation('1/4-7/x=-5/8')` returns the exact answer `x=8` and preserves `x!=0` throughout:
+
+```
+1/4-7/x=-5/8
+-(7/x)=-5/8-1/4
+-(7/x)=-7/8
+-(7/x)*(-1)=-7/8*(-1)
+7/x=7/8
+x=8
+```
+
+The sign-change step explicitly multiplies **both** sides by -1, then a separately labeled simplification cancels both negatives. The final denominator-isolation certificate proves both-side multiplication/division and the swap. Canonical text uses `*` for round trips; consumers typeset it as a centered multiplication dot. Regression tests independently compare exact normalized cross-polynomials and original-domain witnesses, reject same-root but falsely described operations, and reject one-sided changes and forged speech explanations.

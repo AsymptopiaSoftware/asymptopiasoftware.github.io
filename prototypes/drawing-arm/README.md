@@ -74,3 +74,7 @@ New implementation and glyphs written from scratch. Research on November 6, 2026
 - `ccosse/crosswordbuilder` is an educational problem source, not an engine dependency.
 
 No upstream code, third-party font, character asset, or package was copied. Existing website files and production configuration remain untouched. Feature branch only; do not merge or deploy without owner authorization.
+
+## Multiplication glyph revision (B1.9.2)
+
+`GLYPHS['·']` is a small centered closed pen stroke. Legacy scalar multiplication inputs `*` and `×` now use that same stroke, while lowercase `x` remains the unknown's handwriting glyph and `.` stays at the baseline. The standalone bundle and example geometry have been regenerated. No IK, timeline interpolation or SVG-renderer algorithm changes.

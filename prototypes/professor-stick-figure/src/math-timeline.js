@@ -16,9 +16,27 @@ export function solutionToTimeline(solution,options={}) {
     const start=at;let end=at;
     for(const stroke of geometry.strokes.filter(s=>s.row===index)){
       const length=stroke.points.slice(1).reduce((sum,p,i)=>sum+Math.hypot(p[0]-stroke.points[i][0],p[1]-stroke.points[i][1]),0);
-      const duration=Math.max(1,length/speed*1000);strokes.push({...stroke,at,duration});end=at+duration;at=end+lift;
+      const duration=Math.max(stroke.symbol==='·'?80:1,length/speed*1000);strokes.push({...stroke,at,duration});end=at+duration;at=end+lift;
     }
     mathSteps.push({index,at:start,end,text:step.text,operation:structuredClone(step.operation)});at=end+Math.max(pause,lift);
   }
-  return validateTimeline({version:1,board,strokes,fallbacks:[],mathSteps,layout:{notation:'stacked-fractions',size:layout.size,width:layout.width,height:layout.height,rows:layout.rows},math:{version:1,status:solution.status,problem:solution.steps[0].text,solutions:structuredClone(solution.solutions)}});
+  return validateTimeline({version:1,board,strokes,fallbacks:[],mathSteps,layout:{notation:'stacked-fractions',size:layout.size,width:layout.width,height:layout.height,rows:layout.rows},math:{version:2,status:solution.status,problem:solution.steps[0].text,solutions:structuredClone(solution.solutions),solution:structuredClone(solution),options:{maxSize,minSize,width,height,pause,speed,lift,board:structuredClone(board),rowGap}}});
+}
+
+/** Fail closed at the lesson import/load boundary before any rendering or narration.
+ * Legacy/free-writing timelines without lesson steps remain ordinary drawing data.
+ */
+export function validateMathTimeline(input) {
+  if(!input?.math?.solution&&!(Array.isArray(input?.mathSteps)&&input.mathSteps.length))return input;
+  if(!input.math?.solution||!verifySolution(input.math.solution).valid)throw new TypeError('Math lesson has missing or invalid exact step certificates; solve the equation again.');
+  const expected=solutionToTimeline(input.math.solution,input.math.options);
+  const canonical=value=>Array.isArray(value)?value.map(canonical):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(key=>[key,canonical(value[key])])):value;
+  for(const key of ['board','strokes','fallbacks','mathSteps','layout','math'])
+    if(JSON.stringify(canonical(input[key]))!==JSON.stringify(canonical(expected[key])))throw new TypeError(`Math lesson ${key} differs from its verified solution; solve the equation again.`);
+  if(input.presentationActions){
+    if(!Array.isArray(input.presentationActions)||input.presentationActions.length!==input.mathSteps.length)throw new TypeError('Math presentation actions must match the verified steps.');
+    for(const [i,action]of input.presentationActions.entries())if(action.text!==input.mathSteps[Math.min(i+1,input.mathSteps.length-1)].operation.explanation)
+      throw new TypeError('Math narration must match the verified operation.');
+  }
+  return input;
 }

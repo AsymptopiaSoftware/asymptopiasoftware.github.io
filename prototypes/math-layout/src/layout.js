@@ -49,7 +49,7 @@ function expressionBox17(node,size,m){
  let left=expressionBox17(node.left,size,m),right=expressionBox17(node.right,size,m);
  if(precedence17(node.left)<precedence17(node))left=parentheses17(left,size,m);
  if(node.right.type==='negate'||(node.right.type==='integer'&&node.right.value.startsWith('-'))||precedence17(node.right)<precedence17(node)||(node.op==='-'&&precedence17(node.right)===precedence17(node)))right=parentheses17(right,size,m);
- return rowBox17([left,textBox17(node.op==='*'?'×':node.op,size,m,'binary'),right],size,operatorGap17(m,size));
+ return rowBox17([left,textBox17(node.op==='*'?'·':node.op,size,m,'binary'),right],size,node.op==='*'?Math.max(.3,m.operatorGap-.25)*size:operatorGap17(m,size));
 }
 function options17(options){const {size=24,...custom}=options;const m={...metrics17,...custom};if(!Number.isFinite(size)||size<=0||Object.values(m).some(v=>!Number.isFinite(v)||v<=0)||m.fractionScale>=1)throw new RangeError('Invalid math layout metrics');return {size,m};}
 /** Pure boxes/positioned symbols; no font paths, SVG or animation clocks. */

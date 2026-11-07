@@ -1,6 +1,6 @@
-# B1.7 math → layout → strokes → writing
+# B1.9.2 math → certified layout → timed strokes
 
-Pure algebra remains in [math-problems](../../math-problems/README.md), byte-for-byte unchanged from B1.6. The solver returns ASTs, canonical text and explanatory operation metadata; it has no coordinates or font knowledge.
+Pure algebra remains in [math-problems](../../math-problems/README.md), independent of rendering; B1.9.2 adds candidate operation certificates and canonical, verified explanations. The solver returns ASTs, canonical text and explanatory operation metadata; it has no coordinates or font knowledge.
 
 The new [math-layout package](../../math-layout/README.md) supplies two pure stages:
 
@@ -15,7 +15,7 @@ Returned JSON:
 { version:1, board, strokes, fallbacks:[],
   mathSteps:[{index,at,end,text,operation}],
   layout:{notation:'stacked-fractions',size,width,height,rows},
-  math:{version:1,status:'unique',problem,solutions} }
+  math:{version:2,status:'unique',problem,solutions,solution,options} }
 ```
 
 Stroke records are unchanged v1 polylines with optional annotations (`kind`, `symbol`, `role`, `row`, `item`, `stroke`). The Drawing Arm engine can ignore those annotations. `kind:'fraction-bar'` is a normal timed pen stroke, not an SVG decoration. Every separate glyph path and bar is separated by a positive lift interval. Source `at/end` still differ from playback time when the existing planner inserts movement/reaching.
@@ -35,3 +35,9 @@ B1.9 adds a consumer-only presentation adapter after B1.8 sequencing, using the 
 ## Fraction operator alignment correction
 
 Layout row metadata now includes explicit `mathAxis` and `baseline` (`axis` remains a compatibility alias). Pure layout fraction-bar items also expose `barY`, independently positioned numerator/denominator baselines and full fraction bounds. Nested children are balanced around the mathematical axis, and operator gaps are .55 em on both sides (minimum .5 em). Equals columns still align. The unchanged adapter converts all operator glyphs and bars into ordinary timed Drawing Arm strokes; no static SVG operator decorations are added.
+
+## B1.9.2 validation boundary
+
+`math.solution` contains the complete structured exact solution and operation certificates; `math.options` records the adapter settings needed to reproduce geometry and timing. `validateMathTimeline(json)` repeats `verifySolution()`, regenerates the canonical board/strokes/fallbacks/steps/layout and compares them before loading. Mathematical narration overrides must use the next certified operation's explanation. The browser calls this guard before replacing the figure or starting its speech. Plain free-writing timelines still need only original v1 validation; old math exports without proof must be solved/exported again.
+
+Multiplication nodes become the small centered `·` glyph, with at least 80 ms duration and normal pen-up transitions. Decimal points and variable x are unaffected. All four original engine algorithms remain pinned; the approved glyph hash records the new dot and multiplication aliases. See [math correctness](math-correctness.md).

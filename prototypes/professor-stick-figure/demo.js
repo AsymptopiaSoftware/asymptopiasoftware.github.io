@@ -1,7 +1,7 @@
 import { textTimeline } from '../drawing-arm/src/timeline.js';
 import { solveEquation } from '../math-problems/src/solver.js';
 import { generateProblem } from '../math-problems/src/generator.js';
-import { solutionToTimeline } from './src/math-timeline.js';
+import { solutionToTimeline, validateMathTimeline } from './src/math-timeline.js';
 import { presentationAdvance } from './src/presentation-plan.js';
 import { PresentationSpeech } from './src/speech.js';
 import { advanceTeaching } from './src/teaching.js';
@@ -35,6 +35,7 @@ function refresh() {
 }
 function load(json) {
   // Validation in setTimeline happens before the previous rendering is replaced.
+  validateMathTimeline(json);
   const nextRaw=structuredClone(json);
   if (figure) figure.setTimeline(json);
   else figure = new ProfessorFigure(q('#professor'), json, { body, rig });
@@ -56,7 +57,7 @@ function loadWriting() {
   } catch (error) { speech.cancel();playing=false;previous=null;q('#play').textContent='Play';q('#message').textContent=error.message; }
 }
 q('#load').onclick = loadWriting;
-q('#math-example').onchange=()=>{const selected=q('#math-example').value;q('#load').textContent=selected==='free'?'Load writing ↗':'Solve & write ↗';if(selected==='example')q('#writing').value='x/5-4/4=2/5';else if(selected.startsWith('generated-'))q('#writing').value=examples[Number(selected.split('-')[1])].text;if(selected!=='free')loadWriting();};
+q('#math-example').onchange=()=>{const selected=q('#math-example').value;q('#load').textContent=selected==='free'?'Load writing ↗':'Solve & write ↗';if(selected==='example')q('#writing').value='x/5-4/4=2/5';else if(selected==='regression')q('#writing').value='1/4-7/x=-5/8';else if(selected.startsWith('generated-'))q('#writing').value=examples[Number(selected.split('-')[1])].text;if(selected!=='free')loadWriting();};
 q('#play').onclick = () => { if (time >= figure.duration) {speech.cancel();time = 0;} playing = !playing; previous = null; refresh(); };
 q('#teaching-mode').onchange = () => {
   const waiting=figure.render(time).teaching?.waiting;

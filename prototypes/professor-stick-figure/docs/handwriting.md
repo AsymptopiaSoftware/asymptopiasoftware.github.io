@@ -25,7 +25,8 @@ Glyph audit:
 | + | Retain left-to-right horizontal, lift, top-to-bottom vertical |
 | − / - | Retain left-to-right horizontal |
 | = | Retain upper left-to-right bar, lift, lower left-to-right bar |
-| × / * / x | Retain the two downward diagonals separated by a lift |
+| x | Retain the variable's two downward diagonals separated by a lift |
+| · / × / * | B1.9.2: one small centered closed dot stroke; legacy multiplication inputs share the dot |
 | ÷ | Upper dot, lift, left-to-right bar, lift, lower dot |
 | Parentheses / decimal | Retain top-to-bottom curves / short dot stroke |
 | / | Retain its legacy free-writing diagonal; structured fractions use an arm-drawn bar instead |
@@ -33,3 +34,5 @@ Glyph audit:
 These are conventional handwriting choices, not recognition or font-outline tracing. Shape and order remain character-independent. The original IK, arc-length interpolation, chalk contact and SVG renderer are unchanged.
 
 Stacked fraction bars are ordinary two-point left-to-right strokes. They have a real duration and go through the same reach planner, inverse kinematics, walking/lift logic and renderer as glyph strokes. Browser and unit checks inspect an empty bar before writing, a partial bar midway, and a completed path afterward. There are no prepainted fraction bars or text overlays.
+
+B1.9.2 uses a closed multiplication dot centered on the mathematical axis, distinctly above the decimal point. The math timing adapter gives it at least 80 ms of actual chalk contact. Its points are approximately .1 em across, not two full-height diagonals; it is never a text overlay or static SVG circle. The engine lock pins this approved font change while preserving IK, interpolation and chalk rendering.

@@ -20,7 +20,7 @@ test('nested fractions and negative values retain hierarchy without slash glyphs
 });
 test('operators align on the fraction axis and parentheses preserve expression grouping',()=>{
  const eq=layoutEquation('(x+1)*2=3/5'),bar=eq.items.find(i=>i.kind==='fraction-bar');
- const equals=eq.items.find(i=>i.text==='='),times=eq.items.find(i=>i.text==='×');near(equals.y+equals.height/2,bar.y);near(times.y+times.height/2,bar.y);assert.ok(eq.items.some(i=>i.text==='('));assert.ok(eq.items.some(i=>i.text===')'));
+ const equals=eq.items.find(i=>i.text==='='),times=eq.items.find(i=>i.text==='·');near(equals.y+equals.height/2,bar.y);near(times.y+times.height/2,bar.y);assert.ok(eq.items.some(i=>i.text==='('));assert.ok(eq.items.some(i=>i.text===')'));
 });
 test('measured multiline layout fits bounds, aligns equal signs and prevents row overlaps',()=>{
  const eqs=['x/5-4/4=2/5','x/5=2/5+4/4','x/5=7/5','x=7'],box=layoutEquations(eqs,{width:515,height:220});
