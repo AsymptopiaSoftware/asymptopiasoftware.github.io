@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.3 · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.4 · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
 </style></head>
 <body><main>
 <div class="experiment"><section class="stage" aria-label="Professor writing demonstration">
@@ -12,11 +12,11 @@
 <text x="343" y="109" fill="#94b2a0" font-family="monospace" font-size="9" letter-spacing="2">BOARD / WORLD SPACE</text>
 <g id="professor"></g>
 <g id="board-anchor" visibility="hidden" pointer-events="none"><circle cx="355" cy="140" r="7" fill="none" stroke="#8dbca7"/><text x="365" y="130" fill="#a5c9b8" font-family="monospace" font-size="11">board origin</text></g>
-<text x="124" y="551" fill="#9bada2" font-family="monospace" font-size="10" letter-spacing="1">GROUNDED HORIZONTAL MOTION · CHALK LIFTED IN TRANSIT</text>
+<text x="124" y="551" fill="#9bada2" font-family="monospace" font-size="10" letter-spacing="1">STEPPING GAIT · CHALK LIFTED WHILE WALKING</text>
 </svg>
 <div class="transport"><button id="play" class="primary">Play</button><button id="reset">Reset</button><label class="scrubber">Timeline<input id="seek" type="range" min="0" max="1" value="0" aria-label="Timeline position"></label><output id="clock">0.0 / 0.0 s</output><label class="speed-label">Speed<select id="speed"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div>
 <div class="stage-footer"><span id="contact" role="status">Ready</span><label><input id="anchors" type="checkbox"> Show skeleton / anchors</label></div>
-</section><aside><p class="eyebrow">B1.3 / WRITING TOOL</p><label for="writing">Writing instructions</label><textarea id="writing" rows="2" spellcheck="false">2 × (3 + 4)
+</section><aside><p class="eyebrow">B1.4 / WRITING TOOL</p><label for="writing">Writing instructions</label><textarea id="writing" rows="2" spellcheck="false">2 × (3 + 4)
 = 14</textarea><button id="load" class="primary wide">Load writing ↗</button><p id="message" role="status"></p><div class="file-actions"><button id="export">Export JSON ↓</button><label for="import" class="file-label">Import JSON<input id="import" type="file" accept=".json,application/json"></label></div>
 <details id="advanced"><summary>Advanced / Body Rig</summary><div id="body-controls" class="body-controls"></div><dl><dt>Upper / forearm</dt><dd id="arm-lengths"></dd><dt>Right shoulder</dt><dd id="shoulder-value"></dd><dt>Body origin</dt><dd id="body-origin"></dd></dl><button id="restore" class="wide">Restore body rig</button></details><p class="docs"><a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/reduced-professor-stick-figure/prototypes/professor-stick-figure/README.md">Docs</a> · <a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/reduced-professor-stick-figure/prototypes/professor-stick-figure/docs/coordinates.md">Rig / motion contract</a></p></aside></div>
 </main><script type="module">
@@ -324,6 +324,10 @@ function bodyToWorld(point, config = {}) {
   const body = configureBody(config), p = pair(point, 'Local point');
   return p.map((v, i) => body.origin[i] + v * body.scale);
 }
+/** Reuse the original two-link solver for flexed, constant-length walking legs. */
+function legKnee(hip,ankle,legHeight) {
+  return solveIK({shoulder:hip,upper:.58*legHeight,forearm:.58*legHeight,tip:0,elbow:'positive'},ankle).elbow;
+}
 function bodyLandmarks(config = {}) {
   const b = configureBody(config), hips = [-3, -b.legHeight];
   const torsoTop = [b.lean, hips[1] - b.torsoLength];
@@ -338,8 +342,8 @@ function bodyLandmarks(config = {}) {
     rightShoulder, leftShoulder, shoulderCenter: center, torsoTop, hips, leftHip, rightHip,
     leftElbow: [leftShoulder[0] - 12 - b.lean / 2, leftShoulder[1] + b.torsoLength * 59 / 115],
     leftHand: [leftShoulder[0] - 2 - b.lean, leftShoulder[1] + b.torsoLength * 101 / 115],
-    leftKnee: [(leftHip[0] + leftFoot[0]) / 2, -b.legHeight / 2],
-    rightKnee: [(rightHip[0] + rightFoot[0]) / 2, -b.legHeight / 2],
+    leftKnee: legKnee(leftHip,leftFoot,b.legHeight),
+    rightKnee: legKnee(rightHip,rightFoot,b.legHeight),
     leftFoot, rightFoot, leftAnkle: [...leftFoot], rightAnkle: [...rightFoot], leftToe: [leftFoot[0] + b.footLength, 0], rightToe: [rightFoot[0] + b.footLength, 0]
   };
 }
@@ -364,6 +368,43 @@ function limbOutline(points, radii) {
   const left=side(1),right=side(-1).reverse(),last=points.at(-1),first=points[0];
   const end=last.map((v,i)=>v+tangents.at(-1)[i]*radii.at(-1)),start=first.map((v,i)=>v-tangents[0][i]*radii[0]);
   return `M${left[0]}${curve(left)}Q${end} ${right[0]}${curve(right)}Q${start} ${left[0]}Z`;
+}
+
+
+// SOURCE: src/gait.js
+const easeGait=t=>t*t*(3-2*t);
+/** Step cadence derives from actual root displacement, not an independent timer. */
+function stepCycle(bodyOptions,state) {
+  const body=configureBody(bodyOptions);
+  if(state?.kind!=='move'||!state.move||Math.abs(state.move.to-state.move.from)<1e-8)return null;
+  const {from,to}=state.move,delta=(to-from)/body.scale;
+  const progress=Math.max(0,Math.min(1,(state.offset-from)/(to-from)));
+  const pairs=Math.max(1,Math.ceil(Math.abs(delta)/(.35*body.legHeight))),steps=2*pairs;
+  const phase=Math.min(steps-1,Math.floor(progress*steps)),u=Math.min(1,progress*steps-phase);
+  return {from,to,delta,progress,pairs,steps,phase,u,first:delta>=0?'right':'left',stride:delta/pairs};
+}
+/** Small upright rise at mid-step, zero value and velocity at contact/stop. */
+function walkingBob(body,state) {
+  const cycle=stepCycle(body,state);
+  return cycle?-.015*body.legHeight*body.scale*Math.sin(Math.PI*cycle.u)**2:0;
+}
+/** Alternating steps: stance shoe is fixed in world space, swing shoe lifts. */
+function walkingLandmarks(bodyOptions,state) {
+  const body=configureBody(bodyOptions),p=bodyLandmarks(body),cycle=stepCycle(body,state);
+  if(cycle) {
+    const {from,phase,u,first,stride}=cycle,lift=Math.min(.105*body.legHeight,.6*body.footLength);
+    const bob=walkingBob(body,state)/body.scale;
+    for(const side of ['left','right']) {
+      const parity=side===first?0:1,completed=Math.floor((phase+1-parity)/2),swing=phase%2===parity;
+      const shift=(completed+(swing?easeGait(u):0))*stride;
+      const foot=[p[side+'Foot'][0]+(from-state.offset)/body.scale+shift,(swing?-lift*Math.sin(Math.PI*u)**2:0)-bob];
+      const pitch=swing?-.18*Math.sin(Math.PI*u)**2:0;
+      p[side+'Foot']=foot;p[side+'Ankle']=[...foot];p[side+'Toe']=[foot[0]+body.footLength*Math.cos(pitch),foot[1]+body.footLength*Math.sin(pitch)];
+    }
+  }
+  p.leftKnee=legKnee(p.leftHip,p.leftAnkle,body.legHeight);
+  p.rightKnee=legKnee(p.rightHip,p.rightAnkle,body.legHeight);
+  return p;
 }
 
 
@@ -442,7 +483,7 @@ function planWriting(timeline, bodyOptions={}, rig={}) {
     if(Math.abs(next-offset)>1e-7) {
       const from=offset,angles=angles12(pose);
       // smoothstep peak speed <= 90 world units/second; every foot stays on floor.
-      add({kind:'move',from,to:next,angles,sourceTime:sourceAt},Math.max(120,Math.abs(next-from)/90*1500));
+      add({kind:'move',from,to:next,angles,sourceTime:sourceAt},Math.max(440*Math.max(1,Math.ceil(Math.abs(next-from)/(body.scale*.35*body.legHeight))),Math.abs(next-from)/90*1500));
       offset=next;pose=forward(attachedArm(translatedBody(body,offset),rig),...angles);
     }
     const arm=attachedArm(translatedBody(body,offset),rig),start=solveIK(arm,points[0]);
@@ -513,7 +554,10 @@ function samplePlan(plan,time) {
   }
   const offset=p.kind==='move'?p.from+(p.to-p.from)*f:p.offset;
   const angles=p.kind==='approach'?p.fromAngles.map((v,i)=>v+(p.toAngles[i]-v)*f):p.angles;
-  return {kind:p.kind,reason:p.reason,offset,pose:forward(attachedArm(translatedBody(plan.body,offset),plan.rig),...angles),point:null,penDown:false,chalkDown:false,done:false,sourceTime:p.kind==='hold'?p.sourceTime+u*p.duration:p.sourceTime};
+  const motion={kind:p.kind,offset,...(p.kind==='move'?{move:{from:p.from,to:p.to}}:{})};
+  const bodyLift=walkingBob(plan.body,motion),body=translatedBody(plan.body,offset);
+  body.origin[1]+=bodyLift;
+  return {...motion,bodyLift,reason:p.reason,pose:forward(attachedArm(body,plan.rig),...angles),point:null,penDown:false,chalkDown:false,done:false,sourceTime:p.kind==='hold'?p.sourceTime+u*p.duration:p.sourceTime};
 }
 
 
@@ -571,9 +615,17 @@ class ProfessorFigure {
   }
   setDebug(visible){this.debug=!!visible;this.render(this.time);}
   render(time) {
-    const state=samplePlan(this.plan,time);this.time=time;this.currentBody=translatedBody(this.body,state.offset);this.arm=attachedArm(this.currentBody,this.rig);
+    const state=samplePlan(this.plan,time);this.time=time;this.currentBody=translatedBody(this.body,state.offset);this.currentBody.origin[1]+=state.bodyLift??0;this.arm=attachedArm(this.currentBody,this.rig);
     this.bodyGroup.setAttribute('transform',`translate(${this.currentBody.origin}) scale(${this.body.scale})`);
+    this.localPose=walkingLandmarks(this.body,state);
+    const part=name=>[...this.bodyGroup.children].find(n=>n.getAttribute('data-part')===name),p=this.localPose;
+    for(const side of ['left','right']) {
+      part(side+'-leg').setAttribute('d',limbOutline([p[side+'Hip'],p[side+'Knee'],p[side+'Ankle']],[9,6.5,4.5]));
+      part(side+'-foot').setAttribute('d',limbOutline([p[side+'Foot'],p[side+'Toe']],[5,3]));
+    }
+
     const skeleton=[...this.bodyGroup.children].find(n=>n.getAttribute('data-part')==='body-skeleton');
+    skeleton.children[1].setAttribute('d','M'+[p.leftFoot,p.leftKnee,p.leftHip,p.rightHip,p.rightKnee,p.rightFoot].join('L'));
     skeleton.setAttribute('visibility',this.debug?'visible':'hidden');
     for(const {phase,renderer}of this.writers){renderer.render(Math.max(0,Math.min(phase.duration,time-phase.at)));for(const el of [renderer.links,renderer.pen,renderer.target,...renderer.joints])el.setAttribute('visibility','hidden');}
     this.fallback.render(time);
@@ -589,7 +641,7 @@ class ProfessorFigure {
     }
     return state;
   }
-  getAnchors(){return Object.fromEntries(Object.entries(bodyLandmarks(this.currentBody??this.body)).map(([k,p])=>[k,bodyToWorld(p,this.currentBody??this.body)]));}
+  getAnchors(){return Object.fromEntries(Object.entries(this.localPose??bodyLandmarks(this.currentBody??this.body)).map(([k,p])=>[k,bodyToWorld(p,this.currentBody??this.body)]));}
   destroy(){this.group.replaceChildren();}
 }
 

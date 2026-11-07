@@ -3,6 +3,7 @@ import { compileTimeline } from '../../drawing-arm/src/timeline.js';
 import { SVGArmRenderer } from '../../drawing-arm/src/svg-renderer.js';
 import { planWriting, samplePlan, translatedBody } from './locomotion.js';
 import { limbOutline } from './curves.js';
+import { walkingLandmarks } from './gait.js';
 const SVG_NS='http://www.w3.org/2000/svg';
 function node(tag,attrs,parent){const el=document.createElementNS(SVG_NS,tag);for(const [k,v]of Object.entries(attrs))el.setAttribute(k,v);parent.append(el);return el;}
 export function drawBody(group,config={}) {
@@ -56,9 +57,17 @@ export class ProfessorFigure {
   }
   setDebug(visible){this.debug=!!visible;this.render(this.time);}
   render(time) {
-    const state=samplePlan(this.plan,time);this.time=time;this.currentBody=translatedBody(this.body,state.offset);this.arm=attachedArm(this.currentBody,this.rig);
+    const state=samplePlan(this.plan,time);this.time=time;this.currentBody=translatedBody(this.body,state.offset);this.currentBody.origin[1]+=state.bodyLift??0;this.arm=attachedArm(this.currentBody,this.rig);
     this.bodyGroup.setAttribute('transform',`translate(${this.currentBody.origin}) scale(${this.body.scale})`);
+    this.localPose=walkingLandmarks(this.body,state);
+    const part=name=>[...this.bodyGroup.children].find(n=>n.getAttribute('data-part')===name),p=this.localPose;
+    for(const side of ['left','right']) {
+      part(side+'-leg').setAttribute('d',limbOutline([p[side+'Hip'],p[side+'Knee'],p[side+'Ankle']],[9,6.5,4.5]));
+      part(side+'-foot').setAttribute('d',limbOutline([p[side+'Foot'],p[side+'Toe']],[5,3]));
+    }
+
     const skeleton=[...this.bodyGroup.children].find(n=>n.getAttribute('data-part')==='body-skeleton');
+    skeleton.children[1].setAttribute('d','M'+[p.leftFoot,p.leftKnee,p.leftHip,p.rightHip,p.rightKnee,p.rightFoot].join('L'));
     skeleton.setAttribute('visibility',this.debug?'visible':'hidden');
     for(const {phase,renderer}of this.writers){renderer.render(Math.max(0,Math.min(phase.duration,time-phase.at)));for(const el of [renderer.links,renderer.pen,renderer.target,...renderer.joints])el.setAttribute('visibility','hidden');}
     this.fallback.render(time);
@@ -74,6 +83,6 @@ export class ProfessorFigure {
     }
     return state;
   }
-  getAnchors(){return Object.fromEntries(Object.entries(bodyLandmarks(this.currentBody??this.body)).map(([k,p])=>[k,bodyToWorld(p,this.currentBody??this.body)]));}
+  getAnchors(){return Object.fromEntries(Object.entries(this.localPose??bodyLandmarks(this.currentBody??this.body)).map(([k,p])=>[k,bodyToWorld(p,this.currentBody??this.body)]));}
   destroy(){this.group.replaceChildren();}
 }

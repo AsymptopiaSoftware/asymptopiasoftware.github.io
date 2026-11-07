@@ -17,7 +17,7 @@ test('body/shoulder edits replan at saved time without changing original board c
  const json=raw(),f=new ProfessorFigure(new SVGNode('g'),json),timeline=f.timeline,copy=JSON.stringify(timeline);f.render(500);
  for(const body of [{torsoLength:130,legHeight:140},{rightShoulderOffset:[20,-10],shoulderWidth:70},{headSize:1.2,neckLength:30}]){
   f.setConfiguration(body);assert.equal(f.time,500);assert.equal(f.timeline,timeline);assert.equal(JSON.stringify(f.timeline),copy);
-  const s=f.render(500),a=f.getAnchors();assert.deepEqual(s.pose.shoulder,a.rightShoulder);assert.equal(a.leftFoot[1],505);
+  const s=f.render(500),a=f.getAnchors();assert.deepEqual(s.pose.shoulder,a.rightShoulder);assert.ok(Math.abs(Math.max(a.leftFoot[1],a.rightFoot[1])-505)<1e-6);
   assert.equal(Number(f.pen.getAttribute('x1')),s.pose.wrist[0]);assert.equal(Number(f.pen.getAttribute('x2')),s.pose.tip[0]);
  }
  assert.deepEqual(json,raw());

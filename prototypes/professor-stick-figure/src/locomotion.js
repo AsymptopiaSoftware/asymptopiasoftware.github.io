@@ -1,4 +1,5 @@
 import { configureBody, attachedArm } from './body.js';
+import { walkingBob } from './gait.js';
 import { distance, solveIK, forward } from '../../drawing-arm/src/kinematics.js';
 import { strokePoint } from '../../drawing-arm/src/timeline.js';
 const clamp12 = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
@@ -75,7 +76,7 @@ export function planWriting(timeline, bodyOptions={}, rig={}) {
     if(Math.abs(next-offset)>1e-7) {
       const from=offset,angles=angles12(pose);
       // smoothstep peak speed <= 90 world units/second; every foot stays on floor.
-      add({kind:'move',from,to:next,angles,sourceTime:sourceAt},Math.max(120,Math.abs(next-from)/90*1500));
+      add({kind:'move',from,to:next,angles,sourceTime:sourceAt},Math.max(440*Math.max(1,Math.ceil(Math.abs(next-from)/(body.scale*.35*body.legHeight))),Math.abs(next-from)/90*1500));
       offset=next;pose=forward(attachedArm(translatedBody(body,offset),rig),...angles);
     }
     const arm=attachedArm(translatedBody(body,offset),rig),start=solveIK(arm,points[0]);
@@ -146,5 +147,8 @@ export function samplePlan(plan,time) {
   }
   const offset=p.kind==='move'?p.from+(p.to-p.from)*f:p.offset;
   const angles=p.kind==='approach'?p.fromAngles.map((v,i)=>v+(p.toAngles[i]-v)*f):p.angles;
-  return {kind:p.kind,reason:p.reason,offset,pose:forward(attachedArm(translatedBody(plan.body,offset),plan.rig),...angles),point:null,penDown:false,chalkDown:false,done:false,sourceTime:p.kind==='hold'?p.sourceTime+u*p.duration:p.sourceTime};
+  const motion={kind:p.kind,offset,...(p.kind==='move'?{move:{from:p.from,to:p.to}}:{})};
+  const bodyLift=walkingBob(plan.body,motion),body=translatedBody(plan.body,offset);
+  body.origin[1]+=bodyLift;
+  return {...motion,bodyLift,reason:p.reason,pose:forward(attachedArm(body,plan.rig),...angles),point:null,penDown:false,chalkDown:false,done:false,sourceTime:p.kind==='hold'?p.sourceTime+u*p.duration:p.sourceTime};
 }

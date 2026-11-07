@@ -1,6 +1,6 @@
-# Professor B1.3 development tool
+# Professor B1.4 development tool
 
-Short body-derived arms, reach-driven grounded horizontal repositioning, and curved SVG limbs. The view remains rear three-quarter, facing the board, with the writing arm attached to the right shoulder. No character artwork, facial behavior, personality or lesson system.
+Short body-derived arms, reach-driven horizontal walking, and curved SVG limbs. The view remains rear three-quarter, facing the board, with the writing arm attached to the right shoulder. No character artwork, facial behavior, personality or lesson system.
 
 ## Preview
 
@@ -26,11 +26,15 @@ B1.3 requires a forward writing band: the target must stay **18%–82% of total 
 
 Before moving, the planner looks ahead over up to 24 nearby strokes, stopping at a source gap over 250 ms, an explicit pen-up stroke, a vertical span over 30% of reach, or an incompatible shared stance. It commits that cluster boundary and uses one position for the whole cluster. An already suitable stance is retained; a necessary move aims near the center of the feasible forward band rather than its edge. This avoids repeated small corrections within a compact word or glyph cluster. Words wider than one comfortable workspace still require movement.
 
-`src/locomotion.js` plans around the unchanged engine. It checks the complete next stroke at the current shoulder. If it cannot be reached, it finds a horizontal root offset before writing, translates the entire body/shoulder/feet smoothly at fixed floor height, and keeps chalk lifted. A pen-up angle interpolation then reaches the next writing point before ink resumes. The default equation makes six horizontal moves, completes every stroke, and takes about 17.38 s instead of 4.80 s of source writing time.
+`src/locomotion.js` plans around the unchanged engine. It checks the complete next stroke at the current shoulder. If it cannot be reached, it finds a horizontal root offset before writing, translates the entire body/shoulder/feet smoothly at fixed floor height, and keeps chalk lifted. A pen-up angle interpolation then reaches the next writing point before ink resumes. The default equation makes six horizontal moves, completes every stroke, and takes about 17.70 s instead of 4.80 s of source writing time.
 
-Movement is a grounded horizontal glide, not an articulated walking gait. Both feet remain on the ground and move with the root. The body stays stationary within every writing phase. There is no teleportation, limb stretching, automatic board relocation or source-point scaling. The forward band is never relaxed to allow backward writing. If it cannot coexist with the original reach/joint limits, that portion is blocked. Very long paths split along their original straight edges, with lifted-chalk moves between portions. Previous chalk stays in world coordinates, independent of later root positions.
+B1.4 replaces gliding with alternating footsteps. While one foot swings forward and lifts, the other shoe stays fixed in world space on the floor. Hips, knees, ankles and toes drive the existing curved leg/foot shapes; two fixed-length leg segments use the unchanged two-link solver. The head and torso stay upright with a subtle mid-step rise. Step count and stride derive from actual horizontal displacement and leg height, so the gait works in either direction and across body proportions. Both feet return smoothly to their resting stance before reaching/writing, and there is no gait when the root is stationary. There is no teleportation, limb stretching, automatic board relocation or source-point scaling. The forward band is never relaxed to allow backward writing. If it cannot coexist with the original reach/joint limits, that portion is blocked. Very long paths split along their original straight edges, with lifted-chalk moves between portions. Previous chalk stays in world coordinates, independent of later root positions.
 
 Horizontal movement cannot repair excessive vertical separation or every joint-limit restriction. Such portions are explicitly marked **blocked**, never drawn, and summarized in the tool's status. The default equation has no blocked portions. The planner is bounded to 5000 pieces and 100,000 spatial subdivision probes and fails atomically if that budget is exceeded. It does not silently stretch the body or solve vertical locomotion.
+
+## Walking implementation
+
+`src/gait.js` derives a deterministic step phase from root travel. Each foot advances once per step pair; maximum stride is 35% of leg height. The stance shoe does not slide. The swing shoe follows an eased horizontal path, lifts by a proportion-based sine arc, and pitches its toes slightly upward. Each thigh/shin is 58% of leg height, with knees solved from hip/ankle joints using the original IK. A small 1.5%-of-leg-height body rise is compensated in foot-local coordinates so the stance remains on the floor. Chalk stays lifted and the writing arm moves with the shoulder during the bob. No new UI controls or character turning are added; Advanced / Body Rig stays collapsed.
 
 ## Curved rendering
 
@@ -67,12 +71,12 @@ See [coordinate/motion contract](docs/coordinates.md), the original [timeline fo
 ## Validation
 
 ```sh
-npm test                       # 22 body, motion, curve and integrity tests
+npm test                       # 27 body, motion, curve and integrity tests
 npm run build:standalone        # verifies engine hashes and generates HTML
 npm run evidence               # generates default and motion-sequence SVG evidence
 cd ../drawing-arm && npm test   # 15 original engine/renderer tests
 ```
 
-The motion tests check both directions, continuity at every phase boundary, bounded horizontal speed, grounded feet, stationary writing roots, exact reachable tip targets, unchanged bone lengths/JSON, long-path splitting, blocked vertical reach, persistent chalk and deterministic seeking. Curves are finite, closed and non-mutating. Original engine tests remain unchanged. B1.1's whole-timeline stationary-body expectation is intentionally superseded by movement between stationary writing phases.
+The motion/gait tests check world-space stance locking, alternating lifted feet, fixed leg bone lengths across proportions, clean rest/stop poses, upright torso, deterministic stepping, both travel directions, continuity at every phase boundary, bounded horizontal speed, stationary writing roots, exact reachable tip targets, unchanged bone lengths/JSON, long-path splitting, blocked vertical reach, persistent chalk and deterministic seeking. Curves are finite, closed and non-mutating. Original engine tests remain unchanged. B1.1's whole-timeline stationary-body expectation is intentionally superseded by movement between stationary writing phases.
 
-`docs/evidence.svg` and `docs/motion.svg` are deterministic adapter/original-renderer output, not browser screenshots. Their rasterized motion sequence was visually inspected. Optional browser smoke tests are included in `tests/browser.mjs` (separate Playwright installation, `PLAYWRIGHT_MODULE` and optional `CHROMIUM_PATH`), but remain unrun because authorized browser-control tools are unavailable. No hosted preview is claimed. No homepage integration, production configuration changes, merge or deployment.
+`docs/evidence.svg`, `docs/motion.svg` and `docs/walk-cycle.svg` are deterministic adapter/original-renderer output, not browser screenshots. Their rasterized motion sequence was visually inspected. Optional browser smoke tests are included in `tests/browser.mjs` (separate Playwright installation, `PLAYWRIGHT_MODULE` and optional `CHROMIUM_PATH`), but remain unrun because authorized browser-control tools are unavailable. No hosted preview is claimed. No homepage integration, production configuration changes, merge or deployment.

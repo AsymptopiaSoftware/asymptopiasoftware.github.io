@@ -15,6 +15,11 @@ try{
  assert.equal(await page.locator('header,.intro,.notes,h1').count(),0);assert.equal(await page.locator('#advanced').getAttribute('open'),null);
  const before=await page.locator('[data-layer="body"]').getAttribute('transform');
  await page.getByRole('button',{name:'Play',exact:true}).click();await page.waitForFunction(()=>Number(document.querySelector('#seek').value)>400);await page.getByRole('button',{name:'Pause',exact:true}).click();
+ const legBefore=await page.locator('[data-part="right-leg"]').getAttribute('d');
+ await page.getByRole('button',{name:'Play',exact:true}).click();
+ await page.waitForFunction(()=>Number(document.querySelector('#seek').value)>650);
+ await page.getByRole('button',{name:'Pause',exact:true}).click();
+ assert.notEqual(await page.locator('[data-part="right-leg"]').getAttribute('d'),legBefore);
  assert.notEqual(await page.locator('[data-layer="body"]').getAttribute('transform'),before);assert.match(await page.locator('#contact').textContent(),/CHALK LIFTED/);
  await page.locator('#seek').evaluate(el=>{el.value=el.max;el.dispatchEvent(new Event('input',{bubbles:true}));});
  assert.ok(await page.locator('[data-layer="chalk"] path').evaluateAll(els=>els.some(el=>(el.getAttribute('d')||'').length>0)));
@@ -28,5 +33,5 @@ try{
  await page.locator('#import').setInputFiles(resolve(root,'professor-stick-figure/examples/writing.json'));assert.match(await page.locator('#message').textContent(),/Ready/);
  await page.getByRole('button',{name:'Restore body rig'}).click();assert.match(await page.locator('#arm-lengths').textContent(),/74.8 \/ 63.3/);
  for(const width of [390,768,1440]){await page.setViewportSize({width,height:950});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));}
- await page.goto(`file://${resolve(root,'professor-stick-figure/standalone.html')}`);await page.waitForFunction(()=>document.querySelector('[data-part="right-arm"]'));assert.equal(await page.locator('#advanced').getAttribute('open'),null);assert.deepEqual(errors,[]);console.log('B1.2 browser smoke checks passed');
+ await page.goto(`file://${resolve(root,'professor-stick-figure/standalone.html')}`);await page.waitForFunction(()=>document.querySelector('[data-part="right-arm"]'));assert.equal(await page.locator('#advanced').getAttribute('open'),null);assert.deepEqual(errors,[]);console.log('B1.4 browser smoke checks passed');
 }finally{await browser?.close();await new Promise(done=>server.close(done));}

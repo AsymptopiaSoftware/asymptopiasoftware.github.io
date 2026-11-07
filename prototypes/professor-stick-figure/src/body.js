@@ -1,4 +1,4 @@
-import { configureArm } from '../../drawing-arm/src/kinematics.js';
+import { configureArm, solveIK } from '../../drawing-arm/src/kinematics.js';
 
 /** SVG axes: +x screen-right, +y down. Origin is the fixed floor point between feet. */
 export const BODY_DEFAULTS = Object.freeze({
@@ -36,6 +36,10 @@ export function bodyToWorld(point, config = {}) {
   const body = configureBody(config), p = pair(point, 'Local point');
   return p.map((v, i) => body.origin[i] + v * body.scale);
 }
+/** Reuse the original two-link solver for flexed, constant-length walking legs. */
+export function legKnee(hip,ankle,legHeight) {
+  return solveIK({shoulder:hip,upper:.58*legHeight,forearm:.58*legHeight,tip:0,elbow:'positive'},ankle).elbow;
+}
 export function bodyLandmarks(config = {}) {
   const b = configureBody(config), hips = [-3, -b.legHeight];
   const torsoTop = [b.lean, hips[1] - b.torsoLength];
@@ -50,8 +54,8 @@ export function bodyLandmarks(config = {}) {
     rightShoulder, leftShoulder, shoulderCenter: center, torsoTop, hips, leftHip, rightHip,
     leftElbow: [leftShoulder[0] - 12 - b.lean / 2, leftShoulder[1] + b.torsoLength * 59 / 115],
     leftHand: [leftShoulder[0] - 2 - b.lean, leftShoulder[1] + b.torsoLength * 101 / 115],
-    leftKnee: [(leftHip[0] + leftFoot[0]) / 2, -b.legHeight / 2],
-    rightKnee: [(rightHip[0] + rightFoot[0]) / 2, -b.legHeight / 2],
+    leftKnee: legKnee(leftHip,leftFoot,b.legHeight),
+    rightKnee: legKnee(rightHip,rightFoot,b.legHeight),
     leftFoot, rightFoot, leftAnkle: [...leftFoot], rightAnkle: [...rightFoot], leftToe: [leftFoot[0] + b.footLength, 0], rightToe: [rightFoot[0] + b.footLength, 0]
   };
 }

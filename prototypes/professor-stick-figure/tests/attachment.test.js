@@ -27,7 +27,7 @@ test('rear-facing curved body includes all skeleton-derived anatomy and remains 
  assert.equal(f.bodyGroup.getAttribute('data-view'),'rear-three-quarter-facing-right');
  for(const part of ['head','left-arm','left-leg','right-leg','hips','torso','shoulders','left-foot','right-foot','body-skeleton'])assert.ok(f.bodyGroup.children.find(n=>n.getAttribute('data-part')===part),part);
  assert.match(f.armSkin.getAttribute('d'),/C/);assert.match(f.armSkin.getAttribute('d'),/Z$/);
- for(const t of [0,f.duration/2,f.duration]){f.render(t);assert.equal(f.getAnchors().leftFoot[1],505);assert.equal(f.getAnchors().rightFoot[1],505);}
+ for(const t of [0,f.duration/2,f.duration]){f.render(t);assert.ok(Math.abs(Math.max(f.getAnchors().leftFoot[1],f.getAnchors().rightFoot[1])-505)<1e-6);}
 });
 test('invalid imports and invalid rig edits are atomic; cleanup works',()=>{
  const group=new SVGNode('g'),f=new ProfessorFigure(group,writing12());f.render(700);const before=group.serialize();

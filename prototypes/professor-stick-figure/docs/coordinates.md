@@ -1,11 +1,11 @@
-# B1.3 coordinates, anatomy and motion contract
+# B1.4 coordinates, anatomy and motion contract
 
 ## Three independent spaces
 
 SVG axes apply throughout: +x right, +y down. The body has local skeletal coordinates, the SVG has world coordinates, and writing uses the original board transform.
 
 ```
-body world point = body.origin + [horizontalOffset, 0] + body.scale * local point
+body world point = body.origin + [horizontalOffset, bodyLift] + body.scale * local point
 board world point = board.origin + board.scale * rotate(board point, board.rotation)
 ```
 
@@ -47,7 +47,7 @@ rightFoot      = [31, 0]
 toes           = respective foot + [footLength, 0]
 ```
 
-Knees are halfway between each hip and heel in X, at `-legHeight/2` in Y. `leftAnkle` and `rightAnkle` currently coincide with heel anchors in this reduced skeleton. The far left arm derives from its shoulder and torso length. Proportion edits preserve local heels, though explicit origin/scale editing relocates/resizes the body. Locomotion adds the same X offset to every landmark and never changes ground Y.
+Each thigh/shin is `0.58 * legHeight` in local units. The original two-link IK solves each knee from its hip and ankle, keeping these lengths fixed during stance and swing. `leftAnkle` and `rightAnkle` currently coincide with heel anchors in this reduced skeleton. The far left arm derives from its shoulder and torso length. Proportion edits preserve local heels, though explicit origin/scale editing relocates/resizes the body. Locomotion translates the upright torso and head while adding alternating leg articulation. Stance shoes remain fixed in world space; swing shoes lift above the unchanged floor. The configured home origin defines ground Y; the current body root includes a small vertical bob.
 
 ## Anatomical right-arm attachment
 
@@ -72,13 +72,15 @@ Phases:
 
 | Kind | Root / arm | Chalk |
 | --- | --- | --- |
-| `move` | Smoothstep horizontal root translation, joint angles held | Lifted |
+| `move` | Smoothstep horizontal root translation plus subtle bob; arm angles held; alternating articulated legs | Lifted |
 | `approach` | Root fixed, smooth joint-angle interpolation to next point | Lifted |
 | `hold` | Root and pose fixed during source gaps or blocked portions | Lifted |
 | `write` | Root fixed, original stroke interpolation and IK | Original pen/reachability gate |
 | `done` | Final pose held | Lifted |
 
-Move duration is at least 120 ms and `1.5 × distance / 90` seconds, limiting smoothstep peak horizontal speed to 90 world units/s. This is a grounded glide, not gait animation: both feet translate on the floor together. Pen-up approach duration scales with angular change. Tests check shoulder and hand continuity on both sides of every boundary.
+Move duration is at least 440 ms per step pair and `1.5 × distance / 90` seconds, keeping smoothstep peak horizontal speed ≤90 world units/s. Number of step pairs is `ceil(abs(horizontal displacement) / (0.35 * legHeight * scale))`, at least one for any nonzero move. Step phase derives from actual traveled fraction, not an independent time loop. The leading foot (right for rightward travel, left for leftward travel) swings first; the other shoe is planted. Each shoe advances by displacement divided by pair count, with smoothstep swing X and a sine-squared lift. Swing toes pitch up by at most 0.18 radians. Stance heel, ankle and toe world coordinates remain fixed.
+
+The body stays upright and rises by up to `0.015 * legHeight * scale` at mid-step. That lift is subtracted from foot-local Y, keeping the stance shoe on the floor. Every move phase starts and ends with zero lift and both feet in the rest stance. The writing shoulder and pen-up arm receive the same body bob; writing positions/coordinates stay unchanged. There is no gait during hold/approach/write/done, no character turning and no new controls. Pen-up approach duration scales with angular change. Tests check shoulder and hand continuity on both sides of every boundary.
 
 If a long stroke cannot fit one placement, original straight edges subdivide into portions no longer than 12 world units. They retain original coordinates, vertex order and proportional source duration; chalk lifts between portions when repositioning is needed. At most 5000 pieces and 100,000 input spatial subdivision probes may be planned. A budget failure leaves the previous composition intact. Transformed nonfinite coordinates and overflowing planned durations are rejected.
 
