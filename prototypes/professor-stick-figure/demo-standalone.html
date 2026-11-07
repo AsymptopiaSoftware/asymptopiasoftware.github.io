@@ -1123,6 +1123,7 @@ function presentationAction(input) {
   if(input?.type!=='talk-and-gesture'||typeof input.text!=='string'||!input.text.trim()||input.text.length>4000)
     throw new TypeError('A talk-and-gesture action needs nonempty text (up to 4000 characters)');
   if(input.elbowPreference!==undefined&&!['outward','inward'].includes(input.elbowPreference))throw new TypeError('Invalid elbow preference');
+  if(input.indicatingArm!==undefined&&!['left','right'].includes(input.indicatingArm))throw new TypeError('Invalid indicating arm');
   const {orientation='audience',count=1}=input;
   const gesture=input.gesture==='explain'?'thoughtful-explain':input.gesture??'thoughtful-explain';
   if((!GESTURES.includes(gesture)&&gesture!=='count')||orientation!=='audience'||!Number.isInteger(count)||count<1||count>20)
@@ -1130,7 +1131,7 @@ function presentationAction(input) {
   // A deterministic visual slot. Actual browser audio may hold its final instant.
   const duration=input.duration??Math.max(2400,input.text.trim().split(/\s+/u).length*440+1000);
   if(!Number.isFinite(duration)||duration<1000||duration>120000)throw new RangeError('Invalid presentation duration');
-  return {type:'talk-and-gesture',text:input.text,gesture,orientation,count,duration,...(input.elbowPreference?{elbowPreference:input.elbowPreference}:{})};
+  return {type:'talk-and-gesture',text:input.text,gesture,orientation,count,duration,...(input.indicatingArm?{indicatingArm:input.indicatingArm}:{}),...(input.elbowPreference?{elbowPreference:input.elbowPreference}:{})};
 }
 /** Generic standalone action clip; no lesson plan is required by other consumers. */
 function compilePresentationAction(input,{at=0,id='presentation',turn=700,wait=1500}={}) {
@@ -1327,6 +1328,13 @@ function audienceGestureTargets(arms,action,elapsed){
   const indicating=thoughtfulArms(arms,t,duration,{emphasis:true}).right;
   targets.right=blendThoughtful(arms.right,targets.right,indicating,envelope);
  }else if(action.gesture==='present'){
+  if(action.indicatingArm==='right'){
+   const arm=arms.right,wave=Math.sin(2*Math.PI*t/duration)*envelope;
+   // A low, bent upper arm and a compact indicating forearm. The other arm rests.
+   const pointing=fromBonesThoughtful(arm,unitThoughtful([.20,.96,.18]).map(v=>v*arm.upper),unitThoughtful([-.89,-.42+.025*wave,.16]).map(v=>v*arm.forearm),{role:'indicating'});
+   targets.right=blendThoughtful(arm,targets.right,pointing,envelope);
+   return targets;
+  }
   const arm=arms.left,reach=arm.upper+arm.forearm+(arm.tip??0),wave=Math.sin(2*Math.PI*t/duration)*envelope;
   const pointing=audienceArmPose(arm,addThoughtful(arm.shoulder,[-.80*reach,(.06+.012*wave)*reach,0]),'left',{elbowPreference:action.elbowPreference??'outward'});pointing.role='presenting';
   targets.left=blendThoughtful(arm,targets.left,pointing,envelope);
@@ -1684,7 +1692,11 @@ function mountProfessorDemo(container,{problem='x/5-4/4=2/5',autoplay=true,loop=
   if(!container?.ownerDocument||typeof container.append!=='function')throw new TypeError('Expected a DOM container');
   const doc=container.ownerDocument,host=doc.defaultView,ns='http://www.w3.org/2000/svg';
   if(!host)throw new TypeError('Container must belong to a browser document');
-  const raw=validateMathTimeline(solutionToTimeline(solveEquation(problem)));
+  const raw=solutionToTimeline(solveEquation(problem));
+  raw.presentationActions=raw.mathSteps.map((step,index)=>({type:'talk-and-gesture',
+    text:raw.mathSteps[Math.min(index+1,raw.mathSteps.length-1)].operation.explanation,
+    gesture:'present',indicatingArm:'right'}));
+  validateMathTimeline(raw);
   const wrapper=doc.createElement('div');wrapper.setAttribute('data-professor-demo','');
   Object.assign(wrapper.style,{width:'100%',height:'100%',overflow:'hidden',background:'#1c2c27',lineHeight:'0'});
   const svg=doc.createElementNS(ns,'svg');svg.setAttribute('role','img');svg.setAttribute('aria-label',`Professor demonstrates ${problem}`);svg.setAttribute('preserveAspectRatio','xMidYMid meet');

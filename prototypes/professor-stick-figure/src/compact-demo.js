@@ -12,7 +12,11 @@ export function mountProfessorDemo(container,{problem='x/5-4/4=2/5',autoplay=tru
   if(!container?.ownerDocument||typeof container.append!=='function')throw new TypeError('Expected a DOM container');
   const doc=container.ownerDocument,host=doc.defaultView,ns='http://www.w3.org/2000/svg';
   if(!host)throw new TypeError('Container must belong to a browser document');
-  const raw=validateMathTimeline(solutionToTimeline(solveEquation(problem)));
+  const raw=solutionToTimeline(solveEquation(problem));
+  raw.presentationActions=raw.mathSteps.map((step,index)=>({type:'talk-and-gesture',
+    text:raw.mathSteps[Math.min(index+1,raw.mathSteps.length-1)].operation.explanation,
+    gesture:'present',indicatingArm:'right'}));
+  validateMathTimeline(raw);
   const wrapper=doc.createElement('div');wrapper.setAttribute('data-professor-demo','');
   Object.assign(wrapper.style,{width:'100%',height:'100%',overflow:'hidden',background:'#1c2c27',lineHeight:'0'});
   const svg=doc.createElementNS(ns,'svg');svg.setAttribute('role','img');svg.setAttribute('aria-label',`Professor demonstrates ${problem}`);svg.setAttribute('preserveAspectRatio','xMidYMid meet');

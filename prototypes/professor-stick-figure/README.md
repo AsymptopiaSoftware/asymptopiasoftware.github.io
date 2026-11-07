@@ -1,6 +1,6 @@
-# Professor B2.0 — reusable compact demo
+# Professor B2.1 — reusable compact demo
 
-B2.0 adds a container-scoped, silent, looping demo while preserving the full
+B2.1 refines the compact right-arm board gesture. B2.0 adds a container-scoped, silent, looping demo while preserving the full
 B1.9.3b writing tool. Start with **[demo-standalone.html](demo-standalone.html)**
 for the compact scene, **[standalone.html](standalone.html)** for the full tool,
 or **[examples/embedded.html](examples/embedded.html)** for a modular mount.

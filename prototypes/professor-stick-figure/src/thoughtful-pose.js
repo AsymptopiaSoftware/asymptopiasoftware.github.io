@@ -47,6 +47,13 @@ export function audienceGestureTargets(arms,action,elapsed){
   const indicating=thoughtfulArms(arms,t,duration,{emphasis:true}).right;
   targets.right=blendThoughtful(arms.right,targets.right,indicating,envelope);
  }else if(action.gesture==='present'){
+  if(action.indicatingArm==='right'){
+   const arm=arms.right,wave=Math.sin(2*Math.PI*t/duration)*envelope;
+   // A low, bent upper arm and a compact indicating forearm. The other arm rests.
+   const pointing=fromBonesThoughtful(arm,unitThoughtful([.20,.96,.18]).map(v=>v*arm.upper),unitThoughtful([-.89,-.42+.025*wave,.16]).map(v=>v*arm.forearm),{role:'indicating'});
+   targets.right=blendThoughtful(arm,targets.right,pointing,envelope);
+   return targets;
+  }
   const arm=arms.left,reach=arm.upper+arm.forearm+(arm.tip??0),wave=Math.sin(2*Math.PI*t/duration)*envelope;
   const pointing=audienceArmPose(arm,addThoughtful(arm.shoulder,[-.80*reach,(.06+.012*wave)*reach,0]),'left',{elbowPreference:action.elbowPreference??'outward'});pointing.role='presenting';
   targets.left=blendThoughtful(arm,targets.left,pointing,envelope);

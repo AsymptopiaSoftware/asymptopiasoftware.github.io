@@ -1,4 +1,4 @@
-# Compact Professor embedding (B2.0)
+# Compact Professor embedding (B2.1)
 
 `standalone.html` remains the full B1.9.3b application, including problem selection,
 sidebar, debugging, speech, timeline and teaching controls. `demo-standalone.html`
@@ -62,7 +62,10 @@ the solver and throws before mounting for invalid or unreachable lessons.
 exact solver, certified math timeline adapter, `ProfessorFigure`, and presentation
 sampler. `compact-scene.js` calculates framing only. It neither changes nor copies
 Drawing Arm IK, glyphs, stacked fractions, equals alignment, walking, reach
-planning, teaching cadence, thoughtful poses, or anatomical projection.
+planning, teaching cadence, existing full-application thoughtful poses, or anatomical projection.
+Compact lessons explicitly select `present` with `indicatingArm: "right"`: one
+arm gestures gently toward the board while anatomical left remains relaxed.
+The default thoughtful-explain vocabulary remains available in the full tool.
 `scripts/standalone.js` bundles both entry points from one dependency list. The
 full application source and controls remain unchanged.
 

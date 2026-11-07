@@ -37,7 +37,9 @@ try{
   }a.seek(a.getState().duration);return {fail,maximumHeight};
  });assert.deepEqual(bounds.fail.slice(0,3),[]);assert.ok(bounds.maximumHeight>=.8&&bounds.maximumHeight<=.9,JSON.stringify(bounds));
  await page.locator('.test-host').first().screenshot({path:'/tmp/professor-b2-desktop.png'});
- await page.evaluate(()=>{const a=instances[0];for(let t=0;t<a.getState().duration;t+=150){a.seek(t);if(document.querySelector('.test-host [data-orientation]').getAttribute('data-orientation')==='audience')break;}});
+ await page.evaluate(()=>{const a=instances[0];for(let t=0;t<a.getState().duration;t+=150){a.seek(t);if(document.querySelector('.test-host [data-orientation]').getAttribute('data-orientation')==='audience'){a.seek(t+700);break;}}});
+ assert.equal(await page.locator('.test-host [data-anatomical-side="left"][data-hand-role]').first().getAttribute('data-hand-role'),'relaxed');
+ assert.equal(await page.locator('.test-host [data-anatomical-side="right"][data-hand-role]').first().getAttribute('data-hand-role'),'indicating');
  await page.locator('.test-host').first().screenshot({path:'/tmp/professor-b2-gesture.png'});
  await page.evaluate(()=>instances[0].seek(instances[0].getState().duration));
  await page.evaluate(()=>{Object.assign(document.querySelector('.test-host').style,{width:'280px',height:'260px'});});await page.waitForTimeout(100);
