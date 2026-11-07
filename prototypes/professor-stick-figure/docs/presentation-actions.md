@@ -25,7 +25,7 @@ Vocabulary:
 | `present` | Anatomical left hand opens toward the screen-right chalkboard in audience view; right supports. |
 | `idle` | Both arms remain relaxed. |
 
-Gestures ease in and out over 500 ms and use one subtle conversational sweep, rather than an endless waving loop. Every action returns to idle before its pause. B1.9.3 gives each arm permanent anatomical joints and preserves true 3D segment lengths through the turn; projected lengths foreshorten. The right arm uses the original IK and configured limits. No new joint constraints are introduced.
+Gestures ease in and out over 500 ms and use one subtle conversational sweep, rather than an endless waving loop. Every action returns to idle before its pause. B1.9.3 gives each arm permanent anatomical joints and preserves true 3D segment lengths through the turn; projected lengths foreshorten. Rear-facing writing uses the original IK and configured limits. Audience postures use a separate outward 3D elbow-pole preference with relaxed extension.
 
 ## Use without mathematics
 
@@ -81,3 +81,7 @@ The browser suite exercises both modular and self-contained previews with the na
 ## B1.9.3 anatomical projection
 
 Anatomical right is now viewer-left in front view, while remaining the same rig/group/hand throughout. Gestures operate in anatomical coordinates, then project through yaw; far/near SVG layers follow depth. The right drawing shoulder is restored exactly on return. No action data, sequencing, math, speech or playback control changes are required. See [orientation model](orientation.md).
+
+## B1.9.3a elbow preference
+
+All audience actions default to laterally outward elbows, including the idle/held pose. Wrist targets and gesture timing remain unchanged except for a more relaxed bent neutral target. Optional `elbowPreference:'inward'` explicitly permits a deliberately crossing gesture; invalid preference names are rejected. This adds no controls. The pole is solved in anatomy space before projection, preserving side identity and depth order. See [audience pole](orientation.md#outward-audience-elbow-preference-b193a).

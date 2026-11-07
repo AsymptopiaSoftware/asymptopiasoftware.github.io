@@ -1,3 +1,4 @@
+import {audienceArmPose} from './audience-arm.js';
 import {characterFacing,projectAnatomical,liftProjected,projectSkeleton,turnBone,armDepthOrder} from './orientation.js';
 import { bodyLandmarks, configureBody, bodyToWorld, attachedArm } from './body.js';
 import { solveIK, forward, distance } from '../../drawing-arm/src/kinematics.js';
@@ -9,7 +10,7 @@ const smoothPresentation=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
  */
 export function gestureAngles(action,elapsed,side,arm) {
   const reach=arm.upper+arm.forearm+arm.tip,sign=side==='right'?1:-1;
-  const idle=[.16,.97],targets={explain:side==='right'?[.64,.38]:[.52,.48],
+  const idle=[.28,.80],targets={explain:side==='right'?[.64,.38]:[.52,.48],
     emphasize:side==='right'?[.34,-.20]:[.36,.68],count:side==='right'?[.30,-.10]:[.26,.70],
     present:side==='left'?[.80,.05]:[.38,.62],idle};
   const duration=action.duration,t=Math.max(0,Math.min(duration,elapsed));
@@ -60,11 +61,14 @@ export function presentationRig(config,state,base,rig={}) {
     const foreDepth=right?0:Math.sqrt(Math.max(0,lengths.forearm**2-distance(start.elbow,start.wrist)**2));
     const lifted={shoulder:liftProjected(start.shoulder,boardDepth,r.board),elbow:liftProjected(start.elbow,boardDepth+upperDepth,r.board),wrist:liftProjected(start.wrist,boardDepth+upperDepth+foreDepth,r.board)};
     const arm={...rig,...lengths,shoulder:shoulder.slice(0,2),elbow:right?'negative':'positive'};
-    const target=forward(arm,...gestureAngles(action,elapsed,side,arm));
-    const targetUpper=[target.elbow[0]-target.shoulder[0],target.elbow[1]-target.shoulder[1],0],targetFore=[target.wrist[0]-target.elbow[0],target.wrist[1]-target.elbow[1],0];
+    // Preserve the gesture's wrist/tool target; the audience pole, not this 2D
+    // endpoint calculation's branch, determines the actual anatomical elbow.
+    const endpoint=forward(arm,...gestureAngles(action,elapsed,side,arm)).tip;
+    const target=audienceArmPose({...lengths,shoulder},[...endpoint,0],side,{elbowPreference:action.elbowPreference??'outward'});
+    const targetUpper=subtract(target.elbow,target.shoulder),targetFore=subtract(target.wrist,target.elbow);
     const upper=turnBone(subtract(lifted.elbow,lifted.shoulder),targetUpper,a),fore=turnBone(subtract(lifted.wrist,lifted.elbow),targetFore,a);
     const elbow=add(shoulder,upper),wrist=add(elbow,fore),tip=add(wrist,fore.map(v=>v*lengths.tip/lengths.forearm));
-    anatomicalArms[side]={id:side,shoulder:[...shoulder],elbow,wrist,hand:[...wrist],tip,lengths};
+    anatomicalArms[side]={id:side,shoulder:[...shoulder],elbow,wrist,hand:[...wrist],tip,lengths,elbowPreference:target.elbowPreference,pole:target.pole};
     for(const [name,p]of Object.entries({Shoulder:shoulder,Elbow:elbow,Wrist:wrist,Hand:wrist,Tip:tip}))joints[side+name]=p;
   }
   const projected=projectSkeleton(joints,facing),p=structuredClone(r.base),arms={};

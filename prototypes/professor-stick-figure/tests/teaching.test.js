@@ -64,7 +64,7 @@ test('cadence remains grounded across changed body proportions and preserves blo
   for(const step of f.plan.teachingSteps){
    const state=f.render(step.gate+500),anchors=f.getAnchors();assert.equal(state.chalkDown,false);assert.equal(state.bodyLift,0);
    assert.equal(anchors.leftFoot[1],f.body.origin[1]);assert.equal(anchors.rightFoot[1],f.body.origin[1]);
-   const arm=state.pose;assert.ok(Math.abs(Math.hypot(arm.elbow[0]-arm.shoulder[0],arm.elbow[1]-arm.shoulder[1])-f.arm.upper)<1e-6);
+   const arm=f.anatomicalPose.arms.right;assert.ok(Math.abs(Math.hypot(...arm.elbow.map((v,i)=>v-arm.shoulder[i]))*f.body.scale-f.arm.upper)<1e-6);
   }
  }
 });

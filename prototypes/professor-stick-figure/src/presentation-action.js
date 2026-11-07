@@ -3,13 +3,14 @@ export const GESTURES = Object.freeze(['explain','emphasize','count','present','
 export function presentationAction(input) {
   if(input?.type!=='talk-and-gesture'||typeof input.text!=='string'||!input.text.trim()||input.text.length>4000)
     throw new TypeError('A talk-and-gesture action needs nonempty text (up to 4000 characters)');
+  if(input.elbowPreference!==undefined&&!['outward','inward'].includes(input.elbowPreference))throw new TypeError('Invalid elbow preference');
   const {gesture='explain',orientation='audience',count=1}=input;
   if(!GESTURES.includes(gesture)||orientation!=='audience'||!Number.isInteger(count)||count<1||count>20)
     throw new TypeError('Invalid presentation gesture, orientation or count');
   // A deterministic visual slot. Actual browser audio may hold its final instant.
   const duration=input.duration??Math.max(2400,input.text.trim().split(/\s+/u).length*440+1000);
   if(!Number.isFinite(duration)||duration<1000||duration>120000)throw new RangeError('Invalid presentation duration');
-  return {type:'talk-and-gesture',text:input.text,gesture,orientation,count,duration};
+  return {type:'talk-and-gesture',text:input.text,gesture,orientation,count,duration,...(input.elbowPreference?{elbowPreference:input.elbowPreference}:{})};
 }
 /** Generic standalone action clip; no lesson plan is required by other consumers. */
 export function compilePresentationAction(input,{at=0,id='presentation',turn=700,wait=1500}={}) {

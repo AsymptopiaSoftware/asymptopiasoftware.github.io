@@ -83,6 +83,7 @@ export class ProfessorFigure {
       groups[side].setAttribute('data-depth',order.arms[side].depth);
       groups[side].setAttribute('data-depth-layer',order.arms[side].layer);
       groups[side].setAttribute('data-shoulder-x',presentation.arms[side].shoulder[0]);
+      groups[side].setAttribute('data-elbow-x',presentation.arms[side].elbow[0]);
       groups[side].setAttribute('data-wrist-x',presentation.arms[side].wrist[0]);
     }
     this.bodyGroup.setAttribute('data-yaw',this.facing.yaw);
