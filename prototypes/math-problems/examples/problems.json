@@ -1,0 +1,200 @@
+[
+  {
+    "version": 1,
+    "text": "3/1-8/4=x/1",
+    "equation": {
+      "type": "equation",
+      "left": {
+        "type": "binary",
+        "op": "-",
+        "left": {
+          "type": "binary",
+          "op": "/",
+          "left": {
+            "type": "integer",
+            "value": "3"
+          },
+          "right": {
+            "type": "integer",
+            "value": "1"
+          }
+        },
+        "right": {
+          "type": "binary",
+          "op": "/",
+          "left": {
+            "type": "integer",
+            "value": "8"
+          },
+          "right": {
+            "type": "integer",
+            "value": "4"
+          }
+        }
+      },
+      "right": {
+        "type": "binary",
+        "op": "/",
+        "left": {
+          "type": "variable",
+          "name": "x"
+        },
+        "right": {
+          "type": "integer",
+          "value": "1"
+        }
+      }
+    },
+    "operator": "-",
+    "missingSlot": "c",
+    "answer": {
+      "numerator": "1",
+      "denominator": "1"
+    },
+    "completed": {
+      "a": "3",
+      "b": "8",
+      "c": "1",
+      "d": "1",
+      "e": "4",
+      "f": "1"
+    },
+    "validation": {
+      "unique": true,
+      "transformationsVerified": true,
+      "originalArithmeticValid": true
+    }
+  },
+  {
+    "version": 1,
+    "text": "4/x+7/7=5/3",
+    "equation": {
+      "type": "equation",
+      "left": {
+        "type": "binary",
+        "op": "+",
+        "left": {
+          "type": "binary",
+          "op": "/",
+          "left": {
+            "type": "integer",
+            "value": "4"
+          },
+          "right": {
+            "type": "variable",
+            "name": "x"
+          }
+        },
+        "right": {
+          "type": "binary",
+          "op": "/",
+          "left": {
+            "type": "integer",
+            "value": "7"
+          },
+          "right": {
+            "type": "integer",
+            "value": "7"
+          }
+        }
+      },
+      "right": {
+        "type": "binary",
+        "op": "/",
+        "left": {
+          "type": "integer",
+          "value": "5"
+        },
+        "right": {
+          "type": "integer",
+          "value": "3"
+        }
+      }
+    },
+    "operator": "+",
+    "missingSlot": "d",
+    "answer": {
+      "numerator": "6",
+      "denominator": "1"
+    },
+    "completed": {
+      "a": "4",
+      "b": "7",
+      "c": "5",
+      "d": "6",
+      "e": "7",
+      "f": "3"
+    },
+    "validation": {
+      "unique": true,
+      "transformationsVerified": true,
+      "originalArithmeticValid": true
+    }
+  },
+  {
+    "version": 1,
+    "text": "x/4+7/4=9/4",
+    "equation": {
+      "type": "equation",
+      "left": {
+        "type": "binary",
+        "op": "+",
+        "left": {
+          "type": "binary",
+          "op": "/",
+          "left": {
+            "type": "variable",
+            "name": "x"
+          },
+          "right": {
+            "type": "integer",
+            "value": "4"
+          }
+        },
+        "right": {
+          "type": "binary",
+          "op": "/",
+          "left": {
+            "type": "integer",
+            "value": "7"
+          },
+          "right": {
+            "type": "integer",
+            "value": "4"
+          }
+        }
+      },
+      "right": {
+        "type": "binary",
+        "op": "/",
+        "left": {
+          "type": "integer",
+          "value": "9"
+        },
+        "right": {
+          "type": "integer",
+          "value": "4"
+        }
+      }
+    },
+    "operator": "+",
+    "missingSlot": "a",
+    "answer": {
+      "numerator": "2",
+      "denominator": "1"
+    },
+    "completed": {
+      "a": "2",
+      "b": "7",
+      "c": "9",
+      "d": "4",
+      "e": "4",
+      "f": "4"
+    },
+    "validation": {
+      "unique": true,
+      "transformationsVerified": true,
+      "originalArithmeticValid": true
+    }
+  }
+]

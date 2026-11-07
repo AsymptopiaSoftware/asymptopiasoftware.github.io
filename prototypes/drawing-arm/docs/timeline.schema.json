@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Drawing Arm timeline v1",
+  "type": "object", "required": ["version", "strokes"],
+  "properties": {
+    "version": {"const": 1},
+    "board": {"type":"object", "properties": {"origin":{"$ref":"#/$defs/point"}, "scale":{"type":"number","exclusiveMinimum":0}, "rotation":{"type":"number"}}},
+    "strokes": {"type":"array","items":{"type":"object","required":["at","duration","points"],"properties":{"at":{"type":"number","minimum":0},"duration":{"type":"number","exclusiveMinimum":0},"points":{"type":"array","minItems":2,"items":{"$ref":"#/$defs/point"}},"pen":{"type":"boolean"}}}},
+    "fallbacks": {"type":"array","items":{"type":"object","required":["text","position","size","at"],"properties":{"text":{"type":"string"},"position":{"$ref":"#/$defs/point"},"size":{"type":"number","exclusiveMinimum":0},"at":{"type":"number","minimum":0}}}}
+  },
+  "$defs": {"point":{"type":"array","minItems":2,"maxItems":2,"items":{"type":"number"}}}
+}

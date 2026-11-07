@@ -1,0 +1,11 @@
+# B1.9.3b validation — November 7, 2026
+
+Existing branch/draft PR #13. Baseline B1.9.3a: `9b50ab0f18fef5e41c90fbbe4a14324d061a4666`.
+
+- **112 automated tests pass**: 70 Professor, 15 exact-math, 12 math-layout, 15 original Drawing Arm. Five new thoughtful-pose regressions verify defaults/aliases/overrides, exact support reach, raised compact forearm, projected separation, constant link lengths across proportions, subtle hand movement, still holds, identities/depth, seeking, restored writing and unreachable-contact diagnostics without stretching.
+- The primary vocabulary is thoughtful-explain, present, emphasize, idle. Legacy explain maps to thoughtful; count remains explicitly supported. Every ordinary sequenced explanation defaults to thoughtful, with no step-index gesture cycling. Neutral/pole tests preserve outward bias for ordinary uncrossed poses while allowing this deliberate supporting-arm crossing.
+- Chromium/Playwright passes both modular and self-contained previews. Actual supporting wrist/opposite elbow clearance, raised wrist height, compact upper-arm position and held contact are checked, alongside existing arm identity/depth, speech lifecycle, Auto/Step/Continue, seeking, math/dots/x=8, rejected invalid imports, walking/reaching, rig controls and responsive tests.
+- Mathematics, glyphs, original Drawing Arm algorithms, walking/range planner, orientation/depth model, B1.8 cadence, presentation timing, speech controller and controls are unchanged. Default gesture selection and pose target construction change. All five engine hashes and standalone syntax pass.
+- Browser evidence shows the actual thoughtful pose with a controlled speech backend. Four-pose vector evidence and the standalone bundle are regenerated. No new UI controls, character redesign, merge, deployment, homepage or production changes. Advanced remains collapsed.
+
+Native Chromium still has no installed speech voices. Silent fallback and controlled speech lifecycle are verified; audible voice quality remains unverified. Browser checks used approved localhost socket access after sandbox listening was blocked. No environment configuration, dependencies or browser policies changed; managed Chrome blocks file URLs, so the self-contained preview was tested over localhost.

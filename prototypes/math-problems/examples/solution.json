@@ -1,0 +1,435 @@
+{
+  "version": 1,
+  "status": "unique",
+  "equation": {
+    "type": "equation",
+    "left": {
+      "type": "binary",
+      "op": "-",
+      "left": {
+        "type": "binary",
+        "op": "/",
+        "left": {
+          "type": "variable",
+          "name": "x"
+        },
+        "right": {
+          "type": "integer",
+          "value": "5"
+        }
+      },
+      "right": {
+        "type": "binary",
+        "op": "/",
+        "left": {
+          "type": "integer",
+          "value": "4"
+        },
+        "right": {
+          "type": "integer",
+          "value": "4"
+        }
+      }
+    },
+    "right": {
+      "type": "binary",
+      "op": "/",
+      "left": {
+        "type": "integer",
+        "value": "2"
+      },
+      "right": {
+        "type": "integer",
+        "value": "5"
+      }
+    }
+  },
+  "domain": [
+    {
+      "expression": {
+        "type": "integer",
+        "value": "5"
+      },
+      "text": "5!=0",
+      "polynomial": [
+        {
+          "numerator": "5",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "expression": {
+        "type": "integer",
+        "value": "4"
+      },
+      "text": "4!=0",
+      "polynomial": [
+        {
+          "numerator": "4",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "expression": {
+        "type": "integer",
+        "value": "5"
+      },
+      "text": "5!=0",
+      "polynomial": [
+        {
+          "numerator": "5",
+          "denominator": "1"
+        }
+      ]
+    }
+  ],
+  "solutions": [
+    {
+      "numerator": "7",
+      "denominator": "1"
+    }
+  ],
+  "steps": [
+    {
+      "index": 0,
+      "equation": {
+        "type": "equation",
+        "left": {
+          "type": "binary",
+          "op": "-",
+          "left": {
+            "type": "binary",
+            "op": "/",
+            "left": {
+              "type": "variable",
+              "name": "x"
+            },
+            "right": {
+              "type": "integer",
+              "value": "5"
+            }
+          },
+          "right": {
+            "type": "binary",
+            "op": "/",
+            "left": {
+              "type": "integer",
+              "value": "4"
+            },
+            "right": {
+              "type": "integer",
+              "value": "4"
+            }
+          }
+        },
+        "right": {
+          "type": "binary",
+          "op": "/",
+          "left": {
+            "type": "integer",
+            "value": "2"
+          },
+          "right": {
+            "type": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "text": "x/5-4/4=2/5",
+      "operation": {
+        "kind": "given",
+        "explanation": "Start with the given equation and keep every original denominator nonzero."
+      }
+    },
+    {
+      "index": 1,
+      "equation": {
+        "type": "equation",
+        "left": {
+          "type": "binary",
+          "op": "/",
+          "left": {
+            "type": "variable",
+            "name": "x"
+          },
+          "right": {
+            "type": "integer",
+            "value": "5"
+          }
+        },
+        "right": {
+          "type": "binary",
+          "op": "+",
+          "left": {
+            "type": "binary",
+            "op": "/",
+            "left": {
+              "type": "integer",
+              "value": "2"
+            },
+            "right": {
+              "type": "integer",
+              "value": "5"
+            }
+          },
+          "right": {
+            "type": "binary",
+            "op": "/",
+            "left": {
+              "type": "integer",
+              "value": "4"
+            },
+            "right": {
+              "type": "integer",
+              "value": "4"
+            }
+          }
+        }
+      },
+      "text": "x/5=2/5+4/4",
+      "operation": {
+        "kind": "add-both-sides",
+        "operand": {
+          "type": "binary",
+          "op": "/",
+          "left": {
+            "type": "integer",
+            "value": "4"
+          },
+          "right": {
+            "type": "integer",
+            "value": "4"
+          }
+        },
+        "conditions": [],
+        "explanation": "Add 4/4 to both sides."
+      }
+    },
+    {
+      "index": 2,
+      "equation": {
+        "type": "equation",
+        "left": {
+          "type": "binary",
+          "op": "/",
+          "left": {
+            "type": "variable",
+            "name": "x"
+          },
+          "right": {
+            "type": "integer",
+            "value": "5"
+          }
+        },
+        "right": {
+          "type": "binary",
+          "op": "/",
+          "left": {
+            "type": "integer",
+            "value": "7"
+          },
+          "right": {
+            "type": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "text": "x/5=7/5",
+      "operation": {
+        "kind": "simplify-rational",
+        "explanation": "Evaluate and reduce the rational arithmetic exactly.",
+        "calculation": {
+          "expression": {
+            "type": "binary",
+            "op": "+",
+            "left": {
+              "type": "binary",
+              "op": "/",
+              "left": {
+                "type": "integer",
+                "value": "2"
+              },
+              "right": {
+                "type": "integer",
+                "value": "5"
+              }
+            },
+            "right": {
+              "type": "binary",
+              "op": "/",
+              "left": {
+                "type": "integer",
+                "value": "4"
+              },
+              "right": {
+                "type": "integer",
+                "value": "4"
+              }
+            }
+          },
+          "result": {
+            "type": "binary",
+            "op": "/",
+            "left": {
+              "type": "integer",
+              "value": "7"
+            },
+            "right": {
+              "type": "integer",
+              "value": "5"
+            }
+          }
+        }
+      }
+    },
+    {
+      "index": 3,
+      "equation": {
+        "type": "equation",
+        "left": {
+          "type": "variable",
+          "name": "x"
+        },
+        "right": {
+          "type": "integer",
+          "value": "7"
+        }
+      },
+      "text": "x=7",
+      "operation": {
+        "kind": "multiply-both-sides",
+        "operand": {
+          "type": "integer",
+          "value": "5"
+        },
+        "conditions": [
+          "5!=0"
+        ],
+        "explanation": "Multiply both sides by 5.",
+        "calculation": {
+          "expression": {
+            "type": "binary",
+            "op": "*",
+            "left": {
+              "type": "binary",
+              "op": "/",
+              "left": {
+                "type": "integer",
+                "value": "7"
+              },
+              "right": {
+                "type": "integer",
+                "value": "5"
+              }
+            },
+            "right": {
+              "type": "integer",
+              "value": "5"
+            }
+          },
+          "result": {
+            "type": "integer",
+            "value": "7"
+          }
+        }
+      }
+    }
+  ],
+  "verification": {
+    "valid": true,
+    "method": "exact solution-set equivalence under original denominator restrictions",
+    "steps": [
+      {
+        "equivalent": true,
+        "classification": "unique",
+        "normalizedPolynomial": [
+          {
+            "numerator": "-7",
+            "denominator": "1"
+          },
+          {
+            "numerator": "1",
+            "denominator": "1"
+          }
+        ],
+        "solutions": [
+          {
+            "numerator": "7",
+            "denominator": "1"
+          }
+        ]
+      },
+      {
+        "equivalent": true,
+        "classification": "unique",
+        "normalizedPolynomial": [
+          {
+            "numerator": "-7",
+            "denominator": "1"
+          },
+          {
+            "numerator": "1",
+            "denominator": "1"
+          }
+        ],
+        "solutions": [
+          {
+            "numerator": "7",
+            "denominator": "1"
+          }
+        ]
+      },
+      {
+        "equivalent": true,
+        "classification": "unique",
+        "normalizedPolynomial": [
+          {
+            "numerator": "-7",
+            "denominator": "1"
+          },
+          {
+            "numerator": "1",
+            "denominator": "1"
+          }
+        ],
+        "solutions": [
+          {
+            "numerator": "7",
+            "denominator": "1"
+          }
+        ]
+      },
+      {
+        "equivalent": true,
+        "classification": "unique",
+        "normalizedPolynomial": [
+          {
+            "numerator": "-7",
+            "denominator": "1"
+          },
+          {
+            "numerator": "1",
+            "denominator": "1"
+          }
+        ],
+        "solutions": [
+          {
+            "numerator": "7",
+            "denominator": "1"
+          }
+        ]
+      }
+    ],
+    "substitution": [
+      {
+        "value": {
+          "numerator": "7",
+          "denominator": "1"
+        },
+        "valid": true
+      }
+    ]
+  }
+}

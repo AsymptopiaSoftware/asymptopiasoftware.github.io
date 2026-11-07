@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Character-independent drawing arm prototype: two rigs, one writing timeline."><title>Drawing Arm · Prototype A</title><style>:root{color-scheme:dark;--bg:#101b1a;--panel:#152522;--line:#33453c;--muted:#a2b2a8;--ink:#eeeede;--accent:#e5c37a}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 system-ui,sans-serif}main{max-width:1536px;margin:auto;padding:0 4vw}header{display:flex;justify-content:space-between;align-items:center;padding:26px 0;border-bottom:1px solid var(--line)}a{color:var(--accent);text-underline-offset:4px}.wordmark{color:var(--ink);font-size:15px;font-weight:700;letter-spacing:3px;text-decoration:none}.wordmark span{font-weight:400;color:var(--muted)}.badge,.eyebrow,.stage-top,.board-label span,footer{font:10px/1.5 ui-monospace,monospace;letter-spacing:1.3px}.badge{color:var(--muted)}i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#acc793;margin:0 7px}.intro{display:grid;grid-template-columns:1.2fr 1fr;padding:44px 0 36px;align-items:end;gap:0 50px}.eyebrow{color:var(--accent);margin:0 0 14px}.intro .eyebrow{grid-column:1/-1}h1{font-size:clamp(40px,4.2vw,66px);line-height:1.04;font-weight:400;letter-spacing:-2.5px;margin:0}h1 em{font-family:Georgia,serif;font-weight:400;color:var(--accent)}.lede{max-width:380px;color:var(--muted);font-size:16px;line-height:1.7;margin:0 0 5px auto}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 275px;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--panel)}.stage{min-width:0}.stage-top{display:flex;justify-content:space-between;color:var(--muted);padding:17px 20px;border-bottom:1px solid var(--line);font-size:9px}.boards{display:grid;grid-template-columns:1fr 1fr}.boards article{min-width:0;background:#16352d}.boards article+article{border-left:1px solid var(--line)}.board-label{display:flex;align-items:center;justify-content:space-between;padding:20px 16px 0;gap:10px}h2{font-size:14px;font-weight:500;margin:0}.board-label b{color:var(--accent);font:11px ui-monospace,monospace;margin-right:8px}.board-label span{color:var(--muted);font-size:9px;letter-spacing:0}svg{display:block;width:100%;height:auto}.readout{padding:0 16px 17px;font:10px ui-monospace,monospace;color:#b0c8ac;min-height:30px}.transport{display:flex;align-items:center;gap:10px;padding:19px 16px 12px;flex-wrap:wrap}.transport label{display:flex;gap:8px;align-items:center;font-size:11px}.scrub{flex:1;min-width:120px}.scrub input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,select,textarea,input[type=file]{font:inherit;color:var(--ink);background:#1b2e28;border:1px solid #4b5c4a;border-radius:4px;padding:9px 12px}button{cursor:pointer}button:hover{border-color:var(--accent);background:#2c3d2d}button.primary{background:var(--accent);color:#1b291d;border-color:var(--accent);font-weight:600}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range]{accent-color:var(--accent);cursor:pointer}.caption{font-size:11px;color:var(--muted);margin:0;padding:0 16px 17px}.legend{display:inline-block;background:var(--accent);height:2px;width:15px;vertical-align:middle;margin-right:7px}aside{border-left:1px solid var(--line);padding:22px;background:#192822}label{display:block;font-size:12px;margin-bottom:6px}textarea,aside select{width:100%;margin-bottom:12px}textarea{resize:vertical;font-size:17px;font-family:ui-monospace,monospace;min-height:75px}.presets{display:flex;gap:6px;margin-bottom:12px}.presets button{padding:4px 10px;font-size:11px}.wide{width:100%}#message{font-size:11px;color:var(--muted);min-height:34px}hr{border:0;border-top:1px solid var(--line);margin:20px 0}.dimension{margin:12px 0}.dimension label{display:flex;justify-content:space-between}.dimension output{color:var(--accent);font-family:ui-monospace,monospace}.dimension input{width:100%}.check{font-size:11px;display:flex;align-items:center;gap:7px;margin:12px 0 17px}#restore{font-size:11px;width:100%}.interface{display:grid;grid-template-columns:1fr 1fr;gap:50px;padding:32px 0;border-bottom:1px solid var(--line)}.interface h2{font-size:24px;font-family:Georgia,serif}.interface p:not(.eyebrow){color:var(--muted);max-width:430px;font-size:12px}.interface>div+div{margin-left:auto;max-width:360px}.interface label{margin-top:14px}input[type=file]{max-width:100%;font-size:11px;padding:6px}.interface a{font-size:11px;margin-right:14px}footer{display:flex;justify-content:space-between;gap:20px;padding:20px 0;color:var(--muted);font-size:9px}@media(max-width:1100px){.boards{grid-template-columns:1fr}.boards article+article{border-left:0;border-top:1px solid var(--line)}.boards svg{max-height:360px}.board-label{padding:12px 16px 0}}@media(max-width:650px){main{padding:0 18px}.badge{font-size:8px;max-width:115px}.intro{grid-template-columns:1fr;padding:30px 0;gap:20px}.intro .eyebrow{margin:0}.lede{margin:0;font-size:14px}.workspace{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.boards svg{max-height:none}.stage-top{font-size:8px;gap:10px}.interface{grid-template-columns:1fr;gap:20px}.interface>div+div{margin-left:0}footer{flex-direction:column;gap:5px}}
+</style></head>
+<body><main>
+<header><a class="wordmark" href="#">ASYMPTOPIA <span>/ LAB</span></a><span class="badge">PROTOTYPE A <i></i> LOCAL EXPERIMENT</span></header>
+<section class="intro"><p class="eyebrow">GEOMETRY IN MOTION</p><h1>One instruction.<br><em>Any arm.</em></h1><p class="lede">A small experiment in embodied mathematics. Two independent rigs turn the same vector strokes into chalkboard writing.</p></section>
+<div class="workspace"><section class="stage" aria-label="Arm comparison">
+<div class="stage-top"><span><i></i> SHARED WRITING TIMELINE</span><span>SVG / TWO-LINK IK</span></div>
+<div class="boards">
+<article><div class="board-label"><h2><b>01</b> Balanced reach</h2><span class="rig-info"></span></div><svg viewBox="0 0 520 360" role="img" aria-label="Balanced arm writing on a chalkboard"><defs><pattern id="grid1" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0H0V26" fill="none" stroke="#8bb7a0" stroke-opacity=".08"/></pattern></defs><rect width="520" height="360" fill="url(#grid1)"/><path d="M136 145H463M136 221H463" stroke="#c0cdb6" stroke-opacity=".13" stroke-dasharray="3 5"/><g class="drawing"></g></svg><div class="readout" aria-live="polite"></div></article>
+<article><div class="board-label"><h2><b>02</b> Extended forearm</h2><span class="rig-info"></span></div><svg viewBox="0 0 520 360" role="img" aria-label="Long forearm writing the same instructions"><defs><pattern id="grid2" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0H0V26" fill="none" stroke="#8bb7a0" stroke-opacity=".08"/></pattern></defs><rect width="520" height="360" fill="url(#grid2)"/><path d="M136 145H463M136 221H463" stroke="#c0cdb6" stroke-opacity=".13" stroke-dasharray="3 5"/><g class="drawing"></g></svg><div class="readout" aria-live="polite"></div></article>
+</div><div class="transport"><button id="play" class="primary">Play</button><button id="reset">Reset</button><label class="scrub">Timeline <input id="seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Timeline position"></label><output id="clock">0.0 / 0.0 s</output><label>Speed <select id="speed"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label></div>
+<p class="caption"><span class="legend"></span> Chalk touches only reachable points. Red rings mark targets beyond the rig’s limits.</p>
+</section><aside><p class="eyebrow">THE INSTRUCTIONS</p><label for="equation">Write an equation</label><textarea id="equation" rows="2" spellcheck="false">2 × (3 + 4)
+= 14</textarea><div class="presets"><button data-text="2 × (3 + 4)&#10;= 14">Equation</button><button data-text="0123456789&#10;+ − × ÷ = ( )">Glyph set</button></div><button id="write" class="primary wide">Load writing ↗</button><p id="message" role="status">Both rigs receive identical board coordinates.</p><hr><p class="eyebrow">THE RIG</p><label for="rig">Adjust configuration</label><select id="rig"><option value="0">01 · Balanced reach</option><option value="1">02 · Extended forearm</option></select><div id="dimensions"></div><label for="bend">Elbow orientation</label><select id="bend"><option value="positive">Positive bend</option><option value="negative">Negative bend</option></select><label class="check"><input id="limits" type="checkbox"> Limit shoulder to −90°…0°</label><button id="restore">Restore both rigs</button></aside></div>
+<section class="interface"><div><p class="eyebrow">BUILT TO BE BORROWED</p><h2>A timeline, not a character.</h2><p>Board-space points and millisecond timing stay the same. Your character supplies the shoulder, limb proportions, and artwork.</p></div><div><button id="export">Download timeline JSON ↓</button><label for="import">Load timeline JSON</label><input id="import" type="file" accept=".json,application/json"><p><a href="docs/professor-integration.md">Professor integration ↗</a> <a href="README.md">Engine documentation ↗</a></p></div></section>
+<footer><span>DRAWING ARM / A.01</span><span>Independent engine · No character assets · No production integration</span></footer>
+</main><script type="module">
+/** Character-independent planar two-link IK. Angles are radians, SVG y points down. */
+const TAU = 2 * Math.PI;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+const point = (p, name) => {
+  if (!Array.isArray(p) || p.length !== 2 || !p.every(Number.isFinite)) throw new TypeError(`${name} must be [finite x, finite y]`);
+  return [...p];
+};
+function configureArm(options = {}) {
+  const c = { upper: 190, forearm: 170, shoulder: [80, 280], side: 'right', elbow: 'positive', tip: 8,
+    limits: { shoulder: [-Math.PI, Math.PI], elbow: [-Math.PI, Math.PI] }, ...options };
+  for (const key of ['upper', 'forearm']) if (!Number.isFinite(c[key]) || c[key] <= 0) throw new RangeError(`${key} must be positive`);
+  if (!Number.isFinite(c.tip) || c.tip < 0) throw new RangeError('tip must be nonnegative');
+  c.shoulder = point(c.shoulder, 'shoulder');
+  if (!['left', 'right'].includes(c.side) || !['positive', 'negative'].includes(c.elbow)) throw new RangeError('Invalid side or elbow orientation');
+  c.limits = { shoulder: [-Math.PI, Math.PI], elbow: [-Math.PI, Math.PI], ...c.limits };
+  for (const key of ['shoulder', 'elbow']) {
+    const range = point(c.limits[key], `${key} limits`);
+    if (range[0] > range[1] || range[1] - range[0] > TAU + 1e-10) throw new RangeError('Limits must be ordered and span at most 2π');
+    c.limits[key] = range;
+  }
+  return c;
+}
+function forward(arm, shoulderAngle, elbowAngle) {
+  const c = configureArm(arm), s = c.shoulder;
+  const elbow = [s[0] + c.upper * Math.cos(shoulderAngle), s[1] + c.upper * Math.sin(shoulderAngle)];
+  const angle = shoulderAngle + elbowAngle;
+  const wrist = [elbow[0] + c.forearm * Math.cos(angle), elbow[1] + c.forearm * Math.sin(angle)];
+  const tip = [wrist[0] + c.tip * Math.cos(angle), wrist[1] + c.tip * Math.sin(angle)];
+  return { shoulder: [...s], elbow, wrist, tip, angles: { shoulder: shoulderAngle, elbow: elbowAngle } };
+}
+// Pick the equivalent angle closest to the configured interval, including seam crossings.
+function fit(angle, range) {
+  const center = (range[0] + range[1]) / 2;
+  const a = angle + TAU * Math.round((center - angle) / TAU);
+  return clamp(a, ...range);
+}
+function solveIK(arm, target) {
+  const c = configureArm(arm); point(target, 'target');
+  const dx = target[0] - c.shoulder[0], dy = target[1] - c.shoulder[1];
+  const r = Math.hypot(dx, dy), a = c.upper, b = c.forearm + c.tip;
+  const projectedRadius = clamp(r, Math.abs(a - b), a + b);
+  const direction = r < 1e-12 ? 0 : Math.atan2(dy, dx);
+  const bend = Math.acos(clamp((projectedRadius ** 2 - a * a - b * b) / (2 * a * b), -1, 1));
+  const sign = (c.elbow === 'positive' ? 1 : -1) * (c.side === 'left' ? -1 : 1);
+  const candidates = [sign, -sign].map(s => {
+    const e = s * bend;
+    const sh = direction - Math.atan2(b * Math.sin(e), a + b * Math.cos(e));
+    return [sh, e];
+  });
+  // Exact preferred branch, or exact opposite branch when required by limits.
+  let chosen = null;
+  for (const [sh, e] of candidates) {
+    const fitted = [fit(sh, c.limits.shoulder), fit(e, c.limits.elbow)];
+    const pose = forward(c, ...fitted);
+    if (distance(pose.tip, target) <= 1e-6) { chosen = pose; break; }
+  }
+  if (!chosen) {
+    // Global closest point on the rectangular joint domain: an interior optimum
+    // is analytic IK (above), otherwise at least one joint lies on a boundary.
+    const poses = [];
+    const add = (sh, e) => poses.push(forward(c, fit(sh, c.limits.shoulder), fit(e, c.limits.elbow)));
+    for (const [sh, e] of candidates) add(sh, e);
+    for (const e of c.limits.elbow) add(direction - Math.atan2(b * Math.sin(e), a + b * Math.cos(e)), e);
+    for (const sh of c.limits.shoulder) {
+      const ex = c.shoulder[0] + a * Math.cos(sh), ey = c.shoulder[1] + a * Math.sin(sh);
+      add(sh, Math.atan2(target[1] - ey, target[0] - ex) - sh);
+      for (const e of c.limits.elbow) add(sh, e);
+    }
+    chosen = poses.reduce((best, p) => distance(p.tip, target) < distance(best.tip, target) - 1e-9 ? p : best);
+  }
+  const error = distance(chosen.tip, target), radialReachable = r >= Math.abs(a - b) - 1e-7 && r <= a + b + 1e-7;
+  return { ...chosen, target: [...target], error, reachable: error <= 1e-6,
+    reason: error <= 1e-6 ? 'reachable' : radialReachable ? 'joint-limits' : 'out-of-reach' };
+}
+function boardToWorld(p, board = {}) {
+  point(p, 'board point');
+  const { origin = [0, 0], scale = 1, rotation = 0 } = board; point(origin, 'board origin');
+  if (!Number.isFinite(scale) || scale <= 0 || !Number.isFinite(rotation)) throw new RangeError('Invalid board transform');
+  return [origin[0] + scale * (p[0] * Math.cos(rotation) - p[1] * Math.sin(rotation)),
+    origin[1] + scale * (p[0] * Math.sin(rotation) + p[1] * Math.cos(rotation))];
+}
+
+/** Original single-line polyline glyphs. Local cell is 1 × 1. */
+const GLYPHS = {
+ 'x': [[[0,.25],[1,.95]],[[1,.25],[0,.95]]],
+ '0': [[[.2,0],[.8,0],[1,.2],[1,.8],[.8,1],[.2,1],[0,.8],[0,.2],[.2,0]]],
+ '1': [[[.2,.2],[.5,0],[.5,1]],[[.2,1],[.8,1]]],
+ '2': [[[0,.2],[.2,0],[.8,0],[1,.2],[1,.4],[0,1],[1,1]]],
+ '3': [[[0,.15],[.25,0],[.75,0],[1,.2],[.85,.4],[.5,.5],[.85,.6],[1,.8],[.75,1],[.25,1],[0,.85]]],
+ '4': [[[.25,0],[0,.6],[1,.6]],[[.75,0],[.75,1]]],
+ '5': [[[0,0],[0,.48],[.65,.48],[.95,.62],[1,.82],[.8,1],[.1,1]],[[0,0],[1,0]]],
+ '6': [[[1,0],[.3,0],[0,.3],[0,.8],[.2,1],[.8,1],[1,.8],[1,.6],[.8,.5],[0,.5]]],
+ '7': [[[0,0],[1,0],[.3,1]]],
+ '8': [[[.2,.5],[0,.3],[0,.2],[.2,0],[.8,0],[1,.2],[1,.3],[.8,.5],[.2,.5],[0,.7],[0,.8],[.2,1],[.8,1],[1,.8],[1,.7],[.8,.5]]],
+ '9': [[[.9,.1],[.7,0],[.25,0],[0,.2],[0,.4],[.25,.55],[.7,.55],[1,.35],[.9,.1],[1,.65],[.75,1]]],
+ '+': [[[0,.5],[1,.5]],[[.5,0],[.5,1]]],
+ '-': [[[0,.5],[1,.5]]], '−': [[[0,.5],[1,.5]]],
+ '·': [[[.42,.5],[.5,.45],[.58,.5],[.5,.55],[.42,.5]]],
+ '×': [[[.42,.5],[.5,.45],[.58,.5],[.5,.55],[.42,.5]]], '*': [[[.42,.5],[.5,.45],[.58,.5],[.5,.55],[.42,.5]]],
+ '=': [[[0,.3],[1,.3]],[[0,.7],[1,.7]]],
+ '/': [[[1,0],[0,1]]], '÷': [[[.5,.1],[.5,.15]],[[0,.5],[1,.5]],[[.5,.85],[.5,.9]]],
+ '(': [[[.7,0],[.35,.2],[.2,.5],[.35,.8],[.7,1]]],
+ ')': [[[.3,0],[.65,.2],[.8,.5],[.65,.8],[.3,1]]],
+ '.': [[[.5,.95],[.5,1]]]
+};
+
+const finite = (v, name, min = -Infinity) => { if (!Number.isFinite(v) || v < min) throw new RangeError(`Invalid ${name}`); };
+function validateTimeline(input) {
+  if (input?.version !== 1 || !Array.isArray(input.strokes)) throw new TypeError('Expected timeline version 1 and strokes array');
+  const t = structuredClone(input); boardToWorld([0,0], t.board);
+  let end = 0;
+  for (const s of t.strokes) {
+    finite(s.at, 'stroke start', end); finite(s.duration, 'stroke duration', Number.MIN_VALUE);
+    if (!Array.isArray(s.points) || s.points.length < 2) throw new TypeError('Stroke needs at least two points');
+    s.points.forEach(p => boardToWorld(p));
+    if (s.pen !== undefined && typeof s.pen !== 'boolean') throw new TypeError('pen must be boolean');
+    end = s.at + s.duration; finite(end, 'stroke end');
+  }
+  if (t.fallbacks !== undefined) {
+    if (!Array.isArray(t.fallbacks)) throw new TypeError('fallbacks must be an array');
+    for (const f of t.fallbacks) {
+      finite(f.at, 'fallback start', 0); finite(f.size, 'fallback size', Number.MIN_VALUE); boardToWorld(f.position);
+      if (typeof f.text !== 'string') throw new TypeError('fallback text must be a string');
+    }
+  }
+  t.duration = Math.max(end, ...(t.fallbacks ?? []).map(f => f.at), 0);
+  return t;
+}
+/** Compile once; points interpolate at constant arc-length speed within each stroke. */
+function compileTimeline(input) {
+  const t = validateTimeline(input);
+  t.strokes = t.strokes.map(s => {
+    const points = s.points.map(p => boardToWorld(p, t.board)), lengths = [0];
+    for (let i = 1; i < points.length; i++) lengths.push(lengths.at(-1) + distance(points[i-1], points[i]));
+    return { ...s, points, lengths, length: lengths.at(-1) };
+  });
+  return t;
+}
+function strokePoint(stroke, fraction) {
+  const d = Math.max(0, Math.min(1, fraction)) * stroke.length;
+  for (let i = 1; i < stroke.points.length; i++) {
+    if (d <= stroke.lengths[i]) {
+      const span = stroke.lengths[i] - stroke.lengths[i-1], f = span ? (d - stroke.lengths[i-1]) / span : 0;
+      return stroke.points[i-1].map((v, j) => v + f * (stroke.points[i][j] - v));
+    }
+  }
+  return [...stroke.points.at(-1)];
+}
+function sampleTimeline(timeline, time) {
+  finite(time, 'time');
+  const strokes = timeline.strokes;
+  if (!strokes.length) return { point: null, penDown: false, index: -1, progress: 0, done: time >= timeline.duration };
+  let previous = strokes[0].points[0], previousEnd = 0;
+  for (let i = 0; i < strokes.length; i++) {
+    const s = strokes[i];
+    if (time < s.at) {
+      const f = Math.max(0, (time - previousEnd) / (s.at - previousEnd || 1));
+      return { point: previous.map((v,j) => v + f * (s.points[0][j] - v)), penDown: false, index: i, progress: 0, done: false };
+    }
+    if (time < s.at + s.duration) {
+      const progress = (time - s.at) / s.duration;
+      return { point: strokePoint(s, progress), penDown: s.pen !== false, index: i, progress, done: false };
+    }
+    previous = s.points.at(-1); previousEnd = s.at + s.duration;
+  }
+  return { point: [...previous], penDown: false, index: strokes.length - 1, progress: 1, done: time >= timeline.duration };
+}
+function sampleArm(timeline, time, arm) {
+  const sample = sampleTimeline(timeline, time), pose = sample.point ? solveIK(arm, sample.point) : null;
+  return { ...sample, pose, chalkDown: sample.penDown && !!pose?.reachable };
+}
+function textTimeline(text, options = {}) {
+  const { x = 150, y = 100, size = 36, speed = 120, lift = 100, lineHeight = 1.8, board } = options;
+  [x,y].forEach(v => finite(v, 'text origin')); finite(size,'size',Number.MIN_VALUE); finite(speed,'speed',Number.MIN_VALUE); finite(lift,'lift',0); finite(lineHeight,'lineHeight',Number.MIN_VALUE);
+  if (typeof text !== 'string') throw new TypeError('text must be a string');
+  const strokes = [], fallbacks = []; let at = 0, col = 0, row = 0;
+  for (const char of text) {
+    if (char === '\n') { col = 0; row++; continue; }
+    const origin = [x + col * size * .95, y + row * size * lineHeight];
+    if (char !== ' ') {
+      if (!GLYPHS[char]) fallbacks.push({ text: char, position: origin, size, at });
+      else for (const path of GLYPHS[char]) {
+        const points = path.map(p => [origin[0] + p[0] * size * .62, origin[1] + p[1] * size]);
+        const length = points.slice(1).reduce((n,p,i) => n + distance(p,points[i]), 0);
+        const duration = Math.max(1, length / speed * 1000);
+        strokes.push({ at, duration, points, pen: true }); at += duration + lift;
+      }
+    }
+    col++;
+  }
+  return validateTimeline({ version: 1, board: board ?? { origin: [0,0], scale: 1, rotation: 0 }, strokes, fallbacks });
+}
+
+const NS = 'http://www.w3.org/2000/svg';
+function element(tag, attrs, parent) {
+  const el = document.createElementNS(NS, tag);
+  for (const [k,v] of Object.entries(attrs)) el.setAttribute(k,v);
+  parent.append(el); return el;
+}
+/** Owns only the supplied group. No global DOM, character assets or clock. */
+class SVGArmRenderer {
+  constructor(group, timeline, arm, { color = '#f4c976' } = {}) {
+    this.group = group; this.timeline = timeline; this.arm = arm; this.color = color;
+    this.chalk = element('path', { fill:'none', stroke:'#eef6e8', 'stroke-width':2.5, 'stroke-linecap':'round', 'stroke-linejoin':'round' },group);
+    this.fallback = element('g', { fill:'#eef6e8', 'font-family':'Chalkboard, Chalkboard SE, cursive' }, group);
+    for (const f of timeline.fallbacks ?? []) {
+      const transform = timeline.board ?? {};
+      const p = boardToWorld(f.position, transform);
+      const el = element('text',{ x:p[0], y:p[1], 'font-size':f.size * (transform.scale ?? 1),
+        transform:`rotate(${(transform.rotation ?? 0)*180/Math.PI} ${p[0]} ${p[1]})`, 'dominant-baseline':'hanging' },this.fallback);
+      el.textContent = f.text;
+    }
+    this.links = element('path', { fill:'none', stroke:color, 'stroke-width':9, 'stroke-linecap':'round', 'stroke-linejoin':'round' }, group);
+    this.joints = Array.from({length:3},()=>element('circle',{r:6, fill:'#172e2a',stroke:color,'stroke-width':2},group));
+    this.pen = element('line', { stroke:'#fff9ce', 'stroke-width':4, 'stroke-linecap':'round' }, group);
+    this.target = element('circle',{r:5,fill:'none',stroke:'#ff8878','stroke-width':1.5},group);
+    this.setArm(arm);
+  }
+  setArm(arm) {
+    this.arm = arm; this.segments = [];
+    for (const s of this.timeline.strokes) {
+      if (s.pen === false) continue;
+      for (let i=1;i<s.points.length;i++) {
+        const p = s.points[i-1], q = s.points[i], length = distance(p,q), count = Math.max(1, Math.ceil(length/2));
+        for (let j=0;j<count;j++) {
+          const from = p.map((v,k)=>v+(q[k]-v)*j/count), to = p.map((v,k)=>v+(q[k]-v)*(j+1)/count);
+          const t0=s.at+s.duration*(s.length ? (s.lengths[i-1]+length*j/count)/s.length : 0);
+          const t1=s.at+s.duration*(s.length ? (s.lengths[i-1]+length*(j+1)/count)/s.length : 1);
+          const valid=[from,to,from.map((v,k)=>(v+to[k])/2)].every(pt=>solveIK(arm,pt).reachable);
+          this.segments.push({from,to,t0,t1,valid});
+        }
+      }
+    }
+  }
+  render(time) {
+    const sample = sampleArm(this.timeline,time,this.arm); let d='';
+    for (const s of this.segments) {
+      if (s.t0 >= time) break;
+      if (!s.valid) continue;
+      const f=Math.min(1,(time-s.t0)/(s.t1-s.t0 || 1)), p=s.from.map((v,k)=>v+f*(s.to[k]-v));
+      d+=`M${s.from}L${p}`;
+    }
+    this.chalk.setAttribute('d',d);
+    [...this.fallback.children].forEach((el,i)=>el.setAttribute('visibility',time >= this.timeline.fallbacks[i].at ? 'visible':'hidden'));
+    const pose=sample.pose;
+    for (const el of [this.links,this.pen,this.target,...this.joints]) el.setAttribute('visibility',pose?'visible':'hidden');
+    if (!pose) return sample;
+    this.links.setAttribute('d',`M${pose.shoulder}L${pose.elbow}L${pose.wrist}`);
+    [pose.shoulder,pose.elbow,pose.wrist].forEach((p,i)=>{this.joints[i].setAttribute('cx',p[0]);this.joints[i].setAttribute('cy',p[1]);});
+    for (const [key,value] of Object.entries({x1:pose.wrist[0],y1:pose.wrist[1],x2:pose.tip[0],y2:pose.tip[1]})) this.pen.setAttribute(key,value);
+    this.pen.setAttribute('opacity',sample.chalkDown ? 1 : .45);
+    this.target.setAttribute('cx',sample.point[0]);this.target.setAttribute('cy',sample.point[1]);
+    this.target.setAttribute('visibility',pose.reachable?'hidden':'visible');
+    return sample;
+  }
+  destroy() { this.group.replaceChildren(); }
+}
+
+const $ = s => document.querySelector(s);
+const defaults = () => [configureArm({upper:215,forearm:200,shoulder:[95,285],tip:10}), configureArm({upper:170,forearm:255,shoulder:[95,285],tip:10})];
+let arms=defaults(), raw, timeline, renderers=[], time=0, playing=false, last=null;
+const boards=[...document.querySelectorAll('.boards article')];
+function render() {
+  renderers.forEach((r,i)=>{
+    const s=r.render(time), p=s.pose;
+    boards[i].querySelector('.readout').textContent=p ? `${s.chalkDown?'● CHALK DOWN':'○ PEN UP'}  /  ${p.reason.toUpperCase()}${p.reachable?'':` · error ${p.error.toFixed(1)}`}`:'○ IDLE';
+    boards[i].querySelector('.rig-info').textContent=`${arms[i].upper} / ${arms[i].forearm} units`;
+  });
+  $('#seek').max=timeline.duration || 1; $('#seek').value=time;
+  $('#clock').textContent=`${(time/1000).toFixed(1)} / ${(timeline.duration/1000).toFixed(1)} s`;
+  $('#play').textContent=playing?'Pause':'Play';
+}
+function load(input) {
+  const next=compileTimeline(input); // Validate before destroying current view.
+  raw=structuredClone(input); timeline=next; playing=false; time=0;
+  renderers.forEach(r=>r.destroy());
+  renderers=boards.map((b,i)=>new SVGArmRenderer(b.querySelector('.drawing'),timeline,arms[i],{color:i?'#a8c7a0':'#e5c37a'}));
+  render();
+}
+function write() {
+  try { load(textTimeline($('#equation').value,{x:150,y:106,size:30,speed:150,lift:100})); $('#message').textContent=raw.fallbacks.length?`${raw.fallbacks.length} unsupported glyph(s) shown as font fallback; no arm trace for those glyphs.`:'Both rigs receive identical board coordinates.'; }
+  catch(e){$('#message').textContent=e.message;}
+}
+const fields=[['upper','Upper arm',40,300],['forearm','Forearm',40,300],['shoulderX','Shoulder X',0,520],['shoulderY','Shoulder Y',0,360],['tip','Chalk tip',0,40]];
+for(const [key,title,min,max] of fields){const div=document.createElement('div');div.className='dimension';div.innerHTML=`<label for="${key}">${title}<output></output></label><input type="range" id="${key}" min="${min}" max="${max}" step="1">`;$('#dimensions').append(div);}
+function controls(){const a=arms[Number($('#rig').value)];for(const [key]of fields){const v=key==='shoulderX'?a.shoulder[0]:key==='shoulderY'?a.shoulder[1]:a[key];$('#'+key).value=v;$('#'+key).previousElementSibling.querySelector('output').value=v;}$('#bend').value=a.elbow;$('#limits').checked=a.limits.shoulder[0]===-Math.PI/2;}
+function change(){const i=Number($('#rig').value),a=structuredClone(arms[i]);for(const [key]of fields){const v=Number($('#'+key).value);if(key==='shoulderX')a.shoulder[0]=v;else if(key==='shoulderY')a.shoulder[1]=v;else a[key]=v;}a.elbow=$('#bend').value;a.limits.shoulder=$('#limits').checked?[-Math.PI/2,0]:[-Math.PI,Math.PI];arms[i]=configureArm(a);renderers[i].setArm(arms[i]);controls();render();}
+$('#dimensions').addEventListener('input',change);$('#bend').onchange=change;$('#limits').onchange=change;$('#rig').onchange=controls;
+$('#write').onclick=write;document.querySelectorAll('[data-text]').forEach(b=>b.onclick=()=>{$('#equation').value=b.dataset.text;write();});
+$('#play').onclick=()=>{if(time>=timeline.duration)time=0;playing=!playing;last=null;render();};
+$('#reset').onclick=()=>{playing=false;time=0;render();};
+$('#restore').onclick=()=>{arms=defaults();renderers.forEach((r,i)=>r.setArm(arms[i]));controls();render();};
+$('#seek').oninput=()=>{playing=false;time=Number($('#seek').value);render();};
+$('#export').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(raw,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='drawing-arm-timeline.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+$('#import').onchange=async e=>{try{const file=e.target.files[0];if(!file)return;if(file.size>1024*1024)throw Error('Timeline must be smaller than 1 MB');load(JSON.parse(await file.text()));$('#message').textContent='Imported timeline loaded for both rigs.';}catch(err){$('#message').textContent=`Import failed: ${err.message}`;}e.target.value='';};
+function frame(now){if(playing){if(last!==null)time=Math.min(timeline.duration,time+(now-last)*Number($('#speed').value));last=now;if(time>=timeline.duration)playing=false;render();}else last=null;requestAnimationFrame(frame);}
+write();controls();requestAnimationFrame(frame);
+
+</script></body></html>
