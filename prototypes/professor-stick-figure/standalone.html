@@ -1,13 +1,15 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.8 · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.9 · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
 
 #math-example{width:100%;margin-bottom:12px}#operation{font-size:11px;color:var(--muted);min-height:35px}
 
 .teaching-controls{display:flex;align-items:end;gap:10px;margin:10px 0 16px}.teaching-controls label{margin:0}.teaching-controls select{display:block}button:disabled{opacity:.45;cursor:default}
+
+.teaching-controls .mute-label{display:flex;align-items:center;gap:4px;align-self:center}#speech-status{font-size:11px;color:var(--muted)}
 </style></head>
 <body><main>
 <div class="experiment"><section class="stage" aria-label="Professor writing demonstration">
-<div class="stage-heading"><span><i></i> REAR THREE-QUARTER VIEW</span><span>FACING SCREEN-RIGHT →</span></div>
+<div class="stage-heading"><span id="view-label">REAR THREE-QUARTER VIEW</span><span id="facing-label">FACING SCREEN-RIGHT →</span></div>
 <svg id="scene" viewBox="0 0 960 570" role="img" aria-label="Rear-facing figure repositioning horizontally to write with a short right arm at fixed board coordinates">
 <defs><pattern id="board-grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#cfdec9" stroke-opacity=".055"/></pattern></defs>
 <path d="M95 510H905" stroke="#66746a" stroke-width="1"/>
@@ -20,8 +22,8 @@
 </svg>
 <div class="transport"><button id="play" class="primary">Play</button><button id="reset">Reset</button><label class="scrubber">Timeline<input id="seek" type="range" step="any" min="0" max="1" value="0" aria-label="Timeline position"></label><output id="clock">0.0 / 0.0 s</output><label class="speed-label">Speed<select id="speed"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div>
 <div class="stage-footer"><span id="contact" role="status">Ready</span><label><input id="anchors" type="checkbox"> Show skeleton / anchors</label></div>
-</section><aside><p class="eyebrow">B1.8 / WRITING TOOL</p><label for="math-example">Problem</label><select id="math-example" aria-label="Math problem"><option value="example">Example: x/5-4/4=2/5</option><option value="generated-0">Generated addition</option><option value="generated-1">Generated subtraction</option><option value="generated-2">Generated multiplication</option><option value="free">Free writing</option></select><label for="writing">Equation / writing instructions</label><textarea id="writing" rows="2" spellcheck="false">x/5-4/4=2/5</textarea><button id="load" class="primary wide">Solve &amp; write ↗</button><p id="message" role="status"></p><p id="operation" role="status" aria-live="polite"></p><div class="teaching-controls"><label for="teaching-mode">Mode<select id="teaching-mode"><option value="auto">Auto</option><option value="step">Step</option></select></label><button id="continue" disabled>Continue</button></div><div class="file-actions"><button id="export">Export JSON ↓</button><label for="import" class="file-label">Import JSON<input id="import" type="file" accept=".json,application/json"></label></div>
-<details id="advanced"><summary>Advanced / Body Rig</summary><div id="body-controls" class="body-controls"></div><dl><dt>Upper / forearm</dt><dd id="arm-lengths"></dd><dt>Right shoulder</dt><dd id="shoulder-value"></dd><dt>Body origin</dt><dd id="body-origin"></dd></dl><button id="restore" class="wide">Restore body rig</button></details><p class="docs"><a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/professor-b1.8-teaching-cadence/prototypes/professor-stick-figure/README.md">Docs</a> · <a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/professor-b1.8-teaching-cadence/prototypes/professor-stick-figure/docs/coordinates.md">Rig / motion contract</a></p></aside></div>
+</section><aside><p class="eyebrow">B1.9 / WRITING TOOL</p><label for="math-example">Problem</label><select id="math-example" aria-label="Math problem"><option value="example">Example: x/5-4/4=2/5</option><option value="generated-0">Generated addition</option><option value="generated-1">Generated subtraction</option><option value="generated-2">Generated multiplication</option><option value="free">Free writing</option></select><label for="writing">Equation / writing instructions</label><textarea id="writing" rows="2" spellcheck="false">x/5-4/4=2/5</textarea><button id="load" class="primary wide">Solve &amp; write ↗</button><p id="message" role="status"></p><p id="operation" role="status" aria-live="polite"></p><div class="teaching-controls"><label for="teaching-mode">Mode<select id="teaching-mode"><option value="auto">Auto</option><option value="step">Step</option></select></label><button id="continue" disabled>Continue</button><label class="mute-label"><input id="mute" type="checkbox"> Mute</label></div><p id="speech-status" role="status"></p><div class="file-actions"><button id="export">Export JSON ↓</button><label for="import" class="file-label">Import JSON<input id="import" type="file" accept=".json,application/json"></label></div>
+<details id="advanced"><summary>Advanced / Body Rig</summary><div id="body-controls" class="body-controls"></div><dl><dt>Upper / forearm</dt><dd id="arm-lengths"></dd><dt>Right shoulder</dt><dd id="shoulder-value"></dd><dt>Body origin</dt><dd id="body-origin"></dd></dl><button id="restore" class="wide">Restore body rig</button></details><p class="docs"><a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/professor-b1.9-talk-gesture/prototypes/professor-stick-figure/README.md">Docs</a> · <a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/professor-b1.9-talk-gesture/prototypes/professor-stick-figure/docs/coordinates.md">Rig / motion contract</a></p></aside></div>
 </main><script type="module">
 
 // SOURCE: ../math-problems/src/rational.js
@@ -1041,6 +1043,203 @@ function advanceTeaching(plan,time,delta,mode='auto') {
 }
 
 
+// SOURCE: src/presentation-action.js
+/** General-purpose presentation data. No lesson, mathematics, SVG or audio dependency. */
+const GESTURES = Object.freeze(['explain','emphasize','count','present','idle']);
+function presentationAction(input) {
+  if(input?.type!=='talk-and-gesture'||typeof input.text!=='string'||!input.text.trim()||input.text.length>4000)
+    throw new TypeError('A talk-and-gesture action needs nonempty text (up to 4000 characters)');
+  const {gesture='explain',orientation='audience',count=1}=input;
+  if(!GESTURES.includes(gesture)||orientation!=='audience'||!Number.isInteger(count)||count<1||count>20)
+    throw new TypeError('Invalid presentation gesture, orientation or count');
+  // A deterministic visual slot. Actual browser audio may hold its final instant.
+  const duration=input.duration??Math.max(2400,input.text.trim().split(/\s+/u).length*440+1000);
+  if(!Number.isFinite(duration)||duration<1000||duration>120000)throw new RangeError('Invalid presentation duration');
+  return {type:'talk-and-gesture',text:input.text,gesture,orientation,count,duration};
+}
+/** Generic standalone action clip; no lesson plan is required by other consumers. */
+function compilePresentationAction(input,{at=0,id='presentation',turn=700,wait=1500}={}) {
+  const action=presentationAction(input);
+  if(![at,turn,wait].every(Number.isFinite)||at<0||turn<=0||wait<0)throw new RangeError('Invalid presentation clip timing');
+  const talkAt=at+turn,talkEnd=talkAt+action.duration,gate=talkEnd,resume=gate+wait,end=resume+turn;
+  return {id,action,at,talkAt,talkEnd,gate,resume,end};
+}
+function samplePresentationAction(p,time) {
+  if(!Number.isFinite(time))throw new RangeError('Presentation time must be finite');
+  if(time<p.at||time>=p.end)return {presentation:null,orientation:'board',audience:0};
+  const stage=time<p.talkAt?'turn-out':time<p.talkEnd?'talk':time<p.resume?'wait':'turn-in';
+  const progress=stage==='turn-out'?(time-p.at)/(p.talkAt-p.at):stage==='turn-in'?1-(time-p.resume)/(p.end-p.resume):1;
+  const audience=progress*progress*(3-2*progress);
+  return {orientation:stage.startsWith('turn')?'transitioning':'audience',audience,
+    presentation:{...p,stage,elapsed:Math.max(0,Math.min(p.action.duration,time-p.talkAt))}};
+}
+
+
+// SOURCE: src/presentation-plan.js
+const PRESENTATION_TURN = 700;
+/** Adapt an existing lesson pause to a generic action; the B1.8 sequencer stays intact. */
+function presentationPlan(base, actions) {
+  if(!base.teachingSteps?.length)return {...base,presentations:[]};
+  const selected=base.teachingSteps.map((step,i)=>{
+    // Explain the NEXT transformation after its prerequisite line is on the board.
+    const next=base.teachingSteps[i+1]??step;
+    return {action:presentationAction(actions?.[i]??{type:'talk-and-gesture',text:next.operation.explanation,
+      gesture:i===0?'explain':i===1?'emphasize':i===2?'present':'idle',count:next.index+1}),explanationIndex:next.index};
+  });
+  if(actions&&actions.length!==base.teachingSteps.length)throw new RangeError('Expected one presentation action per teaching pause');
+  const phases=[],presentations=[],shifts=[];let shift=0;
+  for(const phase of base.phases){
+    if(phase.reason!=='teaching-pause'){phases.push({...phase,at:phase.at+shift});continue;}
+    const index=phase.teachingIndex,{action,explanationIndex}=selected[index],at=phase.at+shift;
+    const clip=compilePresentationAction(action,{at,id:`presentation-${index}`,turn:PRESENTATION_TURN,wait:phase.duration});
+    const p={...clip,index,explanationIndex};presentations.push(p);
+    const {talkAt,gate,resume}=p;
+    const add=(stage,start,duration)=>phases.push({...phase,at:start,duration,reason:stage==='talk'?'talk-and-gesture':`presentation-${stage}`,presentation:{id:p.id,stage}});
+    add('turn-out',at,PRESENTATION_TURN);add('talk',talkAt,action.duration);add('wait',gate,phase.duration);add('turn-in',resume,PRESENTATION_TURN);
+    const extra=2*PRESENTATION_TURN+action.duration;
+    shifts.push({at:phase.at,extra});shift+=extra;
+  }
+  const shifted=t=>t+shifts.filter(s=>s.at<t-1e-6).reduce((n,s)=>n+s.extra,0);
+  const teachingSteps=base.teachingSteps.map((s,i)=>({...s,start:shifted(s.start),complete:shifted(s.complete),gate:presentations[i].gate,resume:presentations[i].resume}));
+  return {...base,phases,writes:phases.filter(p=>p.kind==='write'),teachingSteps,presentations,duration:base.duration+shift,
+    sourceToWall:t=>shifted(base.sourceToWall(t))};
+}
+function samplePresentation(plan,time) {
+  const state=sampleTeaching(plan,time);
+  const p=plan.presentations?.find(p=>time>=p.at&&time<p.end);
+  if(!p)return {...state,presentation:null,orientation:'board',audience:0};
+  const sampled=samplePresentationAction(p,time),stage=sampled.presentation.stage;
+  return {...state,...sampled,kind:stage==='talk'?'talk-and-gesture':stage.startsWith('turn')?'turn':state.kind,
+    chalkDown:false,penDown:false};
+}
+/** Ensure a talk slot is observed, then wait for live audio before turning away.
+ * This transport guard never changes a sampled pose or permanently records progress.
+ */
+function presentationAdvance(plan,time,next,busy=false) {
+  const active=plan.presentations?.find(p=>time>=p.talkAt&&time<p.talkEnd);
+  if(active&&busy&&next>=active.talkEnd)return Math.max(time,active.talkEnd-.001);
+  const entering=plan.presentations?.find(p=>time<p.talkAt&&next>=p.talkAt);
+  return entering?entering.talkAt:next;
+}
+
+
+// SOURCE: src/presentation-rig.js
+const mixPresentation=(a,b,t)=>a.map((v,i)=>v+(b[i]-v)*t);
+const smoothPresentation=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
+/** Rotate the upper skeleton in projection; the planted foot anchors never change. */
+function orientedLandmarks(config,audience=0,base) {
+  const b=configureBody(config),p=structuredClone(base??bodyLandmarks(b)),t=Math.max(0,Math.min(1,audience));
+  const center=[p.hips[0]+b.lean*.35,p.shoulderCenter[1]+(b.leftShoulderOffset[1]+b.rightShoulderOffset[1])/2];
+  const front={torsoTop:[center[0],p.torsoTop[1]],neck:[center[0],p.neck[1]],head:[center[0],p.head[1]],
+    leftShoulder:[center[0]-.65*b.shoulderWidth-b.leftShoulderOffset[0],center[1]],
+    rightShoulder:[center[0]+.65*b.shoulderWidth+b.rightShoulderOffset[0],center[1]],
+    shoulderCenter:center};
+  for(const [key,value]of Object.entries(front))p[key]=mixPresentation(p[key],value,t);
+  return p;
+}
+/** A small single conversational phrase, with independent targets and gentle emphasis.
+ * Poses enter and leave idle, so holding a Step gate never creates endless waving.
+ */
+function gestureAngles(action,elapsed,side,arm) {
+  const reach=arm.upper+arm.forearm+arm.tip,sign=side==='right'?1:-1;
+  const idle=[.10,.92],targets={explain:side==='right'?[.64,.38]:[.52,.48],
+    emphasize:side==='right'?[.34,-.20]:[.36,.68],count:side==='right'?[.30,-.10]:[.26,.70],
+    present:side==='right'?[.80,.05]:[.38,.62],idle};
+  const duration=action.duration,t=Math.max(0,Math.min(duration,elapsed));
+  const envelope=smoothPresentation(t/500)*smoothPresentation((duration-t)/500);
+  const target=targets[action.gesture],sway=action.gesture==='idle'?0:Math.sin(2*Math.PI*t/duration)*(side==='right'?.035:-.022);
+  const x=idle[0]+(target[0]-idle[0])*envelope,y=idle[1]+(target[1]-idle[1])*envelope+sway*envelope;
+  const pose=solveIK({...arm,elbow:side==='right'?'negative':'positive'},[arm.shoulder[0]+sign*x*reach,arm.shoulder[1]+y*reach]);
+  return [pose.angles.shoulder,pose.angles.elbow];
+}
+/** Both arms preserve their own skeletal segment lengths throughout the turn. */
+function presentationRig(config,state,base,rig={}) {
+  const b=configureBody(config),original=bodyLandmarks(b),p=orientedLandmarks(b,state.audience,base),a=state.audience;
+  const action=state.presentation?.action??{gesture:'idle',duration:2400};
+  const elapsed=state.presentation?.stage==='talk'?state.presentation.elapsed:0;
+  const arms={};
+  for(const side of ['left','right']){
+    const right=side==='right',shoulder=p[side+'Shoulder'];
+    const arm=right?{...attachedArm(b,rig),shoulder:bodyToWorld(shoulder,b)}:
+      {shoulder:bodyToWorld(shoulder,b),upper:distance(original.leftShoulder,original.leftElbow)*b.scale,
+       forearm:distance(original.leftElbow,original.leftHand)*b.scale,tip:0,elbow:'positive'};
+    const initial=right?[state.pose.angles.shoulder,state.pose.angles.elbow]:[
+      Math.atan2(original.leftElbow[1]-original.leftShoulder[1],original.leftElbow[0]-original.leftShoulder[0]),
+      Math.atan2(original.leftHand[1]-original.leftElbow[1],original.leftHand[0]-original.leftElbow[0])-Math.atan2(original.leftElbow[1]-original.leftShoulder[1],original.leftElbow[0]-original.leftShoulder[0])];
+    const target=gestureAngles(action,elapsed,side,arm);
+    // Use the nearest equivalent angles to avoid an unnecessary full revolution.
+    const angles=initial.map((v,i)=>v+Math.atan2(Math.sin(target[i]-v),Math.cos(target[i]-v))*a);
+    const pose=forward(arm,...angles);arms[side]=pose;
+    for(const [joint,point]of [['Elbow',pose.elbow],['Hand',pose.wrist]])p[side+joint]=point.map((v,i)=>(v-b.origin[i])/b.scale);
+  }
+  return {landmarks:p,arms};
+}
+/** Identical Bézier topology allows a continuous rear-profile → frontal head morph. */
+function presentationHead(p,headSize,audience=0) {
+  const rear=[[-9,28],[-32,20],[-33,-18],[-10,-28],[8,-37],[25,-20],[25,-7],[37,1],[26,5],[25,20],[12,28],[-9,28]];
+  const front=[[-10,28],[-31,20],[-31,-20],[-10,-29],[10,-35],[29,-20],[29,-7],[30,1],[29,6],[27,22],[12,29],[-10,28]];
+  const c=rear.map((q,i)=>mixPresentation(q,front[i],audience).map((v,k)=>p.head[k]+v*headSize).join(','));
+  return `M${c[0]} C${c[1]} ${c[2]} ${c[3]} C${c[4]} ${c[5]} ${c[6]} L${c[7]} L${c[8]} C${c[9]} ${c[10]} ${c[11]}Z`;
+}
+
+
+// SOURCE: src/speech.js
+/** Browser-only side effects, deliberately separate from deterministic pose sampling.
+ * Pass a host with speechSynthesis/SpeechSynthesisUtterance for testing or embedding.
+ */
+class PresentationSpeech {
+  constructor(host=globalThis,onStatus=()=>{}) {
+    this.host=host;this.synth=host.speechSynthesis;this.Utterance=host.SpeechSynthesisUtterance;this.onStatus=onStatus;
+    this.supported=!!(this.synth&&this.Utterance);this.muted=false;this.key=null;this.active=null;this.finished=false;this.paused=false;this.timer=null;
+    this.voicesChanged=()=>this.report(this.muted?'Muted.':this.voices().length?'Speech ready.':'No speech voices available; explanations remain visible.');
+    this.synth?.addEventListener?.('voiceschanged',this.voicesChanged);
+    this.report(this.supported?'Speech ready.':'Speech synthesis unavailable; explanations remain visible.');
+  }
+  voices(){try{return this.synth?.getVoices?.()??[];}catch{return [];}}
+  report(text){if(text===this.status)return;this.status=text;this.onStatus(text);}
+  clearTimer(){if(this.timer!==null){this.host.clearTimeout(this.timer);this.timer=null;}}
+  cancel() {
+    this.clearTimer();const had=!!this.active;this.active=null;this.paused=false;this.key=null;this.finished=false;
+    if(had)this.report('Speech stopped.');
+    if(had)try{this.synth.cancel();}catch{/* A failed audio backend must not stop animation. */}
+  }
+  setMuted(value){if(this.muted===!!value)return;this.cancel();this.muted=!!value;this.report(this.muted?'Muted.':this.supported?'Speech ready.':'Speech synthesis unavailable; explanations remain visible.');}
+  get busy(){return !!this.active;}
+  watchdog(){
+    this.clearTimer();if(!this.active||this.paused)return;
+    const key=this.key,utterance=this.active;
+    this.timer=this.host.setTimeout(()=>{
+      if(this.key!==key||this.active!==utterance)return;
+      this.cancel();this.key=key;this.finished=true;this.report('Speech did not complete; continuing with visible explanations.');
+    },Math.min(60000,Math.max(10000,this.active.text.split(/\s+/u).length*1600+5000)));
+  }
+  /** A new key starts once. A seek/reset must call cancel() before sampling again. */
+  sync(action,playing,rate=1) {
+    const key=action?.id??null;
+    if(key!==this.key){this.cancel();this.key=key;}
+    if(!action||this.muted||!this.supported)return;
+    if(this.active){
+      try{
+        if(!playing&&!this.paused){this.synth.pause();this.paused=true;this.clearTimer();this.report('Speech paused.');}
+        else if(playing&&this.paused){this.synth.resume();this.paused=false;this.watchdog();this.report('Speaking.');}
+      }catch{this.cancel();this.key=key;this.finished=true;this.report('Speech unavailable; explanations remain visible.');}
+      return;
+    }
+    if(!playing||this.finished)return;
+    const voices=this.voices();
+    if(!voices.length){this.report('No speech voices available; explanations remain visible.');return;}
+    try{
+      const u=new this.Utterance(action.text);u.rate=Math.max(.5,Math.min(2,rate));
+      u.voice=voices.find(v=>v.lang?.startsWith('en')&&v.localService)??voices.find(v=>v.lang?.startsWith('en'))??voices[0];
+      u.onend=()=>{if(this.active!==u)return;this.clearTimer();this.active=null;this.finished=true;this.report('Speech complete.');};
+      u.onerror=()=>{if(this.active!==u)return;this.clearTimer();this.active=null;this.finished=true;this.report('Speech unavailable; explanations remain visible.');};
+      this.active=u;this.paused=false;this.report('Speaking.');this.synth.cancel();if(this.synth.paused)this.synth.resume();this.synth.speak(u);this.watchdog();
+    }catch{this.cancel();this.key=key;this.finished=true;this.report('Speech unavailable; explanations remain visible.');}
+  }
+  destroy(){this.cancel();this.synth?.removeEventListener?.('voiceschanged',this.voicesChanged);}
+}
+
+
 // SOURCE: src/figure.js
 const SVG_NS='http://www.w3.org/2000/svg';
 function node(tag,attrs,parent){const el=document.createElementNS(SVG_NS,tag);for(const [k,v]of Object.entries(attrs))el.setAttribute(k,v);parent.append(el);return el;}
@@ -1057,6 +1256,7 @@ function drawBody(group,config={}) {
   limb('shoulders',[p.leftShoulder,p.torsoTop,p.rightShoulder],[6,10,6]);
   const H=(x,y)=>`${hx+x*h},${hy+y*h}`;
   node('path',{'data-part':'head',d:`M${H(-9,28)} C${H(-32,20)} ${H(-33,-18)} ${H(-10,-28)} C${H(8,-37)} ${H(25,-20)} ${H(25,-7)} L${H(37,1)} L${H(26,5)} C${H(25,20)} ${H(12,28)} ${H(-9,28)}Z`,fill:'#b9c4b7',stroke:'#d5ddcf','stroke-width':2},group);
+  node('path',{'data-part':'front-face',d:'',fill:'#304e38',opacity:0},group);
   const skeleton=node('g',{'data-part':'body-skeleton',visibility:'hidden'},group);
   for(const points of [[p.leftShoulder,p.leftElbow,p.leftHand],[p.leftFoot,p.leftKnee,p.leftHip,p.rightHip,p.rightKnee,p.rightFoot],[p.hips,p.torsoTop,p.neck],[p.leftShoulder,p.torsoTop,p.rightShoulder]])node('path',{d:'M'+points.join('L'),fill:'none',stroke:'#20362a','stroke-width':1.2},skeleton);
   return p;
@@ -1069,6 +1269,8 @@ class ProfessorFigure {
     this.bodyGroup=node('g',{'data-layer':'body'},group);
     this.armGroup=node('g',{'data-layer':'drawing-arm'},group);
     this.armSkin=node('path',{'data-part':'right-arm',fill:'#d6ba76'},this.armGroup);
+    this.hands=node('path',{'data-part':'presentation-hands',fill:'none',stroke:'#d6ba76','stroke-width':3,'stroke-linecap':'round',visibility:'hidden'},this.armGroup);
+    this.countLabel=node('text',{'data-part':'gesture-count',fill:'#d6ba76','font-size':11,'font-family':'monospace',visibility:'hidden'},this.armGroup);
     this.pen=node('line',{stroke:'#fff2bf','stroke-width':3,'stroke-linecap':'round'},this.armGroup);
     this.armSkeleton=node('path',{fill:'none',stroke:'#304e38','stroke-width':1.2},this.armGroup);
     this.debugGroup=node('g',{'data-layer':'anchors','pointer-events':'none'},group);
@@ -1086,30 +1288,55 @@ class ProfessorFigure {
     this.fallback=new SVGArmRenderer(node('g',{},this.chalkGroup),compileTimeline(fallbackJSON),attachedArm(plan.body,plan.rig));
   }
   setConfiguration(body=this.body,rig=this.rig) {
-    const nextBody=configureBody(body),nextRig=structuredClone(rig),plan=teachingPlan(planWriting(this.timeline,nextBody,nextRig),this.raw.mathSteps);
+    const nextBody=configureBody(body),nextRig=structuredClone(rig),plan=presentationPlan(teachingPlan(planWriting(this.timeline,nextBody,nextRig),this.raw.mathSteps),this.raw.presentationActions);
     this.body=nextBody;this.rig=nextRig;drawBody(this.bodyGroup,this.body);this.installPlan(plan);this.render(Math.min(this.time,this.duration));
   }
   setTimeline(json) {
-    const timeline=compileTimeline(json),plan=teachingPlan(planWriting(timeline,this.body,this.rig),json.mathSteps);
+    const timeline=compileTimeline(json),plan=presentationPlan(teachingPlan(planWriting(timeline,this.body,this.rig),json.mathSteps),json.presentationActions);
     this.raw=structuredClone(json);this.timeline=timeline;drawBody(this.bodyGroup,this.body);this.installPlan(plan);this.render(0);
   }
   setDebug(visible){this.debug=!!visible;this.render(this.time);}
   render(time) {
-    const state=sampleTeaching(this.plan,time);this.time=time;this.currentBody=translatedBody(this.body,state.offset);this.currentBody.origin[1]+=state.bodyLift??0;this.arm=attachedArm(this.currentBody,this.rig);
+    const state=samplePresentation(this.plan,time);this.time=time;this.currentBody=translatedBody(this.body,state.offset);this.currentBody.origin[1]+=state.bodyLift??0;this.arm=attachedArm(this.currentBody,this.rig);
     this.bodyGroup.setAttribute('transform',`translate(${this.currentBody.origin}) scale(${this.body.scale})`);
     this.localPose=walkingLandmarks(this.body,state);
+    let presentation=null;
+    if(state.audience>0){presentation=presentationRig(this.currentBody,state,this.localPose,this.rig);this.localPose=presentation.landmarks;state.pose=presentation.arms.right;}
     const part=name=>[...this.bodyGroup.children].find(n=>n.getAttribute('data-part')===name),p=this.localPose;
+    this.bodyGroup.setAttribute('data-orientation',state.orientation);
+    this.bodyGroup.setAttribute('data-view',state.orientation==='board'?'rear-three-quarter-facing-right':state.orientation==='audience'?'front-facing':'turning');
+    part('head').setAttribute('d',presentationHead(p,this.body.headSize,state.audience));
+    part('torso').setAttribute('d',limbOutline([p.neck,p.torsoTop,p.hips],[5,13,9]));
+    part('shoulders').setAttribute('d',limbOutline([p.leftShoulder,p.torsoTop,p.rightShoulder],[6,10,6]));
+    part('left-arm').setAttribute('d',limbOutline([p.leftShoulder,p.leftElbow,p.leftHand],[7,5.5,3.5]));
+    const [hx,hy]=p.head,hs=this.body.headSize;
+    part('front-face').setAttribute('d',`M${hx-10*hs},${hy-3*hs}a${2*hs},${2*hs} 0 1,0 ${4*hs},0a${2*hs},${2*hs} 0 1,0 ${-4*hs},0 M${hx+6*hs},${hy-3*hs}a${2*hs},${2*hs} 0 1,0 ${4*hs},0a${2*hs},${2*hs} 0 1,0 ${-4*hs},0`);
+    part('front-face').setAttribute('opacity',Math.max(0,(state.audience-.5)*2));
     for(const side of ['left','right']) {
       part(side+'-leg').setAttribute('d',limbOutline([p[side+'Hip'],p[side+'Knee'],p[side+'Ankle']],[9,6.5,4.5]));
       part(side+'-foot').setAttribute('d',limbOutline([p[side+'Foot'],p[side+'Toe']],[5,3]));
     }
 
     const skeleton=[...this.bodyGroup.children].find(n=>n.getAttribute('data-part')==='body-skeleton');
+    skeleton.children[0].setAttribute('d','M'+[p.leftShoulder,p.leftElbow,p.leftHand].join('L'));
+    skeleton.children[2].setAttribute('d','M'+[p.hips,p.torsoTop,p.neck].join('L'));
+    skeleton.children[3].setAttribute('d','M'+[p.leftShoulder,p.torsoTop,p.rightShoulder].join('L'));
     skeleton.children[1].setAttribute('d','M'+[p.leftFoot,p.leftKnee,p.leftHip,p.rightHip,p.rightKnee,p.rightFoot].join('L'));
     skeleton.setAttribute('visibility',this.debug?'visible':'hidden');
     for(const {phase,renderer}of this.writers){renderer.render(Math.max(0,Math.min(phase.duration,time-phase.at)));for(const el of [renderer.links,renderer.pen,renderer.target,...renderer.joints])el.setAttribute('visibility','hidden');}
     this.fallback.render(time);
     const pose=state.pose;
+    this.hands.setAttribute('visibility',state.audience>.95?'visible':'hidden');
+    this.hands.setAttribute('d','');
+    if(presentation){
+      const hands=Object.entries(presentation.arms).map(([side,arm])=>{
+        const [x,y]=arm.wrist,s=this.body.scale,sign=side==='right'?1:-1;
+        return `M${x},${y}q${sign*8*s},${-7*s} ${sign*11*s},0q${sign*-3*s},${8*s} ${sign*-9*s},${3*s}`;
+      });this.hands.setAttribute('d',hands.join(' '));
+    }
+    const counting=state.presentation?.stage==='talk'&&state.presentation.action.gesture==='count'&&state.presentation.elapsed>500&&state.presentation.elapsed<state.presentation.action.duration-500;
+    this.countLabel.setAttribute('visibility',counting?'visible':'hidden');this.countLabel.textContent=counting?String(state.presentation.action.count):'';
+    this.countLabel.setAttribute('x',pose.wrist[0]+10*this.body.scale);this.countLabel.setAttribute('y',pose.wrist[1]-12*this.body.scale);
     this.armSkin.setAttribute('d',limbOutline([pose.shoulder,pose.elbow,pose.wrist],[8*this.body.scale,6*this.body.scale,3.5*this.body.scale]));
     for(const [k,v]of Object.entries({x1:pose.wrist[0],y1:pose.wrist[1],x2:pose.tip[0],y2:pose.tip[1]}))this.pen.setAttribute(k,v);
     this.pen.setAttribute('opacity',state.chalkDown?'1':'.4');
@@ -1153,10 +1380,13 @@ const q = selector => document.querySelector(selector);
 let raw, figure, time = 0, playing = false, previous = null;
 let body = configureBody();
 const rig = { elbow: 'negative' };
+const speech=new PresentationSpeech(globalThis,text=>q('#speech-status').textContent=text);
 const examples = [generateProblem({seed:'B1.6-add',operator:'+',missingSlot:'a'}),generateProblem({seed:'B1.6-subtract',operator:'-',missingSlot:'e'}),generateProblem({seed:'B1.6-multiply',operator:'*',missingSlot:'f'})];
 for(const [i,p] of examples.entries())q(`#math-example option[value="generated-${i}"]`).textContent=p.text;
 function refresh() {
   const state = figure.render(time);
+  q('#view-label').textContent=state.orientation==='audience'?'AUDIENCE VIEW':state.orientation==='transitioning'?'TURNING':'REAR THREE-QUARTER VIEW';
+  q('#facing-label').textContent=state.orientation==='audience'?'FACING VIEWER':state.orientation==='transitioning'?'FEET PLANTED':'FACING SCREEN-RIGHT →';
   q('#seek').max = figure.duration || 1; q('#seek').value = time;
   q('#clock').textContent = `${(time / 1000).toFixed(1)} / ${(figure.duration / 1000).toFixed(1)} s`;
   q('#play').textContent = playing ? 'Pause' : 'Play';
@@ -1165,7 +1395,10 @@ function refresh() {
   q('#body-origin').textContent = figure.currentBody.origin.map(n => n.toFixed(1)).join(', ');
   q('#shoulder-value').textContent = figure.arm.shoulder.map(n => Number(n.toFixed(2))).join(', ');
   const step=state.teaching;
-  q('#operation').textContent=step?`Step ${step.index+1}/${figure.plan.teachingSteps.length}: ${step.operation.explanation}`:'';
+  const presentation=state.presentation;
+  const explanation=presentation?`Step ${presentation.explanationIndex+1}/${figure.plan.teachingSteps.length}: ${presentation.action.text}`:step?`Step ${step.index+1}/${figure.plan.teachingSteps.length}: ${step.operation.explanation}`:'';
+  if(q('#operation').textContent!==explanation)q('#operation').textContent=explanation;
+  speech.sync(presentation?.stage==='talk'?{id:presentation.id,text:presentation.action.text}:null,playing,Number(q('#speed').value));
   q('#continue').disabled=!(step?.waiting&&q('#teaching-mode').value==='step');
 
 }
@@ -1174,7 +1407,7 @@ function load(json) {
   const nextRaw=structuredClone(json);
   if (figure) figure.setTimeline(json);
   else figure = new ProfessorFigure(q('#professor'), json, { body, rig });
-  raw = nextRaw; time = 0; playing = false; previous = null; refresh();
+  speech.cancel();raw = nextRaw; time = 0; playing = false; previous = null; refresh();
 }
 function statusMessage() {
   return figure.plan.blocked.length ? `${figure.plan.blocked.length} portion(s) blocked: no reachable forward-writing stance at this height / joint limits. No chalk is drawn there.` : (raw.fallbacks?.length ? 'Unsupported characters use font fallback, not traced strokes.' : 'Ready. Writing coordinates fixed; moves and reaches add playback time.');
@@ -1189,11 +1422,11 @@ function loadWriting() {
       load(solutionToTimeline(solution));
     }
     q('#message').textContent = statusMessage();
-  } catch (error) { playing=false;previous=null;q('#play').textContent='Play';q('#message').textContent=error.message; }
+  } catch (error) { speech.cancel();playing=false;previous=null;q('#play').textContent='Play';q('#message').textContent=error.message; }
 }
 q('#load').onclick = loadWriting;
 q('#math-example').onchange=()=>{const selected=q('#math-example').value;q('#load').textContent=selected==='free'?'Load writing ↗':'Solve & write ↗';if(selected==='example')q('#writing').value='x/5-4/4=2/5';else if(selected.startsWith('generated-'))q('#writing').value=examples[Number(selected.split('-')[1])].text;if(selected!=='free')loadWriting();};
-q('#play').onclick = () => { if (time >= figure.duration) time = 0; playing = !playing; previous = null; refresh(); };
+q('#play').onclick = () => { if (time >= figure.duration) {speech.cancel();time = 0;} playing = !playing; previous = null; refresh(); };
 q('#teaching-mode').onchange = () => {
   const waiting=figure.render(time).teaching?.waiting;
   if(waiting) playing=q('#teaching-mode').value==='auto';
@@ -1204,8 +1437,10 @@ q('#continue').onclick = () => {
   if(q('#teaching-mode').value!=='step'||!step?.waiting)return;
   time=step.resume;playing=true;previous=null;refresh();
 };
-q('#reset').onclick = () => { time = 0; playing = false; refresh(); };
-q('#seek').oninput = () => { const value=Number(q('#seek').value);const boundaries=[figure.duration,...figure.plan.teachingSteps.flatMap(s=>[s.start,s.complete,s.gate,s.resume])];time=boundaries.find(t=>Math.abs(value-t)<1e-6)??value;playing=false;refresh(); };
+q('#mute').onchange=()=>{speech.setMuted(q('#mute').checked);refresh();};
+q('#speed').onchange=()=>{speech.cancel();previous=null;refresh();};
+q('#reset').onclick = () => { speech.cancel();time = 0; playing = false; refresh(); };
+q('#seek').oninput = () => { speech.cancel();const value=Number(q('#seek').value);const boundaries=[figure.duration,...figure.plan.teachingSteps.flatMap(s=>[s.start,s.complete,s.gate,s.resume]),...figure.plan.presentations.flatMap(p=>[p.at,p.talkAt,p.talkEnd,p.end])];time=boundaries.find(t=>Math.abs(value-t)<1e-6)??value;playing=false;refresh(); };
 q('#anchors').onchange = () => { figure.setDebug(q('#anchors').checked); q('#board-anchor').setAttribute('visibility', q('#anchors').checked ? 'visible' : 'hidden'); };
 // UI values are body-local. The adapter alone converts the shoulder to world units.
 const bodyFields = [
@@ -1233,7 +1468,7 @@ function syncControls() {
 
 }
 function attachment() {
-  playing = false;
+  speech.cancel();playing = false;
   const next = structuredClone(body);
   for (const [key] of bodyFields) {
     const value = Number(q(`#${key}`).value);
@@ -1264,12 +1499,13 @@ function frame(now) {
   if (playing) {
     if (previous !== null) {
       const next=advanceTeaching(figure.plan,time,(now-previous)*Number(q('#speed').value),q('#teaching-mode').value);
-      time=next.time;if(next.waiting)playing=false;
+      time=presentationAdvance(figure.plan,time,next.time,speech.busy);if(next.waiting&&time===next.time)playing=false;
     }
     previous = now; if (time >= figure.duration) playing = false; refresh();
   } else previous = null;
   requestAnimationFrame(frame);
 }
+addEventListener('pagehide',()=>speech.destroy(),{once:true});
 loadWriting(); requestAnimationFrame(frame);
 
 </script></body></html>

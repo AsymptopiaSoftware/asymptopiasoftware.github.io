@@ -1,13 +1,15 @@
-# B1.8 validation — November 7, 2026
+# B1.9 validation — November 7, 2026
 
-Baseline: B1.7 `7f14342`; separate branch `feature/professor-b1.8-teaching-cadence`.
+Baseline: PR #12 / B1.8 `394e5db7d57a46643cf5245ebf83261f0699aa03`. Separate branch `feature/professor-b1.9-talk-gesture`.
 
-- **77 automated tests pass**: 44 Professor (including 6 new cadence tests), 12 unchanged exact-math, 6 unchanged math-layout, 15 original Drawing Arm.
-- New tests check structured solver boundaries, unchanged writing geometry and movement phases, incremental lowering, relaxed/still pauses, chalk lift, planted feet, exact 1500 ms rests, large-frame Step gates, Auto progression, deterministic forward/backward chalk/pose/explanation reconstruction, final rest, legacy free writing, atomic malformed imports and different body proportions including blocked placements.
-- Real Chromium/Playwright checks pass for modular source and self-contained HTML over localhost. They exercise Auto/Step, waiting, Continue, Auto resumption, seeking across completed/future lines, explanation restoration, Play/Pause/Reset, fraction-bar drawing, generated problems, walking, rig sliders, import/export and responsive widths. Advanced is collapsed by default. Timeline seeking snaps within 1e-6 ms of explicit boundaries to avoid range-input decimal serialization changing an exact gate into an instant just before it.
-- Standalone build verifies all 5 pinned B1.7 Drawing Arm source hashes. No changes to math solver/generator, layout, glyphs, IK, original timeline/renderer, gait, range planning, locomotion or body artwork.
-- `docs/browser-evidence.svg` embeds the actual Chromium screenshot at a teaching rest. `docs/solution-evidence.svg` shows the final relaxed pose. The source JSON timeline is unchanged; cadence exists only in the Professor's derived playback plan.
+- **85 automated tests pass**: 52 Professor (44 unchanged B1.8 tests, 5 new presentation tests, 3 new speech tests), 12 exact-math, 6 math-layout, 15 original Drawing Arm.
+- Presentation tests verify arbitrary story/chart actions independent of mathematics, all five gestures, independent left/right movement, constant skeletal link lengths across proportions, fixed feet, continuous board/audience turns, deterministic arbitrary seeking, unchanged chalk, original writing-shoulder/IK restoration, next-operation text and Step gates after speech.
+- Speech tests verify single utterances, pause/resume, cancellation, replay, mute/unmute, stale callbacks, missing/delayed voices, unsupported API, backend errors/watchdog and live-audio end gating. Replay after canceling paused speech clears the browser's paused synthesis queue state.
+- Real Chromium/Playwright checks pass for modular and self-contained HTML over localhost. They retain existing Auto/Step, Continue, Play/Pause/Reset, seeking, generation, fractions, walking, rig controls, imports/exports and responsive checks. Added browser checks verify front/transition/board states, independent arms, captions, speech lifecycle, preserving chalk through presentations, and writing again after turning back.
+- **Native Chromium reports zero installed speech voices.** Native silent fallback passes. Speech API lifecycle and long-utterance transport behavior are verified with a controllable backend in both previews. Audible output/voice quality is not verified in this environment. Screenshot evidence uses that controlled backend; it is a real browser screenshot, not proof of audible speech.
+- Standalone build verifies all 5 pinned Drawing Arm hashes. B1.8 `src/teaching.js` is byte-for-byte unchanged. Math generator/solver, layout, glyphs, IK/timeline/renderer, locomotion, range planning, gait and anatomical body definitions remain unchanged.
+- `docs/browser-evidence.svg` shows a paused audience-facing explanation. `docs/solution-evidence.svg` shows final board geometry/rest pose. Original source timeline JSON remains unchanged; presentations exist only in the derived playback plan, with optional generic overrides.
 
-Browser tests require a localhost socket; they ran with approved execution outside the command sandbox after its socket restriction was observed. No dependencies, environment configuration or browser policies changed. Managed Chrome blocks file URLs, so the self-contained HTML was tested over localhost; direct file-scheme navigation remains unverified there.
+Local browser testing required approved execution outside the command sandbox after its localhost socket restriction was observed. No dependencies, environment setup or browser policies changed. Managed Chrome blocks file URLs, so self-contained HTML was tested over localhost; direct file-scheme navigation remains unverified there.
 
-No B1.7 branch changes, production homepage edits, merge or deployment.
+No B1.8 branch changes, homepage edits, merge or deployment.

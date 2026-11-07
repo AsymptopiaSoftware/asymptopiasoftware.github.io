@@ -29,3 +29,5 @@ Only the audited glyph stroke definitions and layout/timing adapter change. B1.5
 ## B1.8 playback consumer
 
 The Professor now consumes `mathSteps` with `teachingPlan()` after spatial planning. It replaces source inter-line gaps with lowering/rest/return phases and exposes deterministic Auto/Step playback; the reusable solver, layout, glyph paths and raw timeline above are unchanged. See [teaching cadence](teaching-cadence.md).
+
+B1.9 adds a consumer-only presentation adapter after B1.8 sequencing, using the next operation explanation as generic action text. The mathematical modules and this raw timeline format are unchanged. See [talk-and-gesture actions](presentation-actions.md).

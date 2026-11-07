@@ -25,3 +25,7 @@ Only two controls are added in the existing sidebar: Auto/Step and Continue. Con
 ## Validation
 
 Six cadence tests cover structured boundaries, preservation of every writing/movement phase, lowered arm and still/planted pauses, oversized frame gates, Auto, backward/forward reconstruction and atomic invalid imports. Existing 71 tests remain, for 77 total. Browser tests exercise Auto/Step, Continue, Pause/Reset, seeking and explanations in modular and self-contained previews, alongside existing walking, fraction-bar, generation, import/export and responsive checks.
+
+## B1.9 presentation layer
+
+B1.9 leaves `src/teaching.js` unchanged and wraps its plan with generic presentation actions. The viewer-facing speech/gesture slot precedes the existing 1.5 s pause/Continue gate; a turn back follows Continue. See [presentation actions](presentation-actions.md) for the added timing, next-operation explanation and speech lifecycle.
