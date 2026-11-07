@@ -1,15 +1,13 @@
-# B1.7 validation — November 6, 2026
+# B1.8 validation — November 7, 2026
 
-Passed:
+Baseline: B1.7 `7f14342`; separate branch `feature/professor-b1.8-teaching-cadence`.
 
-- **6 independent math-layout tests**: numerator/denominator centering and clearance, numbers/x/negative/simple/nested expressions, math-axis operator alignment, precedence parentheses, equal-sign alignment, measured multiline fit, supplied vector fonts, normal left-to-right bar paths and explicit invalid-input errors.
-- **38 Professor tests**, including 3 new handwriting/notation tests. The requested 4 path is checked exactly (down-left/rightward crossbar, lift, downward vertical). Audited 3/5/9/division directions and reusable stroke separation are verified. The four-step example has eight timed fraction-bar strokes, no slash glyphs, unchanged solver data, and zero unreachable portions. The actual original arm renderer is checked before/mid/after a bar: empty, partial and complete.
-- **12 unchanged math-generator/solver tests** and **15 original Drawing Arm tests**. Total: **71 tests**. Generator/solver source, body rig, artwork, gait, line-range planner, IK, timeline algorithms and SVG renderer source are unchanged. Only approved glyph definitions change inside Drawing Arm.
-- Standalone source-hash verification and JavaScript syntax checks pass. Updated solution timeline/vector evidence and actual browser screenshot are included.
-- Real Chromium/Playwright checks pass for modular source and self-contained HTML over localhost. The browser verifies eight fraction-bar paths, no slash glyphs, incremental arm-drawn bar progress, the original four-step algebra, all seeded demo problems, walking/controls, imports/exports, responsive layouts and DONE/chalk-lift status. The Advanced panel remains collapsed initially. A sub-pixel range-input serialization difference at the exact start of a bar is handled by checking just before its start rather than treating an invisible ~1e-13-unit segment as visible ink.
+- **77 automated tests pass**: 44 Professor (including 6 new cadence tests), 12 unchanged exact-math, 6 unchanged math-layout, 15 original Drawing Arm.
+- New tests check structured solver boundaries, unchanged writing geometry and movement phases, incremental lowering, relaxed/still pauses, chalk lift, planted feet, exact 1500 ms rests, large-frame Step gates, Auto progression, deterministic forward/backward chalk/pose/explanation reconstruction, final rest, legacy free writing, atomic malformed imports and different body proportions including blocked placements.
+- Real Chromium/Playwright checks pass for modular source and self-contained HTML over localhost. They exercise Auto/Step, waiting, Continue, Auto resumption, seeking across completed/future lines, explanation restoration, Play/Pause/Reset, fraction-bar drawing, generated problems, walking, rig sliders, import/export and responsive widths. Advanced is collapsed by default. Timeline seeking snaps within 1e-6 ms of explicit boundaries to avoid range-input decimal serialization changing an exact gate into an instant just before it.
+- Standalone build verifies all 5 pinned B1.7 Drawing Arm source hashes. No changes to math solver/generator, layout, glyphs, IK, original timeline/renderer, gait, range planning, locomotion or body artwork.
+- `docs/browser-evidence.svg` embeds the actual Chromium screenshot at a teaching rest. `docs/solution-evidence.svg` shows the final relaxed pose. The source JSON timeline is unchanged; cadence exists only in the Professor's derived playback plan.
 
-Browser execution uses the previously approved outside-command-sandbox run because Chromium needs socket permissions. No packages or environment settings were changed. Managed Chrome still blocks `file://`; the self-contained HTML was tested over localhost without disabling that policy. The file has all code/styles inline, but direct file-scheme navigation is not verified in that managed browser.
+Browser tests require a localhost socket; they ran with approved execution outside the command sandbox after its socket restriction was observed. No dependencies, environment configuration or browser policies changed. Managed Chrome blocks file URLs, so the self-contained HTML was tested over localhost; direct file-scheme navigation remains unverified there.
 
-`docs/browser-evidence.svg` embeds an actual completed Chromium screenshot. `docs/solution-evidence.svg` is deterministic output from the adapter and original renderer. Canonical source equations in logs/JSON still use B1.6 text notation; board layout uses their ASTs. Free-writing mode intentionally retains literal vector text and its slash glyph.
-
-No new character artwork, controls or UI redesign. No production homepage, hosting/workflow, merge or deployment changes.
+No B1.7 branch changes, production homepage edits, merge or deployment.
