@@ -13,7 +13,6 @@ export function drawBody(group,config={}) {
   const body=configureBody(config),p=bodyLandmarks(body),[hx,hy]=p.head,h=body.headSize;
   group.replaceChildren();group.setAttribute('transform',`translate(${body.origin}) scale(${body.scale})`);group.setAttribute('data-view','rear-three-quarter-facing-right');
   const limb=(name,joints,radii,fill='#b9c4b7')=>node('path',{'data-part':name,d:limbOutline(joints,radii),fill},group);
-  limb('left-arm',[p.leftShoulder,p.leftElbow,p.leftHand],[7,5.5,3.5],'#7e9585');
   limb('left-leg',[p.leftHip,p.leftKnee,p.leftAnkle],[9,6.5,4.5]);
   limb('right-leg',[p.rightHip,p.rightKnee,p.rightAnkle],[9,6.5,4.5]);
   limb('hips',[p.leftHip,p.hips,p.rightHip],[8,9,8]);
@@ -32,10 +31,15 @@ export class ProfessorFigure {
     this.group=group;this.debug=false;this.time=0;
     // Chalk stays in world space behind the translating body and joint-driven arm.
     this.chalkGroup=node('g',{'data-layer':'chalk'},group);
+    this.farArms=node('g',{'data-layer':'far-arms'},group);
     this.bodyGroup=node('g',{'data-layer':'body'},group);
-    this.armGroup=node('g',{'data-layer':'drawing-arm'},group);
-    this.armSkin=node('path',{'data-part':'right-arm',fill:'#d6ba76'},this.armGroup);
-    this.hands=node('path',{'data-part':'presentation-hands',fill:'none',stroke:'#d6ba76','stroke-width':3,'stroke-linecap':'round',visibility:'hidden'},this.armGroup);
+    this.nearArms=node('g',{'data-layer':'near-arms'},group);
+    this.leftArmGroup=node('g',{'data-layer':'left-arm','data-anatomical-side':'left'},this.farArms);
+    this.leftArmSkin=node('path',{'data-part':'left-arm','data-anatomical-side':'left',fill:'#7e9585'},this.leftArmGroup);
+    this.leftHand=node('path',{'data-part':'left-hand','data-anatomical-side':'left',fill:'none',stroke:'#b9c4b7','stroke-width':3,'stroke-linecap':'round',visibility:'hidden'},this.leftArmGroup);
+    this.armGroup=node('g',{'data-layer':'drawing-arm','data-anatomical-side':'right'},this.nearArms);
+    this.armSkin=node('path',{'data-part':'right-arm','data-anatomical-side':'right',fill:'#d6ba76'},this.armGroup);
+    this.hands=node('path',{'data-part':'right-hand','data-anatomical-side':'right',fill:'none',stroke:'#d6ba76','stroke-width':3,'stroke-linecap':'round',visibility:'hidden'},this.armGroup);
     this.countLabel=node('text',{'data-part':'gesture-count',fill:'#d6ba76','font-size':11,'font-family':'monospace',visibility:'hidden'},this.armGroup);
     this.pen=node('line',{stroke:'#fff2bf','stroke-width':3,'stroke-linecap':'round'},this.armGroup);
     this.armSkeleton=node('path',{fill:'none',stroke:'#304e38','stroke-width':1.2},this.armGroup);
@@ -66,15 +70,28 @@ export class ProfessorFigure {
     const state=samplePresentation(this.plan,time);this.time=time;this.currentBody=translatedBody(this.body,state.offset);this.currentBody.origin[1]+=state.bodyLift??0;this.arm=attachedArm(this.currentBody,this.rig);
     this.bodyGroup.setAttribute('transform',`translate(${this.currentBody.origin}) scale(${this.body.scale})`);
     this.localPose=walkingLandmarks(this.body,state);
-    let presentation=null;
-    if(state.audience>0){presentation=presentationRig(this.currentBody,state,this.localPose,this.rig);this.localPose=presentation.landmarks;state.pose=presentation.arms.right;}
+    const presentation=presentationRig(this.currentBody,state,this.localPose,this.rig);
+    this.facing=presentation.facing;this.anatomicalPose=presentation.anatomical;
+    this.localPose=presentation.landmarks;
+    if(state.audience>0){state.pose=presentation.arms.right;this.arm={...this.arm,shoulder:[...state.pose.shoulder]};}
     const part=name=>[...this.bodyGroup.children].find(n=>n.getAttribute('data-part')===name),p=this.localPose;
+    // Move the SAME anatomical groups between depth layers; never exchange identities.
+    const groups={left:this.leftArmGroup,right:this.armGroup},order=presentation.depthOrder;
+    this.farArms.replaceChildren(...order.order.filter(side=>side!=='torso'&&order.arms[side].layer==='far').map(side=>groups[side]));
+    this.nearArms.replaceChildren(...order.order.filter(side=>side!=='torso'&&order.arms[side].layer==='near').map(side=>groups[side]));
+    for(const side of ['left','right']){
+      groups[side].setAttribute('data-depth',order.arms[side].depth);
+      groups[side].setAttribute('data-depth-layer',order.arms[side].layer);
+      groups[side].setAttribute('data-shoulder-x',presentation.arms[side].shoulder[0]);
+      groups[side].setAttribute('data-wrist-x',presentation.arms[side].wrist[0]);
+    }
+    this.bodyGroup.setAttribute('data-yaw',this.facing.yaw);
     this.bodyGroup.setAttribute('data-orientation',state.orientation);
     this.bodyGroup.setAttribute('data-view',state.orientation==='board'?'rear-three-quarter-facing-right':state.orientation==='audience'?'front-facing':'turning');
     part('head').setAttribute('d',presentationHead(p,this.body.headSize,state.audience));
     part('torso').setAttribute('d',limbOutline([p.neck,p.torsoTop,p.hips],[5,13,9]));
     part('shoulders').setAttribute('d',limbOutline([p.leftShoulder,p.torsoTop,p.rightShoulder],[6,10,6]));
-    part('left-arm').setAttribute('d',limbOutline([p.leftShoulder,p.leftElbow,p.leftHand],[7,5.5,3.5]));
+    this.leftArmSkin.setAttribute('d',limbOutline([presentation.arms.left.shoulder,presentation.arms.left.elbow,presentation.arms.left.wrist],[7,5.5,3.5].map(r=>r*this.body.scale)));
     const [hx,hy]=p.head,hs=this.body.headSize;
     part('front-face').setAttribute('d',`M${hx-10*hs},${hy-3*hs}a${2*hs},${2*hs} 0 1,0 ${4*hs},0a${2*hs},${2*hs} 0 1,0 ${-4*hs},0 M${hx+6*hs},${hy-3*hs}a${2*hs},${2*hs} 0 1,0 ${4*hs},0a${2*hs},${2*hs} 0 1,0 ${-4*hs},0`);
     part('front-face').setAttribute('opacity',Math.max(0,(state.audience-.5)*2));
@@ -92,17 +109,17 @@ export class ProfessorFigure {
     for(const {phase,renderer}of this.writers){renderer.render(Math.max(0,Math.min(phase.duration,time-phase.at)));for(const el of [renderer.links,renderer.pen,renderer.target,...renderer.joints])el.setAttribute('visibility','hidden');}
     this.fallback.render(time);
     const pose=state.pose;
-    this.hands.setAttribute('visibility',state.audience>.95?'visible':'hidden');
-    this.hands.setAttribute('d','');
-    if(presentation){
-      const hands=Object.entries(presentation.arms).map(([side,arm])=>{
-        const [x,y]=arm.wrist,s=this.body.scale,sign=side==='right'?1:-1;
-        return `M${x},${y}q${sign*8*s},${-7*s} ${sign*11*s},0q${sign*-3*s},${8*s} ${sign*-9*s},${3*s}`;
-      });this.hands.setAttribute('d',hands.join(' '));
+    for(const [side,hand]of [['left',this.leftHand],['right',this.hands]]){
+      hand.setAttribute('visibility',state.audience>.95?'visible':'hidden');
+      hand.setAttribute('d','');
+      if(state.audience>0){
+        const [x,y]=presentation.arms[side].wrist,s=this.body.scale,sign=(side==='right'?1:-1)*this.facing.cos;
+        hand.setAttribute('d',`M${x},${y}q${sign*8*s},${-7*s} ${sign*11*s},0q${sign*-3*s},${8*s} ${sign*-9*s},${3*s}`);
+      }
     }
     const counting=state.presentation?.stage==='talk'&&state.presentation.action.gesture==='count'&&state.presentation.elapsed>500&&state.presentation.elapsed<state.presentation.action.duration-500;
     this.countLabel.setAttribute('visibility',counting?'visible':'hidden');this.countLabel.textContent=counting?String(state.presentation.action.count):'';
-    this.countLabel.setAttribute('x',pose.wrist[0]+10*this.body.scale);this.countLabel.setAttribute('y',pose.wrist[1]-12*this.body.scale);
+    this.countLabel.setAttribute('x',pose.wrist[0]+10*this.body.scale*Math.sign(this.facing.cos||1));this.countLabel.setAttribute('text-anchor',this.facing.cos<0?'end':'start');this.countLabel.setAttribute('y',pose.wrist[1]-12*this.body.scale);
     this.armSkin.setAttribute('d',limbOutline([pose.shoulder,pose.elbow,pose.wrist],[8*this.body.scale,6*this.body.scale,3.5*this.body.scale]));
     for(const [k,v]of Object.entries({x1:pose.wrist[0],y1:pose.wrist[1],x2:pose.tip[0],y2:pose.tip[1]}))this.pen.setAttribute(k,v);
     this.pen.setAttribute('opacity',state.chalkDown?'1':'.4');
@@ -114,6 +131,7 @@ export class ProfessorFigure {
     }
     return state;
   }
+  getAnatomicalJoints(){return structuredClone(this.anatomicalPose.joints);}
   getAnchors(){return Object.fromEntries(Object.entries(this.localPose??bodyLandmarks(this.currentBody??this.body)).map(([k,p])=>[k,bodyToWorld(p,this.currentBody??this.body)]));}
   destroy(){this.group.replaceChildren();}
 }

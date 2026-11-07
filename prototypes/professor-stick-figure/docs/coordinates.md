@@ -107,3 +107,7 @@ The independent math module has no body, SVG, board or time concepts. `src/math-
 ## B1.7 stacked notation
 
 The same fixed board transform now receives geometry from the independent math-layout module. Expression boxes, centered numerator/denominator pairs and ordinary fraction-bar paths replace slash-string typesetting in verified-math mode. No body, gait, range-planning or IK source changes. Canonical B1.6 text/ASTs remain untouched. See [math interface](math-interface.md) and [handwriting audit](handwriting.md).
+
+## B1.9.3 anatomical versus projected coordinates
+
+`orientation.js` introduces body-local `[anatomicalRight,down,forward]` joints separately from 2D board/body/world coordinates. Camera projection changes screen ordering and depth, while anatomical joint IDs remain fixed. `getAnchors()` remains projected world-space; `getAnatomicalJoints()` exposes detached 3D coordinates. Feet retain their existing grounded constraints and the original right-arm IK is authoritative whenever facing the board. See [orientation contract](orientation.md) for calibration, lengths and painter ordering.

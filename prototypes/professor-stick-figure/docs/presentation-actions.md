@@ -22,10 +22,10 @@ Vocabulary:
 | `explain` | Both hands open conversationally, with different left/right targets. |
 | `emphasize` | Right hand rises; left hand gives a smaller supporting movement. |
 | `count` | Right hand rises beside a small count marker; left supports the explanation. `count` supplies the number. |
-| `present` | Right hand opens toward the screen-right chalkboard; left stays closer to the body. |
+| `present` | Anatomical left hand opens toward the screen-right chalkboard in audience view; right supports. |
 | `idle` | Both arms remain relaxed. |
 
-Gestures ease in and out over 500 ms and use one subtle conversational sweep, rather than an endless waving loop. Every action returns to idle before its pause. Each arm has independent joints; existing anatomical segment lengths are preserved even through the turn. The right arm uses the original IK and configured limits. No new joint constraints are introduced.
+Gestures ease in and out over 500 ms and use one subtle conversational sweep, rather than an endless waving loop. Every action returns to idle before its pause. B1.9.3 gives each arm permanent anatomical joints and preserves true 3D segment lengths through the turn; projected lengths foreshorten. The right arm uses the original IK and configured limits. No new joint constraints are introduced.
 
 ## Use without mathematics
 
@@ -46,7 +46,7 @@ const sample = samplePresentationAction(clip, elapsedMs);
 
 `compilePresentationAction` returns `{id,action,at,talkAt,talkEnd,gate,resume,end}`. It requires no teaching plan. `samplePresentationAction` is pure and reconstructs any time directly. Another application can consume these values with its own renderer. `examples/presentation-actions.json` contains story/chart examples of all five gestures.
 
-For the current skeleton, `presentationRig(body, state, baseLandmarks, rig)` in `src/presentation-rig.js` takes the sampled orientation/presentation plus the board arm's `state.pose`, and returns oriented local landmarks and world-space left/right skeletal poses. `presentationHead` provides the continuous head outline. This renderer adapter reuses the original IK; the generic action module does not import it. Front shoulders and head are centered; two static face dots and a frontal head outline identify the audience view. Feet and hips keep their existing floor anchors.
+For the current skeleton, `presentationRig(body, state, baseLandmarks, rig)` in `src/presentation-rig.js` takes the sampled orientation/presentation plus the board arm's `state.pose`, and returns anatomical 3D joints, facing/depth data, projected local landmarks and world-space left/right skeletal poses. `presentationHead` provides the continuous head outline. This renderer adapter reuses the original IK; the generic action module does not import it. Front shoulders and head are centered; two static face dots and a frontal head outline identify the audience view. Feet and hips keep their existing floor anchors.
 
 ## Thin B1.8 lesson integration
 
@@ -77,3 +77,7 @@ The speech controller prefers an English local voice, then another English/defau
 Run `npm test` and `npm run build:standalone` in this prototype. Existing B1.8 tests remain unchanged. New tests cover all gesture types/proportions, constant limb lengths, planted feet, turn continuity, arbitrary seeking, preserved chalk, return to the original shoulder/IK, general story actions, audio gates and speech lifecycle failures.
 
 The browser suite exercises both modular and self-contained previews with the native speech API, plus a controllable synthesis backend for speaking/pause/resume/mute/cancel/replay and long-utterance gating. The managed Chromium environment has **zero installed speech voices**: native silent fallback is verified, but audible voice quality cannot be verified there. Screenshot evidence uses the controlled backend. An ordinary browser with an installed voice can speak after Play. Advanced remains collapsed; Mute is the only added control.
+
+## B1.9.3 anatomical projection
+
+Anatomical right is now viewer-left in front view, while remaining the same rig/group/hand throughout. Gestures operate in anatomical coordinates, then project through yaw; far/near SVG layers follow depth. The right drawing shoulder is restored exactly on return. No action data, sequencing, math, speech or playback control changes are required. See [orientation model](orientation.md).

@@ -30,3 +30,5 @@ console.log(JSON.stringify({sourceDuration:sampleFigure.timeline.duration,playba
 await import('./range-evidence.js');
 
 await import('./math-evidence.js');
+
+await import('./orientation-evidence.js');

@@ -35,7 +35,7 @@ test('presentation wraps unchanged B1.8 phases, narrates the next operation and 
  const custom=base.teachingSteps.map(()=>({type:'talk-and-gesture',text:'Let us tell a story.',gesture:'count',count:3}));assert.equal(presentationPlan(base,custom).presentations[0].action.gesture,'count');
  assert.throws(()=>presentationPlan(base,custom.slice(1)));
 });
-test('all gestures articulate both arms independently with invariant lengths and planted feet across body proportions',()=>{
+test('all gestures articulate both arms independently with invariant anatomical lengths and planted feet across body proportions',()=>{
  for(const body of [{},{torsoLength:90,legHeight:100,shoulderWidth:70},{torsoLength:150,scale:1.3,rightShoulderOffset:[12,-8]}]){
   const b=configureBody(body),arm=attachedArm(b),original=bodyLandmarks(b);
   const pose=solveIK(arm,[arm.shoulder[0]+.1*(arm.upper+arm.forearm+arm.tip),arm.shoulder[1]+.92*(arm.upper+arm.forearm+arm.tip)]);
@@ -46,9 +46,10 @@ test('all gestures articulate both arms independently with invariant lengths and
    for(const r of rigs){
     assert.deepEqual(r.landmarks.leftFoot,original.leftFoot);assert.deepEqual(r.landmarks.rightFoot,original.rightFoot);
     for(const side of ['left','right']){
-     const a=r.arms[side];assert.ok(a.wrist.every(Number.isFinite));
-     assert.ok(Math.abs(distance(a.shoulder,a.elbow)-(side==='right'?arm.upper:distance(original.leftShoulder,original.leftElbow)*b.scale))<1e-6);
-     assert.ok(Math.abs(distance(a.elbow,a.wrist)-(side==='right'?arm.forearm:distance(original.leftElbow,original.leftHand)*b.scale))<1e-6);
+     const a=r.arms[side],anatomical=r.anatomical.arms[side];assert.ok(a.wrist.every(Number.isFinite));
+     const bone=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
+     assert.ok(Math.abs(bone(anatomical.shoulder,anatomical.elbow)-anatomical.lengths.upper)<1e-6);
+     assert.ok(Math.abs(bone(anatomical.elbow,anatomical.wrist)-anatomical.lengths.forearm)<1e-6);
     }
    }
    if(gesture!=='idle'){assert.notDeepEqual(rigs[2].arms.left.wrist,rigs[3].arms.left.wrist);assert.notDeepEqual(rigs[2].arms.right.wrist,rigs[3].arms.right.wrist);}

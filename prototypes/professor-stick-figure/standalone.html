@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.9.2 · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.9.3 · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
 
 #math-example{width:100%;margin-bottom:12px}#operation{font-size:11px;color:var(--muted);min-height:35px}
 
@@ -22,7 +22,7 @@
 </svg>
 <div class="transport"><button id="play" class="primary">Play</button><button id="reset">Reset</button><label class="scrubber">Timeline<input id="seek" type="range" step="any" min="0" max="1" value="0" aria-label="Timeline position"></label><output id="clock">0.0 / 0.0 s</output><label class="speed-label">Speed<select id="speed"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div>
 <div class="stage-footer"><span id="contact" role="status">Ready</span><label><input id="anchors" type="checkbox"> Show skeleton / anchors</label></div>
-</section><aside><p class="eyebrow">B1.9.2 / WRITING TOOL</p><label for="math-example">Problem</label><select id="math-example" aria-label="Math problem"><option value="example">Example: x/5-4/4=2/5</option><option value="regression">Regression: 1/4-7/x=-5/8</option><option value="generated-0">Generated addition</option><option value="generated-1">Generated subtraction</option><option value="generated-2">Generated multiplication</option><option value="free">Free writing</option></select><label for="writing">Equation / writing instructions</label><textarea id="writing" rows="2" spellcheck="false">x/5-4/4=2/5</textarea><button id="load" class="primary wide">Solve &amp; write ↗</button><p id="message" role="status"></p><p id="operation" role="status" aria-live="polite"></p><div class="teaching-controls"><label for="teaching-mode">Mode<select id="teaching-mode"><option value="auto">Auto</option><option value="step">Step</option></select></label><button id="continue" disabled>Continue</button><label class="mute-label"><input id="mute" type="checkbox"> Mute</label></div><p id="speech-status" role="status"></p><div class="file-actions"><button id="export">Export JSON ↓</button><label for="import" class="file-label">Import JSON<input id="import" type="file" accept=".json,application/json"></label></div>
+</section><aside><p class="eyebrow">B1.9.3 / WRITING TOOL</p><label for="math-example">Problem</label><select id="math-example" aria-label="Math problem"><option value="example">Example: x/5-4/4=2/5</option><option value="regression">Regression: 1/4-7/x=-5/8</option><option value="generated-0">Generated addition</option><option value="generated-1">Generated subtraction</option><option value="generated-2">Generated multiplication</option><option value="free">Free writing</option></select><label for="writing">Equation / writing instructions</label><textarea id="writing" rows="2" spellcheck="false">x/5-4/4=2/5</textarea><button id="load" class="primary wide">Solve &amp; write ↗</button><p id="message" role="status"></p><p id="operation" role="status" aria-live="polite"></p><div class="teaching-controls"><label for="teaching-mode">Mode<select id="teaching-mode"><option value="auto">Auto</option><option value="step">Step</option></select></label><button id="continue" disabled>Continue</button><label class="mute-label"><input id="mute" type="checkbox"> Mute</label></div><p id="speech-status" role="status"></p><div class="file-actions"><button id="export">Export JSON ↓</button><label for="import" class="file-label">Import JSON<input id="import" type="file" accept=".json,application/json"></label></div>
 <details id="advanced"><summary>Advanced / Body Rig</summary><div id="body-controls" class="body-controls"></div><dl><dt>Upper / forearm</dt><dd id="arm-lengths"></dd><dt>Right shoulder</dt><dd id="shoulder-value"></dd><dt>Body origin</dt><dd id="body-origin"></dd></dl><button id="restore" class="wide">Restore body rig</button></details><p class="docs"><a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/professor-b1.9-talk-gesture/prototypes/professor-stick-figure/README.md">Docs</a> · <a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/professor-b1.9-talk-gesture/prototypes/professor-stick-figure/docs/coordinates.md">Rig / motion contract</a></p></aside></div>
 </main><script type="module">
 
@@ -1218,28 +1218,72 @@ function presentationAdvance(plan,time,next,busy=false) {
 }
 
 
+// SOURCE: src/orientation.js
+/** Renderer-independent anatomical coordinates: x = the character's right,
+ * y = down, z = forward. Orthographic camera depth increases away from viewer.
+ * IDs describe anatomy, never the current screen-side ordering.
+ */
+const ANATOMICAL_SIDES=Object.freeze(['left','right']);
+function characterFacing(audience,{boardYaw=Math.PI/6,audienceYaw=Math.PI,pivot=[0,0]}={}) {
+  if(![audience,boardYaw,audienceYaw,...pivot].every(Number.isFinite)||pivot.length!==2)throw new RangeError('Invalid facing transform');
+  const progress=Math.max(0,Math.min(1,audience)),yaw=boardYaw+(audienceYaw-boardYaw)*progress;
+  return {progress,yaw,boardYaw,audienceYaw,pivot:[...pivot],cos:Math.cos(yaw),sin:Math.sin(yaw)};
+}
+function projectAnatomical(point,facing) {
+  const [x,y,z]=point;
+  return {point:[facing.pivot[0]+x*facing.cos+z*facing.sin,facing.pivot[1]+y],depth:-x*facing.sin+z*facing.cos};
+}
+/** Lift a board-space joint with known camera depth into permanent anatomy. */
+function liftProjected(point,depth,facing) {
+  const x=point[0]-facing.pivot[0];
+  return [x*facing.cos-depth*facing.sin,point[1]-facing.pivot[1],x*facing.sin+depth*facing.cos];
+}
+function projectSkeleton(joints,facing) {
+  return Object.fromEntries(Object.entries(joints).map(([id,p])=>[id,projectAnatomical(p,facing)]));
+}
+/** Length-preserving interpolation of a bone, including antipodal directions. */
+function turnBone(from,to,t) {
+  const length=Math.hypot(...from),targetLength=Math.hypot(...to);
+  if(!length||!targetLength)throw new RangeError('Anatomical bones must have positive length');
+  if(t<=0)return [...from];if(t>=1)return to.map(v=>v*length/targetLength);
+  const a=from.map(v=>v/length),b=to.map(v=>v/targetLength),dot=Math.max(-1,Math.min(1,a.reduce((n,v,i)=>n+v*b[i],0)));
+  let unit;
+  if(dot>.9995){unit=a.map((v,i)=>v+(b[i]-v)*t);const n=Math.hypot(...unit);unit=unit.map(v=>v/n);}
+  else if(dot<-.9995){
+    let perpendicular=b.map((v,i)=>v-a[i]*dot),n=Math.hypot(...perpendicular);
+    if(n<1e-10){const axis=Math.abs(a[0])<.9?[1,0,0]:[0,1,0];perpendicular=[a[1]*axis[2]-a[2]*axis[1],a[2]*axis[0]-a[0]*axis[2],a[0]*axis[1]-a[1]*axis[0]];n=Math.hypot(...perpendicular);}
+    perpendicular=perpendicular.map(v=>v/n);const angle=Math.acos(dot);
+    unit=a.map((v,i)=>v*Math.cos(angle*t)+perpendicular[i]*Math.sin(angle*t));
+  }else {const angle=Math.acos(dot),den=Math.sin(angle);unit=a.map((v,i)=>(v*Math.sin((1-t)*angle)+b[i]*Math.sin(t*angle))/den);}
+  return unit.map(v=>v*length);
+}
+/** Coarse whole-arm painter ordering. Stable ties; no geometry/identity swapping.
+ * At the front, a small surface allowance places arms over the torso surface.
+ */
+function armDepthOrder(projected,facing,surface=0) {
+  const arms=ANATOMICAL_SIDES.map(side=>{
+    const depth=['Shoulder','Elbow','Wrist'].reduce((n,joint)=>n+projected[side+joint].depth,0)/3;
+    const allowance=surface*Math.max(0,-facing.cos);
+    return {side,depth,layer:depth<=allowance+1e-9?'near':'far'};
+  });
+  const backToFront=(a,b)=>Math.abs(a.depth-b.depth)>1e-9?b.depth-a.depth:a.side.localeCompare(b.side);
+  const far=arms.filter(a=>a.layer==='far').sort(backToFront),near=arms.filter(a=>a.layer==='near').sort(backToFront);
+  return {arms:Object.fromEntries(arms.map(a=>[a.side,a])),order:[...far.map(a=>a.side),'torso',...near.map(a=>a.side)]};
+}
+
+
 // SOURCE: src/presentation-rig.js
 const mixPresentation=(a,b,t)=>a.map((v,i)=>v+(b[i]-v)*t);
 const smoothPresentation=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
-/** Rotate the upper skeleton in projection; the planted foot anchors never change. */
-function orientedLandmarks(config,audience=0,base) {
-  const b=configureBody(config),p=structuredClone(base??bodyLandmarks(b)),t=Math.max(0,Math.min(1,audience));
-  const center=[p.hips[0]+b.lean*.35,p.shoulderCenter[1]+(b.leftShoulderOffset[1]+b.rightShoulderOffset[1])/2];
-  const front={torsoTop:[center[0],p.torsoTop[1]],neck:[center[0],p.neck[1]],head:[center[0],p.head[1]],
-    leftShoulder:[center[0]-.65*b.shoulderWidth-b.leftShoulderOffset[0],center[1]],
-    rightShoulder:[center[0]+.65*b.shoulderWidth+b.rightShoulderOffset[0],center[1]],
-    shoulderCenter:center};
-  for(const [key,value]of Object.entries(front))p[key]=mixPresentation(p[key],value,t);
-  return p;
-}
-/** A small single conversational phrase, with independent targets and gentle emphasis.
+/** Targets are in the character's anatomical x/y plane, never screen left/right.
+ * A small single conversational phrase, with independent targets and gentle emphasis.
  * Poses enter and leave idle, so holding a Step gate never creates endless waving.
  */
 function gestureAngles(action,elapsed,side,arm) {
   const reach=arm.upper+arm.forearm+arm.tip,sign=side==='right'?1:-1;
-  const idle=[.10,.92],targets={explain:side==='right'?[.64,.38]:[.52,.48],
+  const idle=[.16,.97],targets={explain:side==='right'?[.64,.38]:[.52,.48],
     emphasize:side==='right'?[.34,-.20]:[.36,.68],count:side==='right'?[.30,-.10]:[.26,.70],
-    present:side==='right'?[.80,.05]:[.38,.62],idle};
+    present:side==='left'?[.80,.05]:[.38,.62],idle};
   const duration=action.duration,t=Math.max(0,Math.min(duration,elapsed));
   const envelope=smoothPresentation(t/500)*smoothPresentation((duration-t)/500);
   const target=targets[action.gesture],sway=action.gesture==='idle'?0:Math.sin(2*Math.PI*t/duration)*(side==='right'?.035:-.022);
@@ -1247,27 +1291,64 @@ function gestureAngles(action,elapsed,side,arm) {
   const pose=solveIK({...arm,elbow:side==='right'?'negative':'positive'},[arm.shoulder[0]+sign*x*reach,arm.shoulder[1]+y*reach]);
   return [pose.angles.shoulder,pose.angles.elbow];
 }
-/** Both arms preserve their own skeletal segment lengths throughout the turn. */
+/** Calibrate the existing rear projection without changing its coordinates.
+ * The right writing arm lifts in a camera-parallel plane; the left rest pose
+ * recovers its foreshortened depth while preserving the original board silhouette.
+ */
+function anatomicalReference(config,base){
+  const b=configureBody(config),p=base??bodyLandmarks(b),pivot=[(p.leftShoulder[0]+p.rightShoulder[0])/2,0];
+  const board=characterFacing(0,{pivot}),joints={};
+  for(const side of ['left','right']){
+    const shoulder=p[side+'Shoulder'],depth=-(shoulder[0]-pivot[0])*Math.tan(board.yaw);
+    joints[side+'Shoulder']=liftProjected(shoulder,depth,board);
+  }
+  for(const key of ['head','neck','torsoTop','shoulderCenter'])joints[key]=[0,p[key][1],(p[key][0]-pivot[0])/board.sin];
+  return {body:b,base:p,board,joints};
+}
+function orientedLandmarks(config,audience=0,base){
+  const r=anatomicalReference(config,base),facing=characterFacing(audience,{pivot:r.board.pivot}),projected=projectSkeleton(r.joints,facing),p=structuredClone(r.base);
+  if(audience!==0)for(const [key,joint]of Object.entries(projected))p[key]=joint.point;
+  return p;
+}
+/** Permanent anatomical arm identities, then projection. Bones keep their actual
+ * 3D lengths; their 2D projections can naturally foreshorten in a three-quarter view.
+ */
 function presentationRig(config,state,base,rig={}) {
-  const b=configureBody(config),original=bodyLandmarks(b),p=orientedLandmarks(b,state.audience,base),a=state.audience;
+  const r=anatomicalReference(config,base),b=r.body,original=bodyLandmarks(b),a=Math.max(0,Math.min(1,state.audience)),facing=characterFacing(a,{pivot:r.board.pivot});
   const action=state.presentation?.action??{gesture:'idle',duration:2400};
   const elapsed=state.presentation?.stage==='talk'?state.presentation.elapsed:0;
-  const arms={};
+  const joints={...r.joints},anatomicalArms={};
+  const local=p=>p.map((v,i)=>(v-b.origin[i])/b.scale),subtract=(p,q)=>p.map((v,i)=>v-q[i]),add=(p,q)=>p.map((v,i)=>v+q[i]);
   for(const side of ['left','right']){
-    const right=side==='right',shoulder=p[side+'Shoulder'];
-    const arm=right?{...attachedArm(b,rig),shoulder:bodyToWorld(shoulder,b)}:
-      {shoulder:bodyToWorld(shoulder,b),upper:distance(original.leftShoulder,original.leftElbow)*b.scale,
-       forearm:distance(original.leftElbow,original.leftHand)*b.scale,tip:0,elbow:'positive'};
-    const initial=right?[state.pose.angles.shoulder,state.pose.angles.elbow]:[
-      Math.atan2(original.leftElbow[1]-original.leftShoulder[1],original.leftElbow[0]-original.leftShoulder[0]),
-      Math.atan2(original.leftHand[1]-original.leftElbow[1],original.leftHand[0]-original.leftElbow[0])-Math.atan2(original.leftElbow[1]-original.leftShoulder[1],original.leftElbow[0]-original.leftShoulder[0])];
-    const target=gestureAngles(action,elapsed,side,arm);
-    // Use the nearest equivalent angles to avoid an unnecessary full revolution.
-    const angles=initial.map((v,i)=>v+Math.atan2(Math.sin(target[i]-v),Math.cos(target[i]-v))*a);
-    const pose=forward(arm,...angles);arms[side]=pose;
-    for(const [joint,point]of [['Elbow',pose.elbow],['Hand',pose.wrist]])p[side+joint]=point.map((v,i)=>(v-b.origin[i])/b.scale);
+    const right=side==='right',shoulder=joints[side+'Shoulder'];
+    const lengths=right?{upper:.65*b.torsoLength,forearm:.55*b.torsoLength,tip:.04*b.torsoLength}:
+      {upper:Math.max(.65*b.torsoLength,distance(original.leftShoulder,original.leftElbow)),forearm:Math.max(.55*b.torsoLength,distance(original.leftElbow,original.leftHand)),tip:0};
+    const boardDepth=projectAnatomical(shoulder,r.board).depth;
+    const start=right?{shoulder:local(state.pose.shoulder),elbow:local(state.pose.elbow),wrist:local(state.pose.wrist)}:
+      {shoulder:original.leftShoulder,elbow:original.leftElbow,wrist:original.leftHand};
+    // The old left rest pose was a foreshortened projection. Recover depth instead
+    // of treating those short screen segments as a physically shorter arm.
+    const upperDepth=right?0:Math.sqrt(Math.max(0,lengths.upper**2-distance(start.shoulder,start.elbow)**2));
+    const foreDepth=right?0:Math.sqrt(Math.max(0,lengths.forearm**2-distance(start.elbow,start.wrist)**2));
+    const lifted={shoulder:liftProjected(start.shoulder,boardDepth,r.board),elbow:liftProjected(start.elbow,boardDepth+upperDepth,r.board),wrist:liftProjected(start.wrist,boardDepth+upperDepth+foreDepth,r.board)};
+    const arm={...rig,...lengths,shoulder:shoulder.slice(0,2),elbow:right?'negative':'positive'};
+    const target=forward(arm,...gestureAngles(action,elapsed,side,arm));
+    const targetUpper=[target.elbow[0]-target.shoulder[0],target.elbow[1]-target.shoulder[1],0],targetFore=[target.wrist[0]-target.elbow[0],target.wrist[1]-target.elbow[1],0];
+    const upper=turnBone(subtract(lifted.elbow,lifted.shoulder),targetUpper,a),fore=turnBone(subtract(lifted.wrist,lifted.elbow),targetFore,a);
+    const elbow=add(shoulder,upper),wrist=add(elbow,fore),tip=add(wrist,fore.map(v=>v*lengths.tip/lengths.forearm));
+    anatomicalArms[side]={id:side,shoulder:[...shoulder],elbow,wrist,hand:[...wrist],tip,lengths};
+    for(const [name,p]of Object.entries({Shoulder:shoulder,Elbow:elbow,Wrist:wrist,Hand:wrist,Tip:tip}))joints[side+name]=p;
   }
-  return {landmarks:p,arms};
+  const projected=projectSkeleton(joints,facing),p=structuredClone(r.base),arms={};
+  for(const [key,joint]of Object.entries(projected))p[key]=joint.point;
+  if(a===0){for(const key of ['head','neck','torsoTop','shoulderCenter','leftShoulder','rightShoulder','leftElbow','leftHand'])p[key]=[...r.base[key]];}
+  for(const side of ['left','right']){
+    const world=name=>bodyToWorld(projected[side+name].point,b),shoulder=world('Shoulder'),elbow=world('Elbow'),wrist=world('Wrist');
+    const angle=Math.atan2(elbow[1]-shoulder[1],elbow[0]-shoulder[0]);
+    arms[side]={id:side,shoulder,elbow,wrist,tip:world('Tip'),angles:{shoulder:angle,elbow:Math.atan2(wrist[1]-elbow[1],wrist[0]-elbow[0])-angle}};
+  }
+  if(a===0)arms.right={...state.pose,id:'right'};
+  return {landmarks:p,arms,anatomical:{joints,arms:anatomicalArms},projected,facing,depthOrder:armDepthOrder(projected,facing,.06*b.torsoLength)};
 }
 /** Identical Bézier topology allows a continuous rear-profile → frontal head morph. */
 function presentationHead(p,headSize,audience=0) {
@@ -1342,7 +1423,6 @@ function drawBody(group,config={}) {
   const body=configureBody(config),p=bodyLandmarks(body),[hx,hy]=p.head,h=body.headSize;
   group.replaceChildren();group.setAttribute('transform',`translate(${body.origin}) scale(${body.scale})`);group.setAttribute('data-view','rear-three-quarter-facing-right');
   const limb=(name,joints,radii,fill='#b9c4b7')=>node('path',{'data-part':name,d:limbOutline(joints,radii),fill},group);
-  limb('left-arm',[p.leftShoulder,p.leftElbow,p.leftHand],[7,5.5,3.5],'#7e9585');
   limb('left-leg',[p.leftHip,p.leftKnee,p.leftAnkle],[9,6.5,4.5]);
   limb('right-leg',[p.rightHip,p.rightKnee,p.rightAnkle],[9,6.5,4.5]);
   limb('hips',[p.leftHip,p.hips,p.rightHip],[8,9,8]);
@@ -1361,10 +1441,15 @@ class ProfessorFigure {
     this.group=group;this.debug=false;this.time=0;
     // Chalk stays in world space behind the translating body and joint-driven arm.
     this.chalkGroup=node('g',{'data-layer':'chalk'},group);
+    this.farArms=node('g',{'data-layer':'far-arms'},group);
     this.bodyGroup=node('g',{'data-layer':'body'},group);
-    this.armGroup=node('g',{'data-layer':'drawing-arm'},group);
-    this.armSkin=node('path',{'data-part':'right-arm',fill:'#d6ba76'},this.armGroup);
-    this.hands=node('path',{'data-part':'presentation-hands',fill:'none',stroke:'#d6ba76','stroke-width':3,'stroke-linecap':'round',visibility:'hidden'},this.armGroup);
+    this.nearArms=node('g',{'data-layer':'near-arms'},group);
+    this.leftArmGroup=node('g',{'data-layer':'left-arm','data-anatomical-side':'left'},this.farArms);
+    this.leftArmSkin=node('path',{'data-part':'left-arm','data-anatomical-side':'left',fill:'#7e9585'},this.leftArmGroup);
+    this.leftHand=node('path',{'data-part':'left-hand','data-anatomical-side':'left',fill:'none',stroke:'#b9c4b7','stroke-width':3,'stroke-linecap':'round',visibility:'hidden'},this.leftArmGroup);
+    this.armGroup=node('g',{'data-layer':'drawing-arm','data-anatomical-side':'right'},this.nearArms);
+    this.armSkin=node('path',{'data-part':'right-arm','data-anatomical-side':'right',fill:'#d6ba76'},this.armGroup);
+    this.hands=node('path',{'data-part':'right-hand','data-anatomical-side':'right',fill:'none',stroke:'#d6ba76','stroke-width':3,'stroke-linecap':'round',visibility:'hidden'},this.armGroup);
     this.countLabel=node('text',{'data-part':'gesture-count',fill:'#d6ba76','font-size':11,'font-family':'monospace',visibility:'hidden'},this.armGroup);
     this.pen=node('line',{stroke:'#fff2bf','stroke-width':3,'stroke-linecap':'round'},this.armGroup);
     this.armSkeleton=node('path',{fill:'none',stroke:'#304e38','stroke-width':1.2},this.armGroup);
@@ -1395,15 +1480,28 @@ class ProfessorFigure {
     const state=samplePresentation(this.plan,time);this.time=time;this.currentBody=translatedBody(this.body,state.offset);this.currentBody.origin[1]+=state.bodyLift??0;this.arm=attachedArm(this.currentBody,this.rig);
     this.bodyGroup.setAttribute('transform',`translate(${this.currentBody.origin}) scale(${this.body.scale})`);
     this.localPose=walkingLandmarks(this.body,state);
-    let presentation=null;
-    if(state.audience>0){presentation=presentationRig(this.currentBody,state,this.localPose,this.rig);this.localPose=presentation.landmarks;state.pose=presentation.arms.right;}
+    const presentation=presentationRig(this.currentBody,state,this.localPose,this.rig);
+    this.facing=presentation.facing;this.anatomicalPose=presentation.anatomical;
+    this.localPose=presentation.landmarks;
+    if(state.audience>0){state.pose=presentation.arms.right;this.arm={...this.arm,shoulder:[...state.pose.shoulder]};}
     const part=name=>[...this.bodyGroup.children].find(n=>n.getAttribute('data-part')===name),p=this.localPose;
+    // Move the SAME anatomical groups between depth layers; never exchange identities.
+    const groups={left:this.leftArmGroup,right:this.armGroup},order=presentation.depthOrder;
+    this.farArms.replaceChildren(...order.order.filter(side=>side!=='torso'&&order.arms[side].layer==='far').map(side=>groups[side]));
+    this.nearArms.replaceChildren(...order.order.filter(side=>side!=='torso'&&order.arms[side].layer==='near').map(side=>groups[side]));
+    for(const side of ['left','right']){
+      groups[side].setAttribute('data-depth',order.arms[side].depth);
+      groups[side].setAttribute('data-depth-layer',order.arms[side].layer);
+      groups[side].setAttribute('data-shoulder-x',presentation.arms[side].shoulder[0]);
+      groups[side].setAttribute('data-wrist-x',presentation.arms[side].wrist[0]);
+    }
+    this.bodyGroup.setAttribute('data-yaw',this.facing.yaw);
     this.bodyGroup.setAttribute('data-orientation',state.orientation);
     this.bodyGroup.setAttribute('data-view',state.orientation==='board'?'rear-three-quarter-facing-right':state.orientation==='audience'?'front-facing':'turning');
     part('head').setAttribute('d',presentationHead(p,this.body.headSize,state.audience));
     part('torso').setAttribute('d',limbOutline([p.neck,p.torsoTop,p.hips],[5,13,9]));
     part('shoulders').setAttribute('d',limbOutline([p.leftShoulder,p.torsoTop,p.rightShoulder],[6,10,6]));
-    part('left-arm').setAttribute('d',limbOutline([p.leftShoulder,p.leftElbow,p.leftHand],[7,5.5,3.5]));
+    this.leftArmSkin.setAttribute('d',limbOutline([presentation.arms.left.shoulder,presentation.arms.left.elbow,presentation.arms.left.wrist],[7,5.5,3.5].map(r=>r*this.body.scale)));
     const [hx,hy]=p.head,hs=this.body.headSize;
     part('front-face').setAttribute('d',`M${hx-10*hs},${hy-3*hs}a${2*hs},${2*hs} 0 1,0 ${4*hs},0a${2*hs},${2*hs} 0 1,0 ${-4*hs},0 M${hx+6*hs},${hy-3*hs}a${2*hs},${2*hs} 0 1,0 ${4*hs},0a${2*hs},${2*hs} 0 1,0 ${-4*hs},0`);
     part('front-face').setAttribute('opacity',Math.max(0,(state.audience-.5)*2));
@@ -1421,17 +1519,17 @@ class ProfessorFigure {
     for(const {phase,renderer}of this.writers){renderer.render(Math.max(0,Math.min(phase.duration,time-phase.at)));for(const el of [renderer.links,renderer.pen,renderer.target,...renderer.joints])el.setAttribute('visibility','hidden');}
     this.fallback.render(time);
     const pose=state.pose;
-    this.hands.setAttribute('visibility',state.audience>.95?'visible':'hidden');
-    this.hands.setAttribute('d','');
-    if(presentation){
-      const hands=Object.entries(presentation.arms).map(([side,arm])=>{
-        const [x,y]=arm.wrist,s=this.body.scale,sign=side==='right'?1:-1;
-        return `M${x},${y}q${sign*8*s},${-7*s} ${sign*11*s},0q${sign*-3*s},${8*s} ${sign*-9*s},${3*s}`;
-      });this.hands.setAttribute('d',hands.join(' '));
+    for(const [side,hand]of [['left',this.leftHand],['right',this.hands]]){
+      hand.setAttribute('visibility',state.audience>.95?'visible':'hidden');
+      hand.setAttribute('d','');
+      if(state.audience>0){
+        const [x,y]=presentation.arms[side].wrist,s=this.body.scale,sign=(side==='right'?1:-1)*this.facing.cos;
+        hand.setAttribute('d',`M${x},${y}q${sign*8*s},${-7*s} ${sign*11*s},0q${sign*-3*s},${8*s} ${sign*-9*s},${3*s}`);
+      }
     }
     const counting=state.presentation?.stage==='talk'&&state.presentation.action.gesture==='count'&&state.presentation.elapsed>500&&state.presentation.elapsed<state.presentation.action.duration-500;
     this.countLabel.setAttribute('visibility',counting?'visible':'hidden');this.countLabel.textContent=counting?String(state.presentation.action.count):'';
-    this.countLabel.setAttribute('x',pose.wrist[0]+10*this.body.scale);this.countLabel.setAttribute('y',pose.wrist[1]-12*this.body.scale);
+    this.countLabel.setAttribute('x',pose.wrist[0]+10*this.body.scale*Math.sign(this.facing.cos||1));this.countLabel.setAttribute('text-anchor',this.facing.cos<0?'end':'start');this.countLabel.setAttribute('y',pose.wrist[1]-12*this.body.scale);
     this.armSkin.setAttribute('d',limbOutline([pose.shoulder,pose.elbow,pose.wrist],[8*this.body.scale,6*this.body.scale,3.5*this.body.scale]));
     for(const [k,v]of Object.entries({x1:pose.wrist[0],y1:pose.wrist[1],x2:pose.tip[0],y2:pose.tip[1]}))this.pen.setAttribute(k,v);
     this.pen.setAttribute('opacity',state.chalkDown?'1':'.4');
@@ -1443,6 +1541,7 @@ class ProfessorFigure {
     }
     return state;
   }
+  getAnatomicalJoints(){return structuredClone(this.anatomicalPose.joints);}
   getAnchors(){return Object.fromEntries(Object.entries(this.localPose??bodyLandmarks(this.currentBody??this.body)).map(([k,p])=>[k,bodyToWorld(p,this.currentBody??this.body)]));}
   destroy(){this.group.replaceChildren();}
 }

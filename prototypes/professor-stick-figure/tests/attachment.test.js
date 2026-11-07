@@ -25,7 +25,8 @@ test('anatomical arm lengths derive from torso and scale; shoulder is always a b
 test('rear-facing curved body includes all skeleton-derived anatomy and remains ground anchored',()=>{
  const f=new ProfessorFigure(new SVGNode('g'),writing12());
  assert.equal(f.bodyGroup.getAttribute('data-view'),'rear-three-quarter-facing-right');
- for(const part of ['head','left-arm','left-leg','right-leg','hips','torso','shoulders','left-foot','right-foot','body-skeleton'])assert.ok(f.bodyGroup.children.find(n=>n.getAttribute('data-part')===part),part);
+ for(const part of ['head','left-leg','right-leg','hips','torso','shoulders','left-foot','right-foot','body-skeleton'])assert.ok(f.bodyGroup.children.find(n=>n.getAttribute('data-part')===part),part);
+ assert.equal(f.leftArmSkin.getAttribute('data-anatomical-side'),'left');
  assert.match(f.armSkin.getAttribute('d'),/C/);assert.match(f.armSkin.getAttribute('d'),/Z$/);
  for(const t of [0,f.duration/2,f.duration]){f.render(t);assert.ok(Math.abs(Math.max(f.getAnchors().leftFoot[1],f.getAnchors().rightFoot[1])-505)<1e-6);}
 });

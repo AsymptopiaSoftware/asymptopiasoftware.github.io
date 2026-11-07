@@ -97,8 +97,8 @@ try{
  await seekTo(planned.teachingSteps[1].gate);
  const nativeVoices=await page.evaluate(()=>window.speechSynthesis?.getVoices()?.length??null);
  await checkPresentationBrowser(browser,`http://127.0.0.1:${server.address().port}/professor-stick-figure/`,planned);
- await checkPresentationBrowser(browser,standaloneHTTP,planned);
+ await checkPresentationBrowser(browser,standaloneHTTP,planned,process.env.ORIENTATION_SCREENSHOT_PATH);
  await checkMathRegression(true);
  console.log(`Native browser voices: ${nativeVoices??'unsupported'}; speech lifecycle checked with controllable synthesis in both previews.`);
- assert.deepEqual(errors,[]);console.log(`B1.9.2 browser checks passed: modular + self-contained (${standaloneTransport}), turns, two-arm gestures, speech/mute/pause/replay, Auto/Step, deterministic seeking, fractions, math, walking and responsive layout`);
+ assert.deepEqual(errors,[]);console.log(`B1.9.3 browser checks passed: modular + self-contained (${standaloneTransport}), turns, two-arm gestures, speech/mute/pause/replay, Auto/Step, deterministic seeking, fractions, math, walking and responsive layout`);
 }finally{await browser?.close();await new Promise(done=>server.close(done));}

@@ -17,12 +17,21 @@ export async function checkPresentationBrowser(browser,url,plan,screenshot) {
  try{
   await page.goto(url);await page.waitForFunction(()=>document.querySelector('[data-part="right-arm"]')?.getAttribute('d'));
   const p=plan.presentations[0];
+  await page.evaluate(()=>{window.__anatomicalNodes={right:document.querySelector('[data-layer="drawing-arm"]'),left:document.querySelector('[data-layer="left-arm"]')};});
+  const shoulders=()=>page.evaluate(()=>({right:Number(window.__anatomicalNodes.right.getAttribute('data-shoulder-x')),left:Number(window.__anatomicalNodes.left.getAttribute('data-shoulder-x'))}));
+  const rear=await shoulders();assert.ok(rear.right>rear.left);
   const seek=async t=>page.locator('#seek').evaluate((el,t)=>{el.value=t;el.dispatchEvent(new Event('input',{bubbles:true}));},t);
   const calls=()=>page.evaluate(()=>window.__speechTest.calls);
   assert.equal(await page.getByRole('checkbox',{name:'Mute',exact:true}).isChecked(),false);
   await page.locator('#teaching-mode').selectOption('step');
-  await seek(p.at+350);assert.equal(await page.locator('[data-layer="body"]').getAttribute('data-orientation'),'transitioning');
+  await seek(p.at+300);assert.equal(await page.locator('[data-layer="body"]').getAttribute('data-orientation'),'transitioning');
+  assert.equal(await page.locator('[data-layer="left-arm"]').getAttribute('data-depth-layer'),'far');assert.equal(await page.locator('[data-layer="drawing-arm"]').getAttribute('data-depth-layer'),'near');
   await seek(p.talkAt+900);assert.equal(await page.locator('[data-layer="body"]').getAttribute('data-orientation'),'audience');
+  const front=await shoulders();assert.ok(front.right<front.left);
+  assert.equal(await page.evaluate(()=>window.__anatomicalNodes.right===document.querySelector('[data-layer="drawing-arm"]')&&window.__anatomicalNodes.left===document.querySelector('[data-layer="left-arm"]')),true);
+  assert.equal(await page.locator('[data-layer="drawing-arm"]').getAttribute('data-anatomical-side'),'right');
+  assert.equal(await page.locator('[data-layer="left-arm"]').getAttribute('data-anatomical-side'),'left');
+  assert.equal(await page.evaluate(()=>window.__anatomicalNodes.right.parentElement.getAttribute('data-layer')==='near-arms'&&window.__anatomicalNodes.left.parentElement.getAttribute('data-layer')==='near-arms'),true);
   const chalk=await page.locator('[data-layer="chalk"]').innerHTML(),arm=await page.locator('[data-part="right-arm"]').getAttribute('d'),left=await page.locator('[data-part="left-arm"]').getAttribute('d');
   await page.getByRole('button',{name:'Play',exact:true}).click();await page.waitForFunction(()=>window.__speechTest.active);
   assert.equal((await calls()).find(c=>c.type==='speak').text,p.action.text);assert.match(await page.locator('#operation').textContent(),/Add 4\/4 to both sides/);
@@ -40,6 +49,7 @@ export async function checkPresentationBrowser(browser,url,plan,screenshot) {
   assert.equal(await page.locator('[data-layer="body"]').getAttribute('data-orientation'),'audience');assert.equal(await page.locator('[data-layer="chalk"]').innerHTML(),chalk);
   await page.getByRole('button',{name:'Continue',exact:true}).click();await page.waitForFunction(end=>Number(document.querySelector('#seek').value)>end+25&&document.querySelector('[data-layer="body"]').getAttribute('data-orientation')==='board',p.end);
   assert.equal(await page.locator('[data-layer="body"]').getAttribute('data-orientation'),'board');
+  const returned=await shoulders();assert.ok(returned.right>returned.left);assert.equal(await page.evaluate(()=>window.__anatomicalNodes.right===document.querySelector('[data-layer="drawing-arm"]')),true);
   const next=plan.writes.find(w=>w.at>p.end);await seek(next.at+next.duration*.5);assert.match(await page.locator('#contact').textContent(),/CHALK DOWN/);
   await seek(p.talkAt+900);await page.getByRole('button',{name:'Play',exact:true}).click();await page.waitForFunction(()=>window.__speechTest.active);
   await page.getByRole('button',{name:'Reset',exact:true}).click();assert.equal(await page.evaluate(()=>window.__speechTest.active),false);assert.equal(await page.locator('#seek').inputValue(),'0');
