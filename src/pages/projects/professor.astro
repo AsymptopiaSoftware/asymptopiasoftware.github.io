@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import professor from '../../content/professor.json';
+---
+<BaseLayout title={professor.pageTitle} description={professor.description}>
+  <main class="project-page">
+    <a class="back-link" href="/">{professor.backLabel}</a>
+    <h1>{professor.title}</h1>
+    {professor.paragraphs.map(paragraph=><p>{paragraph}</p>)}
+    <nav class="project-links" aria-label={professor.title+' project links'}>
+      <a href={professor.sourceUrl} target="_blank" rel="noopener noreferrer">{professor.sourceLabel}</a>
+      <a href={professor.liveUrl} target="_blank" rel="noopener noreferrer">{professor.liveLabel}</a>
+      <a href="/">{professor.homeLabel}</a>
+    </nav>
+  </main>
+</BaseLayout>
+<style>
+.project-page {width:min(760px,100%);margin:32px auto;color:#e8e8e8;line-height:1.65;}
+.back-link,.project-links a {color:#f1ff00;}
+.project-links {display:flex;flex-wrap:wrap;gap:12px;margin-top:24px;}
+.project-links a {padding:8px 12px;border:1px solid #555;border-radius:8px;text-decoration:none;}
+</style>

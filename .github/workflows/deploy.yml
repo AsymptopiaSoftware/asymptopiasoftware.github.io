@@ -36,7 +36,7 @@ jobs:
       - name: Install test browser
         run: npx playwright install --with-deps chromium
       - name: Verify functioning desktop and mobile demo
-        run: node --test tests/homepage.browser.mjs
+        run: node --test tests/*.browser.mjs
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
