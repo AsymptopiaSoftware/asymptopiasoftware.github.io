@@ -90,3 +90,10 @@ All audience actions default to laterally outward elbows, including the idle/hel
 ## B1.9.3b coordinated explanation pose
 
 Default actions and all ordinary lesson explanations use `thoughtful-explain`. Supporting/indicating arm roles and the exact support target are sampled from time, without speech or pose history. The supporting arm intentionally crosses the torso; other gestures retain compact outward bias. Hand cues are small and the pause stays still. See [thoughtful pose](thoughtful-pose.md).
+
+## Compact board indication (B2.1)
+
+`present` optionally accepts `indicatingArm: "right"`. This keeps anatomical left
+relaxed and uses a restrained, bent right-arm indication. The existing default
+left-arm present pose and thoughtful-explain default remain unchanged. The
+compact component selects the right-arm variant explicitly for its lessons.

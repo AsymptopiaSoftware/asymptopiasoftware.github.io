@@ -1,0 +1,1765 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Embedded Professor</title>
+<style>body{margin:0;background:#14211d;display:grid;min-height:100svh;place-items:center}.tile{width:min(100%,480px);height:360px}</style>
+<div class="tile" aria-label="Animated algebra demonstration"></div>
+<script type="module">
+
+// SOURCE: ../math-problems/src/rational.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+/** Exact, normalized rational arithmetic. Public serialization uses decimal strings. */
+class MathProblemError extends Error {
+  constructor(code,message){super(message);this.name='MathProblemError';this.code=code;}
+}
+function integerValue(value) {
+  if(typeof value==='bigint')return value;
+  if(typeof value==='number'&&Number.isSafeInteger(value))return BigInt(value);
+  if(typeof value==='string'&&/^-?\d{1,128}$/.test(value))return BigInt(value);
+  throw new MathProblemError('INVALID_INTEGER','Expected a safe integer, BigInt, or decimal integer string (up to 128 digits)');
+}
+function gcd(a,b){a=a<0n?-a:a;b=b<0n?-b:b;while(b){const t=a%b;a=b;b=t;}return a;}
+class Rational {
+  constructor(numerator,denominator=1n){let n=integerValue(numerator),d=integerValue(denominator);if(d===0n)throw new MathProblemError('ZERO_DENOMINATOR','A denominator cannot be zero');if(d<0n){n=-n;d=-d;}const g=gcd(n,d);this.n=n/g;this.d=d/g;Object.freeze(this);}
+  static from(value){if(value instanceof Rational)return value;if(value&&typeof value==='object')return new Rational(value.numerator,value.denominator);return new Rational(value);}
+  add(value){const q=Rational.from(value);return new Rational(this.n*q.d+q.n*this.d,this.d*q.d);}
+  sub(value){return this.add(Rational.from(value).neg());}
+  mul(value){const q=Rational.from(value);return new Rational(this.n*q.n,this.d*q.d);}
+  div(value){const q=Rational.from(value);return new Rational(this.n*q.d,this.d*q.n);}
+  neg(){return new Rational(-this.n,this.d);}
+  equals(value){const q=Rational.from(value);return this.n===q.n&&this.d===q.d;}
+  get isZero(){return this.n===0n;}
+  toString(){return this.d===1n?String(this.n):`${this.n}/${this.d}`;}
+  toJSON(){return {numerator:String(this.n),denominator:String(this.d)};}
+}
+
+
+// SOURCE: ../math-problems/src/syntax.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+const integerNode=value=>({type:'integer',value:String(value)});
+const variableNode=()=>({type:'variable',name:'x'});
+const binaryNode=(op,left,right)=>({type:'binary',op,left,right});
+function rationalNode(value){const q=Rational.from(value);return q.d===1n?integerNode(q.n):binaryNode('/',integerNode(q.n),integerNode(q.d));}
+function parseEquation(text) {
+  if(typeof text!=='string'||text.length>2048)throw new MathProblemError('INVALID_SYNTAX','Equation must be a string of at most 2048 characters');
+  const source=text.replace(/−/g,'-').replace(/[×·]/g,'*').replace(/÷/g,'/'),tokens=[];
+  let pos=0;
+  while(pos<source.length){if(/\s/.test(source[pos])){pos++;continue;}const number=source.slice(pos).match(/^\d+/);if(number){if(number[0].length>128)throw new MathProblemError('INVALID_INTEGER','Integer literal is too long');tokens.push(number[0]);pos+=number[0].length;}else if('x+-*/()='.includes(source[pos]))tokens.push(source[pos++]);else throw new MathProblemError('INVALID_SYNTAX',`Unsupported character at position ${pos}`);}
+  if(tokens.length>256)throw new MathProblemError('TOO_COMPLEX','Equation exceeds 256 tokens');let index=0,depth=0;
+  const atom=()=>{if(++depth>48)throw new MathProblemError('TOO_COMPLEX','Equation nesting exceeds 48');let node;const token=tokens[index++];if(token==='x')node=variableNode();else if(token&&/^\d+$/.test(token))node=integerNode(token);else if(token==='+'||token==='-'){const operand=atom();node=token==='+'?operand:{type:'negate',operand};}else if(token==='('){node=expression();if(tokens[index++]!==')')throw new MathProblemError('INVALID_SYNTAX','Missing closing parenthesis');}else throw new MathProblemError('INVALID_SYNTAX','Expected an integer, x or parenthesized expression');depth--;return node;};
+  const product=()=>{let node=atom();while(tokens[index]==='*'||tokens[index]==='/'){const op=tokens[index++];node=binaryNode(op,node,atom());}return node;};
+  const expression=()=>{let node=product();while(tokens[index]==='+'||tokens[index]==='-'){const op=tokens[index++];node=binaryNode(op,node,product());}return node;};
+  const left=expression();if(tokens[index++]!=='=')throw new MathProblemError('INVALID_SYNTAX','Expected exactly one equality');const right=expression();if(index!==tokens.length)throw new MathProblemError('INVALID_SYNTAX','Unexpected trailing input');return {type:'equation',left,right};
+}
+function validateEquation(input) {
+  if(typeof input==='string')return parseEquation(input);
+  let nodes=0;
+  const check=(node,depth=0)=>{if(++nodes>256||depth>48)throw new MathProblemError('TOO_COMPLEX','AST size/depth exceeds limits');if(!node||typeof node!=='object')throw new MathProblemError('INVALID_AST','Expected an expression node');
+    if(node.type==='integer'){new Rational(node.value);return integerNode(node.value);}
+    if(node.type==='variable'&&node.name==='x')return variableNode();
+    if(node.type==='negate')return {type:'negate',operand:check(node.operand,depth+1)};
+    if(node.type==='binary'&&['+','-','*','/'].includes(node.op))return binaryNode(node.op,check(node.left,depth+1),check(node.right,depth+1));
+    throw new MathProblemError('INVALID_AST','Unsupported expression node');};
+  if(input?.type!=='equation')throw new MathProblemError('INVALID_AST','Expected an equation AST');return {type:'equation',left:check(input.left),right:check(input.right)};
+}
+function countUnknowns(node){return node.type==='variable'?1:node.type==='binary'?countUnknowns(node.left)+countUnknowns(node.right):node.type==='negate'?countUnknowns(node.operand):node.type==='equation'?countUnknowns(node.left)+countUnknowns(node.right):0;}
+function precedence(node){return node.type==='binary'?(['+','-'].includes(node.op)?1:2):node.type==='negate'?3:4;}
+function formatExpression(node){
+ if(node.type==='integer')return node.value;
+ if(node.type==='variable')return 'x';
+ if(node.type==='negate'){const value=formatExpression(node.operand);return '-'+(precedence(node.operand)<3?`(${value})`:value);}
+ const p=precedence(node),l=formatExpression(node.left),r=formatExpression(node.right);
+ const left=precedence(node.left)<p?`(${l})`:l;
+ const right=r.startsWith('-')||precedence(node.right)<p||(precedence(node.right)===p&&['-','/'].includes(node.op))||(node.op==='*'&&node.right.type==='binary'&&node.right.op==='/')?`(${r})`:r;
+ return left+node.op+right;
+}
+const formatEquation=e=>`${formatExpression(e.left)}=${formatExpression(e.right)}`;
+function evaluateExpression(node,value){
+ if(node.type==='integer')return new Rational(node.value);
+ if(node.type==='variable'){if(value===undefined)throw new MathProblemError('MISSING_VALUE','x needs a value');return Rational.from(value);}
+ if(node.type==='negate')return evaluateExpression(node.operand,value).neg();
+ const a=evaluateExpression(node.left,value),b=evaluateExpression(node.right,value);return node.op==='+'?a.add(b):node.op==='-'?a.sub(b):node.op==='*'?a.mul(b):a.div(b);
+}
+
+
+// SOURCE: ../math-problems/src/algebra.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+const Q0=new Rational(0),Q1=new Rational(1);
+function trimPolynomial(p){while(p.length>1&&p.at(-1).isZero)p.pop();return p;}
+function addPolynomial(a,b,subtract=false){return trimPolynomial(Array.from({length:Math.max(a.length,b.length)},(_,i)=>(a[i]??Q0).add(subtract?(b[i]??Q0).neg():(b[i]??Q0))));}
+function multiplyPolynomial(a,b){if(a.length+b.length-2>8)throw new MathProblemError('UNSUPPORTED_DEGREE','Polynomial degree exceeds 8');const p=Array(a.length+b.length-1).fill(Q0);for(let i=0;i<a.length;i++)for(let j=0;j<b.length;j++)p[i+j]=p[i+j].add(a[i].mul(b[j]));return trimPolynomial(p);}
+function evaluatePolynomial(p,x){let value=Q0;for(let i=p.length-1;i>=0;i--)value=value.mul(x).add(p[i]);return value;}
+const zeroPolynomial=p=>p.length===1&&p[0].isZero;
+function symbolic(node,restrictions){
+ if(node.type==='integer')return {n:[new Rational(node.value)],d:[Q1]};
+ if(node.type==='variable')return {n:[Q0,Q1],d:[Q1]};
+ if(node.type==='negate'){const r=symbolic(node.operand,restrictions);return {...r,n:r.n.map(q=>q.neg())};}
+ const a=symbolic(node.left,restrictions),b=symbolic(node.right,restrictions);
+ if(node.op==='/'){
+  if(zeroPolynomial(b.n))throw new MathProblemError('ZERO_DENOMINATOR',`Denominator ${formatExpression(node.right)} is identically zero`);
+  restrictions.push({expression:node.right,polynomial:b.n});return {n:multiplyPolynomial(a.n,b.d),d:multiplyPolynomial(a.d,b.n)};
+ }
+ if(node.op==='*')return {n:multiplyPolynomial(a.n,b.n),d:multiplyPolynomial(a.d,b.d)};
+ return {n:addPolynomial(multiplyPolynomial(a.n,b.d),multiplyPolynomial(b.n,a.d),node.op==='-'),d:multiplyPolynomial(a.d,b.d)};
+}
+function integerSqrt(n){if(n<0n)return null;if(n<2n)return n;let x=n,y=(x+1n)/2n;while(y<x){x=y;y=(x+n/x)/2n;}return x*x===n?x:null;}
+function rationalSqrt(q){if(q.n<0n)return null;const n=integerSqrt(q.n),d=integerSqrt(q.d);return n===null||d===null?null:new Rational(n,d);}
+function polynomialRoots(p){
+ if(p.length===1)return {status:p[0].isZero?'infinite':'none',roots:[]};
+ if(p.length===2)return {status:'unique',roots:[p[0].neg().div(p[1])]};
+ if(p.length===3){const [c,b,a]=p,discriminant=b.mul(b).sub(a.mul(c).mul(4));if(discriminant.n<0n)return {status:'none',roots:[]};const root=rationalSqrt(discriminant);if(!root)return {status:'unsupported',roots:[],reason:'Irrational roots require an algebraic-number extension'};const roots=[b.neg().sub(root).div(a.mul(2)),b.neg().add(root).div(a.mul(2))];return {status:roots[0].equals(roots[1])?'unique':'multiple',roots:roots[0].equals(roots[1])?[roots[0]]:roots};}
+ return {status:'unsupported',roots:[],reason:'Only affine and rational-root quadratic equations are classified'};
+}
+function analyzeEquation(input,extraRestrictions=[]) {
+ const equation=validateEquation(input);if(!countUnknowns(equation))throw new MathProblemError('MISSING_UNKNOWN','An equation problem must contain x');
+ const restrictions=[],left=symbolic(equation.left,restrictions),right=symbolic(equation.right,restrictions);
+ const polynomial=addPolynomial(multiplyPolynomial(left.n,right.d),multiplyPolynomial(right.n,left.d),true);
+ const domain=[...extraRestrictions,...restrictions],classification=polynomialRoots(polynomial);
+ const roots=classification.roots.filter(x=>domain.every(r=>!evaluatePolynomial(r.polynomial,x).isZero));
+ let status=classification.status;if(status==='unique'||status==='multiple')status=roots.length===0?'none':roots.length===1?'unique':'multiple';
+ return {equation,polynomial,restrictions:domain,status,roots,reason:classification.reason};
+}
+function serializeRestrictions(restrictions){return restrictions.map(r=>({expression:structuredClone(r.expression),text:`${formatExpression(r.expression)}!=0`,polynomial:r.polynomial.map(q=>q.toJSON())}));}
+function sameSolutionSet(a,b){
+ if(a.status!==b.status)return false;
+ if(a.status==='unsupported')return false;
+ if(a.status==='unique'||a.status==='multiple')return a.roots.length===b.roots.length&&a.roots.every(x=>b.roots.some(y=>x.equals(y)));
+ if(a.status==='none')return true;
+ // Infinite equations are equivalent only if they exclude the same rational values.
+ const exclusions=analysis=>{
+  const roots=[];for(const r of analysis.restrictions){const result=polynomialRoots(r.polynomial);if(result.status==='unsupported'||result.status==='infinite')return null;roots.push(...result.roots);}return roots;
+ };
+ const x=exclusions(a),y=exclusions(b);return !!x&&!!y&&x.every(q=>y.some(r=>r.equals(q)))&&y.every(q=>x.some(r=>r.equals(q)));
+}
+function equivalentExpressions(a,b){
+ const restrictions=[],x=symbolic(a,restrictions),y=symbolic(b,restrictions);
+ return zeroPolynomial(addPolynomial(multiplyPolynomial(x.n,y.d),multiplyPolynomial(y.n,x.d),true));
+}
+
+
+// SOURCE: ../math-problems/src/operations.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+const eq192=(left,right)=>({type:'equation',left,right});
+const canonicalOperation192=value=>Array.isArray(value)?value.map(canonicalOperation192):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(key=>[key,canonicalOperation192(value[key])])):value;
+const sameAST192=(a,b)=>JSON.stringify(canonicalOperation192(a))===JSON.stringify(canonicalOperation192(b));
+const inverse192={'add-both-sides':'+','subtract-both-sides':'-','multiply-both-sides':'*','divide-both-sides':'/'};
+const changedSides192=(a,b)=>['left','right'].filter(side=>!sameAST192(a[side],b[side]));
+function operationExplanation(op) {
+ const names={'add-both-sides':['Add','to'],'subtract-both-sides':['Subtract','from'],'multiply-both-sides':['Multiply','by'],'divide-both-sides':['Divide','by']};
+ if(names[op.kind]){
+  const [verb,preposition]=names[op.kind],operand=formatExpression(op.operand);
+  const text=['multiply-both-sides','divide-both-sides'].includes(op.kind)?`${verb} both sides ${preposition} ${operand}.`:`${verb} ${operand} ${preposition} both sides.`;
+  const sides=op.simplifiedSides??[];return text+(sides.length?` Simplify ${sides.length===2?'both sides':`the ${sides[0]} side`}.`:'');
+ }
+ if(op.kind==='simplify-rational')return `Simplify ${op.sides.length===2?'both sides':`the ${op.sides[0]} side`} using exact arithmetic.`;
+ if(op.kind==='given')return 'Start with the given equation and keep every original denominator nonzero.';
+ if(op.kind==='swap-sides')return 'Swap the two sides of the equality.';
+ if(op.kind==='isolate-denominator')return `Multiply both sides by ${formatExpression(op.denominator)} (nonzero), divide both sides by ${formatExpression(op.divisor)} (nonzero), simplify, then swap sides to put x first.`;
+ if(op.kind==='collect-terms')return 'Clear defined denominators on both sides and collect the x terms, preserving the original domain.';
+ if(op.kind==='quadratic-formula')return 'Apply the exact quadratic formula and discard values outside the original domain.';
+ throw new TypeError('Unknown mathematical operation');
+}
+/** Derive the operation certificate and its explanation from actual equations.
+ * Nothing in this module knows about layout, a character, a clock or speech.
+ */
+function certifyOperation(previous,current,seed) {
+ const op={...structuredClone(seed)};
+ for(const key of ['explanation','effect','sides','simplifiedSides','transformedEquation','transformations','denominator','divisor','conditions'])delete op[key];
+ const symbol=inverse192[op.kind];
+ if(symbol){
+  if(!op.operand||countUnknowns(op.operand))throw new TypeError('An inverse operation requires a constant operand');
+  const q=evaluateExpression(op.operand);if(['*','/'].includes(symbol)&&q.isZero)throw new TypeError('Cannot multiply or divide by zero');
+  op.conditions=['*','/'].includes(symbol)?[`${formatExpression(op.operand)}!=0`]:[];
+  op.effect='both-sides';op.transformedEquation=eq192(binaryNode(symbol,previous.left,op.operand),binaryNode(symbol,previous.right,op.operand));
+  for(const side of ['left','right'])if(!equivalentExpressions(op.transformedEquation[side],current[side]))throw new TypeError('Operation was not applied to both sides');
+  op.simplifiedSides=changedSides192(op.transformedEquation,current);
+ }else if(op.kind==='simplify-rational'){
+  op.effect='simplification';op.sides=changedSides192(previous,current);
+  if(!op.sides.length||!['left','right'].every(side=>equivalentExpressions(previous[side],current[side])))throw new TypeError('Simplification changes an expression');
+ }else if(op.kind==='isolate-denominator'){
+  if(previous.left.type!=='binary'||previous.left.op!=='/'||!equivalentExpressions(op.operand,previous.left.left))throw new TypeError('Invalid denominator isolation');
+  op.effect='both-sides';op.denominator=structuredClone(previous.left.right);op.divisor=structuredClone(previous.right);
+  if(countUnknowns(op.divisor)||evaluateExpression(op.divisor).isZero)throw new TypeError('Cannot divide by a zero or unknown right side');
+  op.conditions=[`${formatExpression(op.denominator)}!=0`,`${formatExpression(op.divisor)}!=0`];
+  const numerator=previous.left.left,denominator=op.denominator,divisor=op.divisor;
+  const multiplied=eq192(binaryNode('*',previous.left,denominator),binaryNode('*',previous.right,denominator));
+  const divided=eq192(binaryNode('/',multiplied.left,divisor),binaryNode('/',multiplied.right,divisor));
+  op.transformations=[{kind:'multiply-both-sides',operand:denominator,equation:multiplied},
+   {kind:'divide-both-sides',operand:divisor,equation:divided},{kind:'swap-sides',equation:eq192(divided.right,divided.left)}];
+  if(!equivalentExpressions(current.left,denominator)||!equivalentExpressions(current.right,binaryNode('/',numerator,divisor)))throw new TypeError('Invalid denominator isolation result');
+  for(const side of ['left','right'])if(!equivalentExpressions(op.transformations[2].equation[side],current[side]))throw new TypeError('Invalid isolation certificate');
+  op.simplifiedSides=changedSides192(op.transformations[2].equation,current);
+ }else op.effect=op.kind==='given'?'given':op.kind==='swap-sides'?'swap':'equivalent-equation';
+ op.explanation=operationExplanation(op);return op;
+}
+/** Re-derive instead of trusting supplied explanations/certificates. */
+function operationMatches(previous,current,op) {
+ try{
+  const expected=certifyOperation(previous,current,op);
+  for(const key of ['effect','explanation','sides','simplifiedSides','transformedEquation','transformations','denominator','divisor','conditions'])
+   if(!sameAST192(expected[key],op[key]))return false;
+  return true;
+ }catch{return false;}
+}
+
+
+// SOURCE: ../math-problems/src/solver.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+const equationNode=(left,right)=>({type:'equation',left,right});
+function proofFor(analysis){const lead=analysis.polynomial.at(-1);return {classification:analysis.status,normalizedPolynomial:analysis.polynomial.map(q=>(lead.isZero?q:q.div(lead)).toJSON()),solutions:analysis.roots.map(q=>q.toJSON())};}
+function verifyOperation(previous,current,operation,index) {
+ if(!operation||typeof operation.explanation!=='string'||!operation.explanation||!operationMatches(previous.equation,current.equation,operation))return false;
+ const same=equivalentExpressions,op=operation.kind,a=previous.equation,b=current.equation;
+ if(operation.calculation&&(!evaluateExpression(operation.calculation.expression).equals(evaluateExpression(operation.calculation.result))||!evaluateExpression(operation.calculation.result).equals(evaluateExpression(b.right))))return false;
+ if(op==='given')return index===0;
+ if(op==='swap-sides')return same(a.left,b.right)&&same(a.right,b.left);
+ if(op==='simplify-rational')return same(a.left,b.left)&&same(a.right,b.right);
+ const operations={'add-both-sides':'+','subtract-both-sides':'-','multiply-both-sides':'*','divide-both-sides':'/'};
+ if(operations[op]){
+  const operand=operation.operand;
+  if(!operand||countUnknowns(operand))return false;
+  const q=evaluateExpression(operand);if(['*','/'].includes(operations[op])&&q.isZero)return false;
+  if(!same(binaryNode(operations[op],a.left,operand),b.left)||!same(binaryNode(operations[op],a.right,operand),b.right))return false;
+ }else if(op==='isolate-denominator'){
+  if(a.left.type!=='binary'||a.left.op!=='/'||!operation.operand||!same(operation.operand,a.left.left)||!same(a.left.right,b.left)||!same(binaryNode('/',a.left.left,a.right),b.right))return false;
+ }else if(op==='collect-terms'||op==='quadratic-formula'){
+  if(JSON.stringify(operation.coefficients)!==JSON.stringify(previous.polynomial.map(q=>q.toJSON())))return false;
+  if(op==='quadratic-formula'&&previous.polynomial.length!==3)return false;
+  if(op==='collect-terms'&&(previous.polynomial.length!==2||!same(b.left,binaryNode('*',rationalNode(previous.polynomial[1]),variableNode()))||!same(b.right,rationalNode(previous.polynomial[0].neg()))))return false;
+ }else return false;
+ return true;
+}
+function verifySolution(solution) {
+ try {
+  const original=analyzeEquation(solution.equation),steps=solution.steps;
+  if(solution.status!==original.status||!Array.isArray(steps)||!steps.length)return {valid:false,reason:'Classification or steps mismatch'};
+  const expected=original.roots,reported=(solution.solutions??[]).map(q=>Rational.from(q));
+  if(reported.length!==expected.length||!expected.every(q=>reported.some(r=>q.equals(r))))return {valid:false,reason:'Reported solution mismatch'};
+  if(JSON.stringify(solution.domain)!==JSON.stringify(serializeRestrictions(original.restrictions)))return {valid:false,reason:'Original domain restrictions were changed'};
+  if(formatEquation(validateEquation(steps[0].equation))!==formatEquation(original.equation))return {valid:false,reason:'First step is not the original problem'};
+  let previous=original;const checks=[];
+  for(const step of steps){
+   const current=analyzeEquation(step.equation,original.restrictions);
+   if(step.index!==checks.length||step.text!==formatEquation(current.equation)||!sameSolutionSet(previous,current)||!verifyOperation(previous,current,step.operation,checks.length))return {valid:false,reason:'Step changes the equation solution set'};
+   checks.push({equivalent:true,...proofFor(current)});previous=current;
+  }
+  for(const x of expected){const l=evaluateExpression(original.equation.left,x),r=evaluateExpression(original.equation.right,x);if(!l.equals(r))return {valid:false,reason:'Substitution failed'};}
+  if(original.status==='unique'){
+   const last=steps.at(-1).equation;
+   if(last.left.type!=='variable'||countUnknowns(last.right)!==0||!evaluateExpression(last.right).equals(expected[0]))return {valid:false,reason:'Final step does not isolate x'};
+  }
+  return {valid:true,method:'exact symbolic both-side operation certificates and solution-set equivalence under original denominator restrictions',steps:checks,substitution:expected.map(q=>({value:q.toJSON(),valid:true}))};
+ }catch(error){return {valid:false,reason:error.message};}
+}
+function solveEquation(input) {
+ try {
+  const equation=validateEquation(input),analysis=analyzeEquation(equation);
+  const result={version:1,status:analysis.status,equation,domain:serializeRestrictions(analysis.restrictions),solutions:analysis.roots.map(q=>q.toJSON()),steps:[]};
+  let previous=analysis;
+  const append=(eq,operation)=>{
+   const current=analyzeEquation(eq,analysis.restrictions);let certified;
+   try{certified=certifyOperation(previous.equation,eq,operation);}catch(error){throw new MathProblemError('INTERNAL_VERIFICATION',error.message);}
+   if((operation.kind!=='given'&&!sameSolutionSet(previous,current))||!verifyOperation(previous,current,certified,result.steps.length))
+    throw new MathProblemError('INTERNAL_VERIFICATION','Candidate step failed exact equivalence/operation validation');
+   result.steps.push({index:result.steps.length,equation:structuredClone(eq),text:formatEquation(eq),operation:certified});previous=current;
+  };
+  append(equation,{kind:'given'});
+  if(analysis.status!=='unique'){
+   result.explanation=analysis.status==='none'?'No value satisfies the equation in its original domain.':analysis.status==='infinite'?'Every rational value in the original domain satisfies this identity.':analysis.status==='multiple'?'More than one rational value satisfies this equation.':analysis.reason;
+   result.verification=analysis.status==='unsupported'?{valid:false,reason:analysis.reason}:verifySolution(result);return result;
+  }
+  let left=equation.left,right=equation.right;
+  if(countUnknowns(equation)!==1){
+   // Normalize repeated-x affine expressions without inventing a second unknown.
+   if(analysis.polynomial.length===2){left=binaryNode('*',rationalNode(analysis.polynomial[1]),variableNode());right=rationalNode(analysis.polynomial[0].neg());append(equationNode(left,right),{kind:'collect-terms',coefficients:analysis.polynomial.map(q=>q.toJSON())});}
+   else {append(equationNode(variableNode(),rationalNode(analysis.roots[0])),{kind:'quadratic-formula',coefficients:analysis.polynomial.map(q=>q.toJSON())});result.verification=verifySolution(result);return result;}
+  }
+  if(countUnknowns(left)===0){[left,right]=[right,left];append(equationNode(left,right),{kind:'swap-sides'});}
+  let guard=0;
+  while(left.type!=='variable'){
+   if(++guard>64)throw new MathProblemError('TOO_COMPLEX','Isolation exceeds 64 operations');
+   let next,operand,kind,conditions=[];
+   if(left.type==='negate'){
+    // Show the same factor on BOTH sides, before canceling either negative sign.
+    const factor=integerNode(-1),transformed=equationNode(binaryNode('*',left,factor),binaryNode('*',right,factor));
+    append(transformed,{kind:'multiply-both-sides',operand:factor,conditions:[]});
+    left=left.operand;right=rationalNode(evaluateExpression(transformed.right));
+    append(equationNode(left,right),{kind:'simplify-rational'});continue;
+   }
+   else if(left.type==='binary'){
+    const unknownLeft=countUnknowns(left.left)>0,unknown=unknownLeft?left.left:left.right,constant=unknownLeft?left.right:left.left;
+    operand=constant;next=unknown;
+    if(left.op==='+'){right=binaryNode('-',right,constant);kind='subtract-both-sides';}
+    else if(left.op==='-'&&unknownLeft){right=binaryNode('+',right,constant);kind='add-both-sides';}
+    else if(left.op==='-'){next={type:'negate',operand:unknown};right=binaryNode('-',right,constant);kind='subtract-both-sides';}
+    else if(left.op==='*'){const q=evaluateExpression(constant);if(q.isZero)throw new MathProblemError('INTERNAL_VERIFICATION','Cannot divide by zero');right=binaryNode('/',right,constant);kind='divide-both-sides';conditions=[`${formatExpression(constant)}!=0`];}
+    else if(unknownLeft){right=binaryNode('*',right,constant);kind='multiply-both-sides';conditions=[`${formatExpression(constant)}!=0`];}
+    else {const q=evaluateExpression(right);if(q.isZero)throw new MathProblemError('INTERNAL_VERIFICATION','Cannot invert a zero right side');right=binaryNode('/',constant,right);kind='isolate-denominator';conditions=[`${formatExpression(unknown)}!=0`,`${q}!=0`];}
+   }else throw new MathProblemError('UNSUPPORTED_EXPRESSION','Cannot isolate this expression');
+   left=next;const unevaluated=structuredClone(right),simple=rationalNode(evaluateExpression(right));
+   if(left.type==='variable')right=simple;
+   append(equationNode(left,right),{kind,operand:structuredClone(operand),conditions,...(left.type==='variable'?{calculation:{expression:unevaluated,result:structuredClone(simple)}}:{})});
+   if(left.type!=='variable'&&formatExpression(right)!==formatExpression(simple)){right=simple;append(equationNode(left,right),{kind:'simplify-rational',calculation:{expression:unevaluated,result:structuredClone(simple)}});}
+  }
+  // Input may already be x = an unsimplified rational expression.
+  const simple=rationalNode(evaluateExpression(right));if(formatExpression(simple)!==formatExpression(right)){right=simple;append(equationNode(left,right),{kind:'simplify-rational'});}
+  result.verification=verifySolution(result);
+  if(!result.verification.valid)throw new MathProblemError('INTERNAL_VERIFICATION',result.verification.reason);
+  return result;
+ }catch(error){if(!(error instanceof MathProblemError))throw error;return {version:1,status:(error.code.startsWith('UNSUPPORTED')||error.code==='TOO_COMPLEX')?'unsupported':'invalid',error:{code:error.code,message:error.message},solutions:[],steps:[],verification:{valid:false,reason:error.message}};}
+}
+
+
+// SOURCE: ../math-problems/src/generator.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+/** Modernized from Charles B. Cossé's crosswordbuilder fraction-toggle-OFF algorithm.
+ * Original copyright (C) 2001-2010 Asymptopia Software, GPL. See NOTICE.md. */
+function seededRandom(seed=0){
+ if(!['number','string'].includes(typeof seed)||(typeof seed==='number'&&!Number.isFinite(seed))||String(seed).length>200)throw new MathProblemError('INVALID_SEED','Seed must be a finite number or string of at most 200 characters');
+ let state=2166136261;for(const c of String(seed)){state^=c.charCodeAt(0);state=Math.imul(state,16777619)>>>0;}
+ return ()=>{state=(state+0x6D2B79F5)>>>0;let t=state;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};
+}
+function createProblemGenerator(options={}) {
+ const {seed=0,min=1,max=9,operator,missingSlot,maxAttempts=500}=options;
+ if(!Number.isSafeInteger(min)||!Number.isSafeInteger(max)||min>max||Math.abs(min)>1000000||Math.abs(max)>1000000||(min===0&&max===0))throw new MathProblemError('INVALID_RANGE','Use an inclusive integer range within ±1000000 containing a nonzero integer');
+ if(operator!==undefined&&!['+','-','*'].includes(operator))throw new MathProblemError('INVALID_OPERATOR','Operator must be +, - or *');
+ const slots=['a','b','c','d','e','f'];if(missingSlot!==undefined&&!slots.includes(missingSlot))throw new MathProblemError('INVALID_SLOT','Unknown slot must be a, b, c, d, e or f');
+ if(!Number.isInteger(maxAttempts)||maxAttempts<1||maxAttempts>10000)throw new MathProblemError('INVALID_BUDGET','maxAttempts must be 1…10000');
+ const random=seededRandom(seed),nonzeroCount=max-min+1-(min<=0&&max>=0?1:0);
+ const sample=()=>{let value=min+Math.floor(random()*nonzeroCount);if(min<=0&&value>=0)value++;return BigInt(value);};
+ return ()=>{
+  for(let attempt=0;attempt<maxAttempts;attempt++){
+   const a=sample(),b=sample(),d=sample(),e=sample(),op=operator??['+','-','*'][Math.floor(random()*3)];
+   const first=new Rational(a,d),second=new Rational(b,e),value=op==='+'?first.add(second):op==='-'?first.sub(second):first.mul(second);
+   const values={a,b,c:value.n,d,e,f:value.d},slot=missingSlot??slots[Math.floor(random()*6)];
+   const n=key=>key===slot?variableNode():integerNode(values[key]);
+   const equation={type:'equation',left:binaryNode(op,binaryNode('/',n('a'),n('d')),binaryNode('/',n('b'),n('e'))),right:binaryNode('/',n('c'),n('f'))};
+   const solution=solveEquation(equation),answer=new Rational(values[slot]);
+   if(solution.status!=='unique'||!solution.verification.valid||!verifySolution(solution).valid||!Rational.from(solution.solutions[0]).equals(answer))continue;
+   return {version:1,text:formatEquation(equation),equation,operator:op,missingSlot:slot,answer:answer.toJSON(),completed:Object.fromEntries(Object.entries(values).map(([k,v])=>[k,String(v)])),validation:{unique:true,transformationsVerified:true,originalArithmeticValid:value.equals(new Rational(values.c,values.f))}};
+  }
+  throw new MathProblemError('GENERATION_EXHAUSTED','No unique valid problem was found within the attempt budget');
+ };
+}
+function generateProblem(options={}){return createProblemGenerator(options)();}
+function generateProblems(options={}){const {count=3,...rest}=options;if(!Number.isInteger(count)||count<1||count>1000)throw new MathProblemError('INVALID_COUNT','count must be 1…1000');const next=createProblemGenerator(rest);return Array.from({length:count},()=>next());}
+
+
+// SOURCE: ../math-layout/src/layout.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+const metrics17={glyphWidth:.62,advance:.95,operatorGap:.55,fractionScale:.78,fractionGap:.15,fractionPadding:.16};
+// All vertical metrics are explicit y coordinates in the box/item's coordinate system.
+// The text baseline is half an em below the mathematical axis; it is not the bar.
+const verticalMetrics17=(mathAxis,size)=>({axis:mathAxis,mathAxis,baseline:mathAxis+size/2});
+const verticalKeys17=['mathAxis','baseline','barY','numeratorBaseline','denominatorBaseline'];
+const shift17=(items,x,y,role)=>items.map(item=>({...item,x:item.x+x,y:item.y+y,
+ ...Object.fromEntries(verticalKeys17.filter(key=>item[key]!==undefined).map(key=>[key,item[key]+y])),
+ ...(item.fractionBounds?{fractionBounds:{...item.fractionBounds,x:item.fractionBounds.x+x,y:item.fractionBounds.y+y}}:{}),
+ ...(item.points?{points:item.points.map(p=>[p[0]+x,p[1]+y])}:{}),role:role?`${role}/${item.role??'content'}`:item.role}));
+function textBox17(text,size,m,operator){
+ const width=text.length?(text.length-1)*m.advance*size+m.glyphWidth*size:0;
+ return {width,height:size,...verticalMetrics17(size/2,size),items:[...text].map((text,i)=>({kind:'glyph',text,x:i*m.advance*size,y:0,width:m.glyphWidth*size,height:size,
+  mathAxis:size/2,baseline:size,role:operator?'operator':'glyph',...(operator?{operator}:text==='-'?{operator:'unary'}:{})}))};
+}
+function rowBox17(boxes,size,gap=0){
+ const mathAxis=Math.max(...boxes.map(b=>b.mathAxis)),below=Math.max(...boxes.map(b=>b.height-b.mathAxis));let x=0;const items=[];
+ for(const [i,b]of boxes.entries()){if(i)x+=gap;items.push(...shift17(b.items,x,mathAxis-b.mathAxis));x+=b.width;}
+ return {width:x,height:mathAxis+below,...verticalMetrics17(mathAxis,size),items};
+}
+function parentheses17(box,size,m){
+ const width=.35*size,left={kind:'glyph',text:'(',x:0,y:0,width,height:box.height,mathAxis:box.mathAxis,baseline:box.baseline,role:'parenthesis'};
+ return {width:box.width+2*width+.16*size,height:box.height,...verticalMetrics17(box.mathAxis,size),items:[left,...shift17(box.items,width+.08*size,0),{...left,text:')',x:box.width+width+.16*size}]};
+}
+const precedence17=node=>node.type==='binary'?(node.op==='+'||node.op==='-'?1:2):3;
+// A consumer can increase spacing, but cannot collapse operator/fraction clearance.
+const operatorGap17=(m,size)=>Math.max(.5,m.operatorGap)*size;
+function expressionBox17(node,size,m){
+ if(node.type==='integer')return textBox17(node.value,size,m);
+ if(node.type==='variable')return textBox17('x',size,m);
+ if(node.type==='negate'){
+  let child=expressionBox17(node.operand,size,m);
+  if(node.operand.type==='binary'&&node.operand.op!=='/')child=parentheses17(child,size,m);
+  return rowBox17([textBox17('-',size,m,'unary'),child],size,operatorGap17(m,size));
+ }
+ if(node.op==='/'){
+  const n=expressionBox17(node.left,size*m.fractionScale,m),d=expressionBox17(node.right,size*m.fractionScale,m);
+  const padding=m.fractionPadding*size,gap=m.fractionGap*size,width=Math.max(n.width,d.width)+2*padding;
+  // Balance full child extents, including nested fractions, on the math axis.
+  const extent=Math.max(n.height,d.height),barY=extent+gap,numY=extent-n.height,denY=barY+gap,height=2*(extent+gap);
+  const vm=verticalMetrics17(barY,size);
+  return {width,height,...vm,items:[...shift17(n.items,(width-n.width)/2,numY,'numerator'),
+   {kind:'fraction-bar',x:0,y:barY,width,height:0,...{mathAxis:vm.mathAxis,baseline:vm.baseline},barY,
+    numeratorBaseline:numY+n.baseline,denominatorBaseline:denY+d.baseline,
+    fractionBounds:{x:0,y:0,width,height},points:[[0,barY],[width,barY]],role:'fraction-bar'},
+   ...shift17(d.items,(width-d.width)/2,denY,'denominator')]};
+ }
+ let left=expressionBox17(node.left,size,m),right=expressionBox17(node.right,size,m);
+ if(precedence17(node.left)<precedence17(node))left=parentheses17(left,size,m);
+ if(node.right.type==='negate'||(node.right.type==='integer'&&node.right.value.startsWith('-'))||precedence17(node.right)<precedence17(node)||(node.op==='-'&&precedence17(node.right)===precedence17(node)))right=parentheses17(right,size,m);
+ return rowBox17([left,textBox17(node.op==='*'?'·':node.op,size,m,'binary'),right],size,node.op==='*'?Math.max(.3,m.operatorGap-.25)*size:operatorGap17(m,size));
+}
+function options17(options){const {size=24,...custom}=options;const m={...metrics17,...custom};if(!Number.isFinite(size)||size<=0||Object.values(m).some(v=>!Number.isFinite(v)||v<=0)||m.fractionScale>=1)throw new RangeError('Invalid math layout metrics');return {size,m};}
+/** Pure boxes/positioned symbols; no font paths, SVG or animation clocks. */
+function layoutExpression(expression,options={}){
+ const node=validateEquation({type:'equation',left:expression,right:{type:'integer',value:'0'}}).left;
+ const {size,m}=options17(options);return {version:1,...expressionBox17(node,size,m),size};
+}
+function layoutEquation(input,options={}){
+ const eq=validateEquation(input),{size,m}=options17(options),left=expressionBox17(eq.left,size,m),right=expressionBox17(eq.right,size,m),equals=textBox17('=',size,m,'relation');
+ return {version:1,...rowBox17([left,equals,right],size,operatorGap17(m,size)),size,equalsX:left.width+operatorGap17(m,size)};
+}
+/** Size/line placement uses measured expression boxes, not slash-string lengths. */
+function layoutEquations(equations,options={}){
+ const {maxSize=24,minSize=12,width=515,height=220,rowGap=.5,alignEquals=true}=options;
+ if(!Array.isArray(equations)||!equations.length)throw new TypeError('At least one equation is required');
+ if(![maxSize,minSize,width,height,rowGap].every(v=>Number.isFinite(v)&&v>0)||maxSize<minSize)throw new RangeError('Invalid equation layout bounds');
+ const units=equations.map(eq=>layoutEquation(eq,{size:1})),eqX=Math.max(...units.map(b=>b.equalsX));
+ const unitWidth=Math.max(...units.map(b=>b.width+(alignEquals?eqX-b.equalsX:0))),unitHeight=units.reduce((sum,b)=>sum+b.height,0)+(units.length-1)*rowGap;
+ const size=Math.min(maxSize,width/unitWidth,height/unitHeight);if(size<minSize)throw new RangeError('Solution has too many/large expressions for this board; use a paged consumer');
+ const rows=[],items=[];let y=0;
+ for(const [row,eq]of equations.entries()){
+  const box=layoutEquation(eq,{size}),x=alignEquals?eqX*size-box.equalsX:0;
+  rows.push({index:row,x,y,width:box.width,height:box.height,axis:y+box.mathAxis,mathAxis:y+box.mathAxis,baseline:y+box.baseline,equalsX:x+box.equalsX});
+  items.push(...shift17(box.items,x,y).map(item=>({...item,row})));y+=box.height+rowGap*size;
+ }
+ return {version:1,width:unitWidth*size,height:unitHeight*size,size,rows,items};
+}
+
+
+// SOURCE: ../math-layout/src/strokes.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+/** Geometry placement is separate from layout and separate from timing/rendering.
+ * The consumer supplies its own normalized [0..1] reusable vector glyph set. */
+function positionStrokes(layout,glyphs){
+ if(!layout||!Array.isArray(layout.items)||!glyphs)throw new TypeError('Layout items and a vector glyph set are required');
+ const strokes=[];
+ for(const [itemIndex,item]of layout.items.entries()){
+  if(![item.x,item.y,item.width,item.height].every(Number.isFinite)||item.width<0||item.height<0)throw new RangeError('Invalid positioned math bounds');
+  if(item.kind==='fraction-bar')strokes.push({points:item.points.map(p=>[...p]),pen:true,kind:'fraction-bar',role:item.role,row:item.row,item:itemIndex});
+  else if(item.kind==='glyph'){
+   const paths=glyphs[item.text];if(!paths)throw new RangeError(`Missing vector glyph: ${item.text}`);
+   for(const path of paths)if(!Array.isArray(path)||path.length<2||path.some(p=>!Array.isArray(p)||p.length!==2||!p.every(Number.isFinite)))throw new RangeError(`Invalid vector glyph: ${item.text}`);
+   for(const [stroke,path]of paths.entries())strokes.push({points:path.map(p=>[item.x+p[0]*item.width,item.y+p[1]*item.height]),pen:true,kind:'glyph',symbol:item.text,role:item.role,row:item.row,item:itemIndex,stroke});
+  }else throw new TypeError('Unsupported positioned math item');
+ }
+ return {version:1,width:layout.width,height:layout.height,strokes};
+}
+
+
+// SOURCE: ../drawing-arm/src/kinematics.js
+/** Character-independent planar two-link IK. Angles are radians, SVG y points down. */
+const TAU = 2 * Math.PI;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+const point = (p, name) => {
+  if (!Array.isArray(p) || p.length !== 2 || !p.every(Number.isFinite)) throw new TypeError(`${name} must be [finite x, finite y]`);
+  return [...p];
+};
+function configureArm(options = {}) {
+  const c = { upper: 190, forearm: 170, shoulder: [80, 280], side: 'right', elbow: 'positive', tip: 8,
+    limits: { shoulder: [-Math.PI, Math.PI], elbow: [-Math.PI, Math.PI] }, ...options };
+  for (const key of ['upper', 'forearm']) if (!Number.isFinite(c[key]) || c[key] <= 0) throw new RangeError(`${key} must be positive`);
+  if (!Number.isFinite(c.tip) || c.tip < 0) throw new RangeError('tip must be nonnegative');
+  c.shoulder = point(c.shoulder, 'shoulder');
+  if (!['left', 'right'].includes(c.side) || !['positive', 'negative'].includes(c.elbow)) throw new RangeError('Invalid side or elbow orientation');
+  c.limits = { shoulder: [-Math.PI, Math.PI], elbow: [-Math.PI, Math.PI], ...c.limits };
+  for (const key of ['shoulder', 'elbow']) {
+    const range = point(c.limits[key], `${key} limits`);
+    if (range[0] > range[1] || range[1] - range[0] > TAU + 1e-10) throw new RangeError('Limits must be ordered and span at most 2π');
+    c.limits[key] = range;
+  }
+  return c;
+}
+function forward(arm, shoulderAngle, elbowAngle) {
+  const c = configureArm(arm), s = c.shoulder;
+  const elbow = [s[0] + c.upper * Math.cos(shoulderAngle), s[1] + c.upper * Math.sin(shoulderAngle)];
+  const angle = shoulderAngle + elbowAngle;
+  const wrist = [elbow[0] + c.forearm * Math.cos(angle), elbow[1] + c.forearm * Math.sin(angle)];
+  const tip = [wrist[0] + c.tip * Math.cos(angle), wrist[1] + c.tip * Math.sin(angle)];
+  return { shoulder: [...s], elbow, wrist, tip, angles: { shoulder: shoulderAngle, elbow: elbowAngle } };
+}
+// Pick the equivalent angle closest to the configured interval, including seam crossings.
+function fit(angle, range) {
+  const center = (range[0] + range[1]) / 2;
+  const a = angle + TAU * Math.round((center - angle) / TAU);
+  return clamp(a, ...range);
+}
+function solveIK(arm, target) {
+  const c = configureArm(arm); point(target, 'target');
+  const dx = target[0] - c.shoulder[0], dy = target[1] - c.shoulder[1];
+  const r = Math.hypot(dx, dy), a = c.upper, b = c.forearm + c.tip;
+  const projectedRadius = clamp(r, Math.abs(a - b), a + b);
+  const direction = r < 1e-12 ? 0 : Math.atan2(dy, dx);
+  const bend = Math.acos(clamp((projectedRadius ** 2 - a * a - b * b) / (2 * a * b), -1, 1));
+  const sign = (c.elbow === 'positive' ? 1 : -1) * (c.side === 'left' ? -1 : 1);
+  const candidates = [sign, -sign].map(s => {
+    const e = s * bend;
+    const sh = direction - Math.atan2(b * Math.sin(e), a + b * Math.cos(e));
+    return [sh, e];
+  });
+  // Exact preferred branch, or exact opposite branch when required by limits.
+  let chosen = null;
+  for (const [sh, e] of candidates) {
+    const fitted = [fit(sh, c.limits.shoulder), fit(e, c.limits.elbow)];
+    const pose = forward(c, ...fitted);
+    if (distance(pose.tip, target) <= 1e-6) { chosen = pose; break; }
+  }
+  if (!chosen) {
+    // Global closest point on the rectangular joint domain: an interior optimum
+    // is analytic IK (above), otherwise at least one joint lies on a boundary.
+    const poses = [];
+    const add = (sh, e) => poses.push(forward(c, fit(sh, c.limits.shoulder), fit(e, c.limits.elbow)));
+    for (const [sh, e] of candidates) add(sh, e);
+    for (const e of c.limits.elbow) add(direction - Math.atan2(b * Math.sin(e), a + b * Math.cos(e)), e);
+    for (const sh of c.limits.shoulder) {
+      const ex = c.shoulder[0] + a * Math.cos(sh), ey = c.shoulder[1] + a * Math.sin(sh);
+      add(sh, Math.atan2(target[1] - ey, target[0] - ex) - sh);
+      for (const e of c.limits.elbow) add(sh, e);
+    }
+    chosen = poses.reduce((best, p) => distance(p.tip, target) < distance(best.tip, target) - 1e-9 ? p : best);
+  }
+  const error = distance(chosen.tip, target), radialReachable = r >= Math.abs(a - b) - 1e-7 && r <= a + b + 1e-7;
+  return { ...chosen, target: [...target], error, reachable: error <= 1e-6,
+    reason: error <= 1e-6 ? 'reachable' : radialReachable ? 'joint-limits' : 'out-of-reach' };
+}
+function boardToWorld(p, board = {}) {
+  point(p, 'board point');
+  const { origin = [0, 0], scale = 1, rotation = 0 } = board; point(origin, 'board origin');
+  if (!Number.isFinite(scale) || scale <= 0 || !Number.isFinite(rotation)) throw new RangeError('Invalid board transform');
+  return [origin[0] + scale * (p[0] * Math.cos(rotation) - p[1] * Math.sin(rotation)),
+    origin[1] + scale * (p[0] * Math.sin(rotation) + p[1] * Math.cos(rotation))];
+}
+
+
+// SOURCE: ../drawing-arm/src/glyphs.js
+/** Original single-line polyline glyphs. Local cell is 1 × 1. */
+const GLYPHS = {
+ 'x': [[[0,.25],[1,.95]],[[1,.25],[0,.95]]],
+ '0': [[[.2,0],[.8,0],[1,.2],[1,.8],[.8,1],[.2,1],[0,.8],[0,.2],[.2,0]]],
+ '1': [[[.2,.2],[.5,0],[.5,1]],[[.2,1],[.8,1]]],
+ '2': [[[0,.2],[.2,0],[.8,0],[1,.2],[1,.4],[0,1],[1,1]]],
+ '3': [[[0,.15],[.25,0],[.75,0],[1,.2],[.85,.4],[.5,.5],[.85,.6],[1,.8],[.75,1],[.25,1],[0,.85]]],
+ '4': [[[.25,0],[0,.6],[1,.6]],[[.75,0],[.75,1]]],
+ '5': [[[0,0],[0,.48],[.65,.48],[.95,.62],[1,.82],[.8,1],[.1,1]],[[0,0],[1,0]]],
+ '6': [[[1,0],[.3,0],[0,.3],[0,.8],[.2,1],[.8,1],[1,.8],[1,.6],[.8,.5],[0,.5]]],
+ '7': [[[0,0],[1,0],[.3,1]]],
+ '8': [[[.2,.5],[0,.3],[0,.2],[.2,0],[.8,0],[1,.2],[1,.3],[.8,.5],[.2,.5],[0,.7],[0,.8],[.2,1],[.8,1],[1,.8],[1,.7],[.8,.5]]],
+ '9': [[[.9,.1],[.7,0],[.25,0],[0,.2],[0,.4],[.25,.55],[.7,.55],[1,.35],[.9,.1],[1,.65],[.75,1]]],
+ '+': [[[0,.5],[1,.5]],[[.5,0],[.5,1]]],
+ '-': [[[0,.5],[1,.5]]], '−': [[[0,.5],[1,.5]]],
+ '·': [[[.42,.5],[.5,.45],[.58,.5],[.5,.55],[.42,.5]]],
+ '×': [[[.42,.5],[.5,.45],[.58,.5],[.5,.55],[.42,.5]]], '*': [[[.42,.5],[.5,.45],[.58,.5],[.5,.55],[.42,.5]]],
+ '=': [[[0,.3],[1,.3]],[[0,.7],[1,.7]]],
+ '/': [[[1,0],[0,1]]], '÷': [[[.5,.1],[.5,.15]],[[0,.5],[1,.5]],[[.5,.85],[.5,.9]]],
+ '(': [[[.7,0],[.35,.2],[.2,.5],[.35,.8],[.7,1]]],
+ ')': [[[.3,0],[.65,.2],[.8,.5],[.65,.8],[.3,1]]],
+ '.': [[[.5,.95],[.5,1]]]
+};
+
+
+// SOURCE: ../drawing-arm/src/timeline.js
+const finite = (v, name, min = -Infinity) => { if (!Number.isFinite(v) || v < min) throw new RangeError(`Invalid ${name}`); };
+function validateTimeline(input) {
+  if (input?.version !== 1 || !Array.isArray(input.strokes)) throw new TypeError('Expected timeline version 1 and strokes array');
+  const t = structuredClone(input); boardToWorld([0,0], t.board);
+  let end = 0;
+  for (const s of t.strokes) {
+    finite(s.at, 'stroke start', end); finite(s.duration, 'stroke duration', Number.MIN_VALUE);
+    if (!Array.isArray(s.points) || s.points.length < 2) throw new TypeError('Stroke needs at least two points');
+    s.points.forEach(p => boardToWorld(p));
+    if (s.pen !== undefined && typeof s.pen !== 'boolean') throw new TypeError('pen must be boolean');
+    end = s.at + s.duration; finite(end, 'stroke end');
+  }
+  if (t.fallbacks !== undefined) {
+    if (!Array.isArray(t.fallbacks)) throw new TypeError('fallbacks must be an array');
+    for (const f of t.fallbacks) {
+      finite(f.at, 'fallback start', 0); finite(f.size, 'fallback size', Number.MIN_VALUE); boardToWorld(f.position);
+      if (typeof f.text !== 'string') throw new TypeError('fallback text must be a string');
+    }
+  }
+  t.duration = Math.max(end, ...(t.fallbacks ?? []).map(f => f.at), 0);
+  return t;
+}
+/** Compile once; points interpolate at constant arc-length speed within each stroke. */
+function compileTimeline(input) {
+  const t = validateTimeline(input);
+  t.strokes = t.strokes.map(s => {
+    const points = s.points.map(p => boardToWorld(p, t.board)), lengths = [0];
+    for (let i = 1; i < points.length; i++) lengths.push(lengths.at(-1) + distance(points[i-1], points[i]));
+    return { ...s, points, lengths, length: lengths.at(-1) };
+  });
+  return t;
+}
+function strokePoint(stroke, fraction) {
+  const d = Math.max(0, Math.min(1, fraction)) * stroke.length;
+  for (let i = 1; i < stroke.points.length; i++) {
+    if (d <= stroke.lengths[i]) {
+      const span = stroke.lengths[i] - stroke.lengths[i-1], f = span ? (d - stroke.lengths[i-1]) / span : 0;
+      return stroke.points[i-1].map((v, j) => v + f * (stroke.points[i][j] - v));
+    }
+  }
+  return [...stroke.points.at(-1)];
+}
+function sampleTimeline(timeline, time) {
+  finite(time, 'time');
+  const strokes = timeline.strokes;
+  if (!strokes.length) return { point: null, penDown: false, index: -1, progress: 0, done: time >= timeline.duration };
+  let previous = strokes[0].points[0], previousEnd = 0;
+  for (let i = 0; i < strokes.length; i++) {
+    const s = strokes[i];
+    if (time < s.at) {
+      const f = Math.max(0, (time - previousEnd) / (s.at - previousEnd || 1));
+      return { point: previous.map((v,j) => v + f * (s.points[0][j] - v)), penDown: false, index: i, progress: 0, done: false };
+    }
+    if (time < s.at + s.duration) {
+      const progress = (time - s.at) / s.duration;
+      return { point: strokePoint(s, progress), penDown: s.pen !== false, index: i, progress, done: false };
+    }
+    previous = s.points.at(-1); previousEnd = s.at + s.duration;
+  }
+  return { point: [...previous], penDown: false, index: strokes.length - 1, progress: 1, done: time >= timeline.duration };
+}
+function sampleArm(timeline, time, arm) {
+  const sample = sampleTimeline(timeline, time), pose = sample.point ? solveIK(arm, sample.point) : null;
+  return { ...sample, pose, chalkDown: sample.penDown && !!pose?.reachable };
+}
+function textTimeline(text, options = {}) {
+  const { x = 150, y = 100, size = 36, speed = 120, lift = 100, lineHeight = 1.8, board } = options;
+  [x,y].forEach(v => finite(v, 'text origin')); finite(size,'size',Number.MIN_VALUE); finite(speed,'speed',Number.MIN_VALUE); finite(lift,'lift',0); finite(lineHeight,'lineHeight',Number.MIN_VALUE);
+  if (typeof text !== 'string') throw new TypeError('text must be a string');
+  const strokes = [], fallbacks = []; let at = 0, col = 0, row = 0;
+  for (const char of text) {
+    if (char === '\n') { col = 0; row++; continue; }
+    const origin = [x + col * size * .95, y + row * size * lineHeight];
+    if (char !== ' ') {
+      if (!GLYPHS[char]) fallbacks.push({ text: char, position: origin, size, at });
+      else for (const path of GLYPHS[char]) {
+        const points = path.map(p => [origin[0] + p[0] * size * .62, origin[1] + p[1] * size]);
+        const length = points.slice(1).reduce((n,p,i) => n + distance(p,points[i]), 0);
+        const duration = Math.max(1, length / speed * 1000);
+        strokes.push({ at, duration, points, pen: true }); at += duration + lift;
+      }
+    }
+    col++;
+  }
+  return validateTimeline({ version: 1, board: board ?? { origin: [0,0], scale: 1, rotation: 0 }, strokes, fallbacks });
+}
+
+
+// SOURCE: ../drawing-arm/src/svg-renderer.js
+const NS = 'http://www.w3.org/2000/svg';
+function element(tag, attrs, parent) {
+  const el = document.createElementNS(NS, tag);
+  for (const [k,v] of Object.entries(attrs)) el.setAttribute(k,v);
+  parent.append(el); return el;
+}
+/** Owns only the supplied group. No global DOM, character assets or clock. */
+class SVGArmRenderer {
+  constructor(group, timeline, arm, { color = '#f4c976' } = {}) {
+    this.group = group; this.timeline = timeline; this.arm = arm; this.color = color;
+    this.chalk = element('path', { fill:'none', stroke:'#eef6e8', 'stroke-width':2.5, 'stroke-linecap':'round', 'stroke-linejoin':'round' },group);
+    this.fallback = element('g', { fill:'#eef6e8', 'font-family':'Chalkboard, Chalkboard SE, cursive' }, group);
+    for (const f of timeline.fallbacks ?? []) {
+      const transform = timeline.board ?? {};
+      const p = boardToWorld(f.position, transform);
+      const el = element('text',{ x:p[0], y:p[1], 'font-size':f.size * (transform.scale ?? 1),
+        transform:`rotate(${(transform.rotation ?? 0)*180/Math.PI} ${p[0]} ${p[1]})`, 'dominant-baseline':'hanging' },this.fallback);
+      el.textContent = f.text;
+    }
+    this.links = element('path', { fill:'none', stroke:color, 'stroke-width':9, 'stroke-linecap':'round', 'stroke-linejoin':'round' }, group);
+    this.joints = Array.from({length:3},()=>element('circle',{r:6, fill:'#172e2a',stroke:color,'stroke-width':2},group));
+    this.pen = element('line', { stroke:'#fff9ce', 'stroke-width':4, 'stroke-linecap':'round' }, group);
+    this.target = element('circle',{r:5,fill:'none',stroke:'#ff8878','stroke-width':1.5},group);
+    this.setArm(arm);
+  }
+  setArm(arm) {
+    this.arm = arm; this.segments = [];
+    for (const s of this.timeline.strokes) {
+      if (s.pen === false) continue;
+      for (let i=1;i<s.points.length;i++) {
+        const p = s.points[i-1], q = s.points[i], length = distance(p,q), count = Math.max(1, Math.ceil(length/2));
+        for (let j=0;j<count;j++) {
+          const from = p.map((v,k)=>v+(q[k]-v)*j/count), to = p.map((v,k)=>v+(q[k]-v)*(j+1)/count);
+          const t0=s.at+s.duration*(s.length ? (s.lengths[i-1]+length*j/count)/s.length : 0);
+          const t1=s.at+s.duration*(s.length ? (s.lengths[i-1]+length*(j+1)/count)/s.length : 1);
+          const valid=[from,to,from.map((v,k)=>(v+to[k])/2)].every(pt=>solveIK(arm,pt).reachable);
+          this.segments.push({from,to,t0,t1,valid});
+        }
+      }
+    }
+  }
+  render(time) {
+    const sample = sampleArm(this.timeline,time,this.arm); let d='';
+    for (const s of this.segments) {
+      if (s.t0 >= time) break;
+      if (!s.valid) continue;
+      const f=Math.min(1,(time-s.t0)/(s.t1-s.t0 || 1)), p=s.from.map((v,k)=>v+f*(s.to[k]-v));
+      d+=`M${s.from}L${p}`;
+    }
+    this.chalk.setAttribute('d',d);
+    [...this.fallback.children].forEach((el,i)=>el.setAttribute('visibility',time >= this.timeline.fallbacks[i].at ? 'visible':'hidden'));
+    const pose=sample.pose;
+    for (const el of [this.links,this.pen,this.target,...this.joints]) el.setAttribute('visibility',pose?'visible':'hidden');
+    if (!pose) return sample;
+    this.links.setAttribute('d',`M${pose.shoulder}L${pose.elbow}L${pose.wrist}`);
+    [pose.shoulder,pose.elbow,pose.wrist].forEach((p,i)=>{this.joints[i].setAttribute('cx',p[0]);this.joints[i].setAttribute('cy',p[1]);});
+    for (const [key,value] of Object.entries({x1:pose.wrist[0],y1:pose.wrist[1],x2:pose.tip[0],y2:pose.tip[1]})) this.pen.setAttribute(key,value);
+    this.pen.setAttribute('opacity',sample.chalkDown ? 1 : .45);
+    this.target.setAttribute('cx',sample.point[0]);this.target.setAttribute('cy',sample.point[1]);
+    this.target.setAttribute('visibility',pose.reachable?'hidden':'visible');
+    return sample;
+  }
+  destroy() { this.group.replaceChildren(); }
+}
+
+
+// SOURCE: src/body.js
+
+/** SVG axes: +x screen-right, +y down. Origin is the fixed floor point between feet. */
+const BODY_DEFAULTS = Object.freeze({
+  origin: Object.freeze([230, 505]), scale: 1, lean: 0,
+  headSize: 1, neckLength: 21, shoulderWidth: 46,
+  shoulderOffset: Object.freeze([1, -10]),
+  rightShoulderOffset: Object.freeze([0, 0]), leftShoulderOffset: Object.freeze([0, -4]),
+  torsoLength: 115, hipWidth: 24, legHeight: 115, footLength: 19
+});
+const ranges = {
+  headSize: [.6, 1.5], neckLength: [8, 40], shoulderWidth: [24, 90],
+  torsoLength: [70, 160], hipWidth: [12, 60], legHeight: [80, 160], footLength: [10, 40],
+  lean: [-35, 35]
+};
+function pair(value, name) {
+  if (!Array.isArray(value) || value.length !== 2 || !value.every(Number.isFinite)) throw new TypeError(`${name} must be [finite x, finite y]`);
+  return [...value];
+}
+function configureBody(options = {}) {
+  const body = { ...BODY_DEFAULTS, ...options };
+  body.origin = pair(body.origin, 'Body origin');
+  for (const key of ['shoulderOffset', 'rightShoulderOffset', 'leftShoulderOffset']) {
+    body[key] = pair(body[key], key);
+    if (body[key].some(n => Math.abs(n) > 60)) throw new RangeError(`${key} must be within ±60 local units`);
+  }
+  if (!Number.isFinite(body.scale) || body.scale <= 0) throw new RangeError('Body scale must be positive');
+  for (const [key, [min, max]] of Object.entries(ranges)) {
+    if (!Number.isFinite(body[key]) || body[key] < min || body[key] > max) throw new RangeError(`${key} must be between ${min} and ${max}`);
+  }
+  if (body.shoulderWidth + body.rightShoulderOffset[0] - body.leftShoulderOffset[0] <= 0) throw new RangeError('Right shoulder must remain screen-right of the left shoulder');
+  // Ignore unknown fields, and detach every mutable coordinate from caller input.
+  return Object.fromEntries(Object.keys(BODY_DEFAULTS).map(key => [key, body[key]]));
+}
+function bodyToWorld(point, config = {}) {
+  const body = configureBody(config), p = pair(point, 'Local point');
+  return p.map((v, i) => body.origin[i] + v * body.scale);
+}
+/** Reuse the original two-link solver for flexed, constant-length walking legs. */
+function legKnee(hip,ankle,legHeight) {
+  return solveIK({shoulder:hip,upper:.58*legHeight,forearm:.58*legHeight,tip:0,elbow:'positive'},ankle).elbow;
+}
+function bodyLandmarks(config = {}) {
+  const b = configureBody(config), hips = [-3, -b.legHeight];
+  const torsoTop = [b.lean, hips[1] - b.torsoLength];
+  const neck = [b.lean, torsoTop[1] - b.neckLength];
+  const center = [torsoTop[0] + b.shoulderOffset[0], torsoTop[1] + b.shoulderOffset[1]];
+  const shoulder = (side, offset) => [center[0] + side * b.shoulderWidth / 2 + offset[0], center[1] + offset[1]];
+  const rightShoulder = shoulder(1, b.rightShoulderOffset), leftShoulder = shoulder(-1, b.leftShoulderOffset);
+  const leftHip = [hips[0] - b.hipWidth / 2, hips[1]], rightHip = [hips[0] + b.hipWidth / 2, hips[1]];
+  const leftFoot = [-34, 0], rightFoot = [31, 0];
+  return {
+    origin: [0, 0], head: [7 + b.lean, neck[1] - 31 * b.headSize], neck,
+    rightShoulder, leftShoulder, shoulderCenter: center, torsoTop, hips, leftHip, rightHip,
+    leftElbow: [leftShoulder[0] - 12 - b.lean / 2, leftShoulder[1] + b.torsoLength * 59 / 115],
+    leftHand: [leftShoulder[0] - 2 - b.lean, leftShoulder[1] + b.torsoLength * 101 / 115],
+    leftKnee: legKnee(leftHip,leftFoot,b.legHeight),
+    rightKnee: legKnee(rightHip,rightFoot,b.legHeight),
+    leftFoot, rightFoot, leftAnkle: [...leftFoot], rightAnkle: [...rightFoot], leftToe: [leftFoot[0] + b.footLength, 0], rightToe: [rightFoot[0] + b.footLength, 0]
+  };
+}
+/** Anatomical defaults: upper = .65 torso, forearm = .55 torso, tool = .04 torso.
+ * The adapter owns lengths and anchor; rig options supply bend/limits only. */
+function attachedArm(bodyConfig = {}, rig = {}) {
+  const body = configureBody(bodyConfig), local = configureArm({ elbow: 'negative', ...rig,
+    upper: .65 * body.torsoLength, forearm: .55 * body.torsoLength, tip: .04 * body.torsoLength });
+  return configureArm({ ...local, shoulder: bodyToWorld(bodyLandmarks(body).rightShoulder, body),
+    upper: local.upper * body.scale, forearm: local.forearm * body.scale, tip: local.tip * body.scale });
+}
+
+
+// SOURCE: src/curves.js
+/** Smooth tapered silhouette through joint-derived offsets; no skeleton changes. */
+function limbOutline(points, radii) {
+  if(points.length<2||radii.length!==points.length)throw new TypeError('Limb needs matching joints and radii');
+  if(points.some(p=>p.length!==2||!p.every(Number.isFinite))||radii.some(r=>!Number.isFinite(r)||r<0))throw new TypeError('Invalid limb geometry');
+  const tangents=points.map((p,i)=>{const a=points[Math.max(0,i-1)],b=points[Math.min(points.length-1,i+1)],l=Math.hypot(b[0]-a[0],b[1]-a[1])||1;return [(b[0]-a[0])/l,(b[1]-a[1])/l];});
+  const side=sign=>points.map((p,i)=>[p[0]-sign*tangents[i][1]*radii[i],p[1]+sign*tangents[i][0]*radii[i]]);
+  const curve=ps=>ps.slice(1).map((p,j)=>{const i=j+1,a=ps[i-1],before=ps[Math.max(0,i-2)],after=ps[Math.min(ps.length-1,i+1)];return `C${a[0]+(p[0]-before[0])/6},${a[1]+(p[1]-before[1])/6} ${p[0]-(after[0]-a[0])/6},${p[1]-(after[1]-a[1])/6} ${p}`;}).join('');
+  const left=side(1),right=side(-1).reverse(),last=points.at(-1),first=points[0];
+  const end=last.map((v,i)=>v+tangents.at(-1)[i]*radii.at(-1)),start=first.map((v,i)=>v-tangents[0][i]*radii[0]);
+  return `M${left[0]}${curve(left)}Q${end} ${right[0]}${curve(right)}Q${start} ${left[0]}Z`;
+}
+
+
+// SOURCE: src/gait.js
+const easeGait=t=>t*t*(3-2*t);
+/** Step cadence derives from actual root displacement, not an independent timer. */
+function stepCycle(bodyOptions,state) {
+  const body=configureBody(bodyOptions);
+  if(state?.kind!=='move'||!state.move||Math.abs(state.move.to-state.move.from)<1e-8)return null;
+  const {from,to}=state.move,delta=(to-from)/body.scale;
+  const progress=Math.max(0,Math.min(1,(state.offset-from)/(to-from)));
+  const pairs=Math.max(1,Math.ceil(Math.abs(delta)/(.35*body.legHeight))),steps=2*pairs;
+  const phase=Math.min(steps-1,Math.floor(progress*steps)),u=Math.min(1,progress*steps-phase);
+  return {from,to,delta,progress,pairs,steps,phase,u,first:delta>=0?'right':'left',stride:delta/pairs};
+}
+/** Small upright rise at mid-step, zero value and velocity at contact/stop. */
+function walkingBob(body,state) {
+  const cycle=stepCycle(body,state);
+  return cycle?-.015*body.legHeight*body.scale*Math.sin(Math.PI*cycle.u)**2:0;
+}
+/** Alternating steps: stance shoe is fixed in world space, swing shoe lifts. */
+function walkingLandmarks(bodyOptions,state) {
+  const body=configureBody(bodyOptions),p=bodyLandmarks(body),cycle=stepCycle(body,state);
+  if(cycle) {
+    const {from,phase,u,first,stride}=cycle,lift=Math.min(.105*body.legHeight,.6*body.footLength);
+    const bob=walkingBob(body,state)/body.scale;
+    for(const side of ['left','right']) {
+      const parity=side===first?0:1,completed=Math.floor((phase+1-parity)/2),swing=phase%2===parity;
+      const shift=(completed+(swing?easeGait(u):0))*stride;
+      const foot=[p[side+'Foot'][0]+(from-state.offset)/body.scale+shift,(swing?-lift*Math.sin(Math.PI*u)**2:0)-bob];
+      const pitch=swing?-.18*Math.sin(Math.PI*u)**2:0;
+      p[side+'Foot']=foot;p[side+'Ankle']=[...foot];p[side+'Toe']=[foot[0]+body.footLength*Math.cos(pitch),foot[1]+body.footLength*Math.sin(pitch)];
+    }
+  }
+  p.leftKnee=legKnee(p.leftHip,p.leftAnkle,body.legHeight);
+  p.rightKnee=legKnee(p.rightHip,p.rightAnkle,body.legHeight);
+  return p;
+}
+
+
+// SOURCE: src/range-planning.js
+/** Geometry-only line/symbol inference. Source timeline/glyphs are never modified. */
+function boundsOf(points) {
+  return points.reduce((b,p)=>({minX:Math.min(b.minX,p[0]),maxX:Math.max(b.maxX,p[0]),minY:Math.min(b.minY,p[1]),maxY:Math.max(b.maxY,p[1])}),{minX:Infinity,maxX:-Infinity,minY:Infinity,maxY:-Infinity});
+}
+function unionBounds(a,b){return {minX:Math.min(a.minX,b.minX),maxX:Math.max(a.maxX,b.maxX),minY:Math.min(a.minY,b.minY),maxY:Math.max(a.maxY,b.maxY)};}
+function groupWritingStrokes(timeline) {
+  const boxes=timeline.strokes.map(s=>boundsOf(s.points));
+  const heights=boxes.map(b=>b.maxY-b.minY).filter(h=>h>1e-6).sort((a,b)=>a-b);
+  const widths=boxes.map(b=>b.maxX-b.minX).filter(w=>w>1e-6).sort((a,b)=>a-b);
+  const nominal=heights[Math.floor(heights.length/2)]??(widths[Math.floor(widths.length/2)]??24)/.62;
+  const groups=[],byStroke=[];let line=-1,lineBounds=null,previous=null;
+  for(const [i,stroke]of timeline.strokes.entries()) {
+    const box=boxes[i];
+    const newLine=!lineBounds||stroke.pen===false||previous?.pen===false||box.minY>lineBounds.maxY+.45*nominal||box.maxY<lineBounds.minY-.45*nominal;
+    if(newLine){line++;lineBounds=box;}else lineBounds=unionBounds(lineBounds,box);
+    const last=groups.at(-1),margin=.08*nominal;
+    const sameSymbol=last&&last.line===line&&box.minX<=last.bounds.maxX+margin&&box.maxX>=last.bounds.minX-margin;
+    if(sameSymbol){last.end=i;last.points.push(...stroke.points);last.bounds=unionBounds(last.bounds,box);}
+    else groups.push({line,start:i,end:i,points:[...stroke.points],bounds:{...box}});
+    byStroke[i]=groups.length-1;previous=stroke;
+  }
+  return {groups,byStroke,nominalHeight:nominal};
+}
+/** Plan against the whole remaining line, preferring natural symbol boundaries.
+ * Greedy longest feasible prefixes minimize new stances for ordered groups.
+ * Retain a free current prefix if that saves a move; on a tie pre-position once
+ * for a longer run rather than introduce an avoidable extra standing position.
+ */
+function chooseWritingRange(groups,start,currentOffset,place) {
+  const first=groups[start];if(!first)return null;
+  const cache=new Map();
+  const longest=from=>{
+    if(cache.has(from))return cache.get(from);
+    let points=[],range=null;
+    for(let j=from;j<groups.length&&groups[j].line===first.line;j++){
+      points.push(...groups[j].points);const offset=place(points,currentOffset);
+      if(offset===null)break;
+      range={start:from,end:j,offset,line:first.line};
+    }
+    cache.set(from,range);return range;
+  };
+  const movedCost=from=>{
+    let count=0;
+    while(from<groups.length&&groups[from].line===first.line){
+      const r=longest(from);if(!r)return Infinity;
+      count++;from=r.end+1;
+    }
+    return count;
+  };
+  const best=longest(start);
+  if(!best)return {start,end:start,offset:null,line:first.line};
+  let points=[],retained=null;
+  for(let j=start;j<=best.end;j++){
+    points.push(...groups[j].points);const offset=place(points,currentOffset);
+    if(offset===null||Math.abs(offset-currentOffset)>1e-7)break;
+    retained={start,end:j,offset:currentOffset,line:first.line};
+  }
+  if(!retained)return best;
+  if(retained.end===best.end)return retained;
+  return 1+movedCost(best.end+1)<=movedCost(retained.end+1)?best:retained;
+}
+
+
+// SOURCE: src/locomotion.js
+const clamp12 = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
+const ease12 = t => t * t * (3 - 2 * t);
+function translatedBody(body, offset) {
+  return { ...body, origin: [body.origin[0] + offset, body.origin[1]] };
+}
+function segmentDistance12(p, a, b) {
+  const dx=b[0]-a[0],dy=b[1]-a[1],den=dx*dx+dy*dy;
+  const t=den ? clamp12(((p[0]-a[0])*dx+(p[1]-a[1])*dy)/den,0,1) : 0;
+  return distance(p,[a[0]+t*dx,a[1]+t*dy]);
+}
+function validPlacement12(points, arm) {
+  const outer=arm.upper+arm.forearm+arm.tip, inner=Math.abs(arm.upper-arm.forearm-arm.tip);
+  for (const p of points) if (!solveIK(arm,p).reachable) return false;
+  for(let i=1;i<points.length;i++) {
+    // Exact annular test for every point on each straight vector segment.
+    if(segmentDistance12(arm.shoulder,points[i-1],points[i])<inner-1e-7) return false;
+    // Original solver checks preferred/limited IK throughout each segment.
+    const n=Math.max(1,Math.ceil(distance(points[i-1],points[i])/2));
+    for(let j=1;j<n;j++)if(!solveIK(arm,points[i-1].map((v,k)=>v+(points[i][k]-v)*j/n)).reachable)return false;
+  }
+  return points.every(p=>distance(p,arm.shoulder)<=outer+1e-7);
+}
+/** Internal posture band, in world units. No new UI or joint constraints. */
+function writingRange(body, rig={}) {
+  const arm=attachedArm(body,rig),reach=arm.upper+arm.forearm+arm.tip;
+  return {min:.18*reach,max:.98*reach,preferred:.5*reach};
+}
+/** Keep a valid placement; otherwise center the forward-writing band. */
+function placementFor(points, body={}, rig={}, currentOffset=0) {
+  body=configureBody(body);
+  const base=attachedArm(body,rig), R=base.upper+base.forearm+base.tip;
+  const current=attachedArm(translatedBody(body,currentOffset),rig),band=writingRange(body,rig);
+  const comfortable=arm=>points.every(p=>p[0]-arm.shoulder[0]>=band.min-1e-7&&p[0]-arm.shoulder[0]<=band.max+1e-7);
+  if(comfortable(current)&&validPlacement12(points,current))return currentOffset;
+  for(const radius of [R*.94,R]) {
+    let lo=-Infinity,hi=Infinity;
+    for(const p of points) {
+      const dy=p[1]-base.shoulder[1];
+      if(Math.abs(dy)>radius+1e-8){lo=1;hi=0;break;}
+      const dx=Math.sqrt(Math.max(0,radius*radius-dy*dy));
+      lo=Math.max(lo,p[0]-dx-base.shoulder[0],p[0]-band.max-base.shoulder[0]);
+      hi=Math.min(hi,p[0]+dx-base.shoulder[0],p[0]-band.min-base.shoulder[0]);
+    }
+    if(lo>hi+1e-8)continue;
+    const targetCenter=(Math.min(...points.map(p=>p[0]))+Math.max(...points.map(p=>p[0])))/2;
+    const preferred=clamp12(targetCenter-band.preferred-base.shoulder[0],lo,hi),candidates=[preferred,lo,hi,(lo+hi)/2];
+    // Bounded search also handles inner dead zones and explicit joint limits.
+    const n=Math.max(1,Math.ceil((hi-lo)/2));
+    for(let i=0;i<=n;i++)candidates.push(lo+(hi-lo)*i/n);
+    candidates.sort((a,b)=>Math.abs(a-preferred)-Math.abs(b-preferred));
+    for(const x of candidates)if(comfortable(attachedArm(translatedBody(body,x),rig))&&validPlacement12(points,attachedArm(translatedBody(body,x),rig)))return x;
+  }
+  return null;
+}
+function angles12(pose) { return [pose.angles.shoulder,pose.angles.elbow]; }
+/** Inserts grounded moves and pen-up approaches; source coordinates/timing are untouched. */
+function planWriting(timeline, bodyOptions={}, rig={}) {
+  const body=configureBody(bodyOptions), phases=[],writes=[],blocked=[];
+  if(timeline.strokes.some(s=>s.points.some(p=>!p.every(Number.isFinite))))throw new RangeError('Transformed writing points must be finite');
+  const probes=timeline.strokes.reduce((sum,s)=>sum+s.points.slice(1).reduce((n,p,i)=>n+Math.max(1,Math.ceil(distance(s.points[i],p)/2)),0),0);
+  if(!Number.isFinite(probes)||probes>100000)throw new RangeError('Timeline exceeds the spatial planning budget');
+  let cursor=0,offset=0,sourceEnd=0,operations=0;
+  const initial=attachedArm(body,rig);
+  let pose=solveIK(initial,[initial.shoulder[0]+40*body.scale,initial.shoulder[1]+70*body.scale]);
+  const restPose=pose;
+  const add=(phase,duration)=>{const p={...phase,at:cursor,duration};phases.push(p);cursor+=duration;if(!Number.isFinite(cursor))throw new RangeError('Planned playback duration overflow');return p;};
+  const hold=(duration,sourceTime,reason='gap')=>{if(duration>0)add({kind:'hold',offset,angles:angles12(pose),sourceTime,reason},duration);};
+  function writePiece(points,duration,sourceAt,pen=true,clusterOffset=null) {
+    if(++operations>5000)throw new RangeError('Timeline exceeds the 5000-piece planning budget');
+    const next=placementFor(points,body,rig,clusterOffset??offset);
+    if(next===null){blocked.push({sourceAt,points});hold(duration,sourceAt,'blocked');return;}
+    if(Math.abs(next-offset)>1e-7) {
+      const from=offset,angles=angles12(pose);
+      // smoothstep peak speed <= 90 world units/second; every foot stays on floor.
+      add({kind:'move',from,to:next,angles,sourceTime:sourceAt},Math.max(440*Math.max(1,Math.ceil(Math.abs(next-from)/(body.scale*.35*body.legHeight))),Math.abs(next-from)/90*1500));
+      offset=next;pose=forward(attachedArm(translatedBody(body,offset),rig),...angles);
+    }
+    const arm=attachedArm(translatedBody(body,offset),rig),start=solveIK(arm,points[0]);
+    if(distance(pose.tip,start.tip)>1e-6) {
+      const a=angles12(pose),b=angles12(start),duration=Math.max(120,Math.max(Math.abs(a[0]-b[0]),Math.abs(a[1]-b[1]))/2*1000);
+      add({kind:'approach',offset,fromAngles:a,toAngles:b,sourceTime:sourceAt},duration);
+    }
+    const lengths=[0];for(let i=1;i<points.length;i++)lengths.push(lengths.at(-1)+distance(points[i-1],points[i]));
+    const stroke={at:0,duration,points,pen,lengths,length:lengths.at(-1)};
+    const p=add({kind:'write',offset,arm,stroke,sourceAt,sourceTime:sourceAt},duration);writes.push(p);
+    pose=solveIK(arm,points.at(-1));
+  }
+  const grouping=groupWritingStrokes(timeline),ranges=[];
+  let rangeUntil=-1,rangeOffset=null;
+  for(const [index,s] of timeline.strokes.entries()) {
+    hold(s.at-sourceEnd,sourceEnd);
+    if(index>rangeUntil) {
+      const range=chooseWritingRange(grouping.groups,grouping.byStroke[index],offset,
+        (points,current)=>placementFor(points,body,rig,current));
+      rangeUntil=grouping.groups[range.end].end;rangeOffset=range.offset;
+      ranges.push({...range,firstStroke:index,lastStroke:rangeUntil});
+    }
+    if(placementFor(s.points,body,rig,offset)!==null)writePiece(s.points,s.duration,s.at,s.pen!==false,rangeOffset);
+    else {
+      // A path wider than one workspace is split on its original straight edges.
+      // No points are rescaled or shifted; reposition at lifted-chalk boundaries.
+      for(let i=1;i<s.points.length;i++) {
+        const p=s.points[i-1],q=s.points[i],length=distance(p,q),n=Math.max(1,Math.ceil(length/12));
+        for(let j=0;j<n;j++) {
+          const a=p.map((v,k)=>v+(q[k]-v)*j/n),b=p.map((v,k)=>v+(q[k]-v)*(j+1)/n);
+          const fraction=s.length?length/n/s.length:1/(s.points.length-1)/n;
+          writePiece([a,b],Math.max(.0001,s.duration*fraction),s.at+s.duration*(s.length?(s.lengths[i-1]+length*j/n)/s.length:0),s.pen!==false);
+        }
+      }
+    }
+    sourceEnd=s.at+s.duration;
+  }
+  hold(timeline.duration-sourceEnd,sourceEnd);
+  const sourceToWall=sourceTime=>{
+    const p=phases.find(p=>p.kind==='write'&&sourceTime<=p.sourceAt+p.duration);
+    return p?p.at+clamp12(sourceTime-p.sourceAt,0,p.duration):cursor;
+  };
+  return {body,rig:structuredClone(rig),phases,writes,blocked,duration:cursor,restPose,sourceToWall,ranges,groups:grouping.groups};
+}
+function samplePlan(plan,time) {
+  if(!Number.isFinite(time))throw new RangeError('Time must be finite');
+  const t=Math.max(0,time),phases=plan.phases;
+  let p=phases.find(p=>t<p.at+p.duration);
+  if(!p) {
+    const last=phases.at(-1),offset=last?(last.offset??last.to):0;
+    const end=last?samplePlan(plan,Math.max(0,plan.duration-1e-7)):null;
+    return {kind:'done',offset,pose:end?.pose??plan.restPose,point:end?.point??null,penDown:false,chalkDown:false,done:true,sourceTime:Infinity};
+  }
+  const u=clamp12((t-p.at)/p.duration,0,1),f=ease12(u);
+  if(p.kind==='write') {
+    const point=strokePoint(p.stroke,u),pose=solveIK(p.arm,point),penDown=p.stroke.pen!==false;
+    return {kind:'write',offset:p.offset,pose,point,penDown,chalkDown:penDown&&pose.reachable,done:false,sourceTime:p.sourceAt+u*p.duration};
+  }
+  const offset=p.kind==='move'?p.from+(p.to-p.from)*f:p.offset;
+  const angles=p.kind==='approach'?p.fromAngles.map((v,i)=>v+(p.toAngles[i]-v)*f):p.angles;
+  const motion={kind:p.kind,offset,...(p.kind==='move'?{move:{from:p.from,to:p.to}}:{})};
+  const bodyLift=walkingBob(plan.body,motion),body=translatedBody(plan.body,offset);
+  body.origin[1]+=bodyLift;
+  return {...motion,bodyLift,reason:p.reason,pose:forward(attachedArm(body,plan.rig),...angles),point:null,penDown:false,chalkDown:false,done:false,sourceTime:p.kind==='hold'?p.sourceTime+u*p.duration:p.sourceTime};
+}
+
+
+// SOURCE: src/teaching.js
+
+const TEACHING_LOWER = 450, TEACHING_PAUSE = 1500;
+/** Add cadence to a spatial plan using structured solver boundaries only.
+ * Original spatial phases and writing coordinates are copied, never replanned.
+ */
+function teachingPlan(base, steps) {
+  // Old/free-writing imports without structured metadata keep their old behavior.
+  if (!Array.isArray(steps) || !steps.length) return {...base, teachingSteps: []};
+  let previousEnd = -1;
+  for (const [i, step] of steps.entries()) {
+    if (step?.index !== i || !Number.isFinite(step.at) || !Number.isFinite(step.end) ||
+        step.at < 0 || step.at <= previousEnd || step.end <= step.at ||
+        typeof step.operation?.explanation !== 'string') throw new TypeError('Invalid structured teaching step');
+    previousEnd = step.end;
+  }
+  const phases = [], teachingSteps = [], cuts = [];
+  const arm=attachedArm(base.body,base.rig), reach=arm.upper+arm.forearm+arm.tip;
+  const relaxed=solveIK(arm,[arm.shoulder[0]+.10*reach,arm.shoulder[1]+.92*reach]);
+  const rest = [relaxed.angles.shoulder,relaxed.angles.elbow];
+  for (const step of steps) {
+    const sourceStart = p => p.sourceAt ?? p.sourceTime;
+    const members = base.phases.filter(p => (p.kind==='write'||p.reason==='blocked') && sourceStart(p) >= step.at - 1e-6 && sourceStart(p)+p.duration <= step.end+1e-6);
+    if (!members.length) throw new TypeError('Teaching step has no planned writing strokes');
+    const first = members[0], last = members.at(-1);
+    if (Math.abs(sourceStart(first)-step.at)>1e-6 || Math.abs(sourceStart(last)+last.duration-step.end)>1e-6)
+      throw new TypeError('Teaching boundaries must match complete solver lines');
+    cuts.push({step, start:first.at, at:last.at+last.duration});
+  }
+  let shift = 0;
+  for (const phase of base.phases) {
+    // Replace the adapter's inter-line source gap with the explicit teaching rest.
+    if(phase.kind==='hold'&&phase.reason==='gap'&&cuts.some(c=>Math.abs(c.step.end-phase.sourceTime)<1e-6)) {shift-=phase.duration;continue;}
+    const copied = {...phase, at:phase.at+shift}; phases.push(copied);
+    const cut = cuts.find(c => Math.abs(c.at-phase.at-phase.duration)<1e-6);
+    if (!cut) continue;
+    const end = samplePlan(base, cut.at-1e-7), angles = [end.pose.angles.shoulder,end.pose.angles.elbow];
+    const final = cut.step.index === steps.length-1, complete = cut.at+shift, start=cut.start+shift;
+    const add = (kind,duration,extra) => phases.push({kind,offset:end.offset,sourceTime:cut.step.end,
+      teachingIndex:cut.step.index,at:cut.at+shift,duration,...extra});
+    add('approach',TEACHING_LOWER,{fromAngles:angles,toAngles:rest,reason:'teaching-lower'}); shift += TEACHING_LOWER;
+    const gate = cut.at+shift;
+    add('hold',TEACHING_PAUSE,{angles:rest,reason:'teaching-pause'}); shift += TEACHING_PAUSE;
+    const resume = cut.at+shift;
+    if (!final) {add('approach',TEACHING_LOWER,{fromAngles:rest,toAngles:angles,reason:'teaching-raise'});shift+=TEACHING_LOWER;}
+    teachingSteps.push({...structuredClone(cut.step),start,complete,gate,resume,final});
+  }
+  const writes = phases.filter(p => p.kind==='write');
+  const sourceToWall = source => {
+    const p = writes.find(p => source <= p.sourceAt+p.duration);
+    return p ? p.at+Math.max(0,Math.min(p.duration,source-p.sourceAt)) : base.duration+shift;
+  };
+  return {...base,phases,writes,duration:base.duration+shift,sourceToWall,teachingSteps};
+}
+
+/** Pure reconstruction: neither prior frames nor previously visited steps matter. */
+function sampleTeaching(plan,time) {
+  const state = samplePlan(plan,time);
+  const current = plan.teachingSteps?.filter(s=>s.start<=time).at(-1) ?? plan.teachingSteps?.[0];
+  const phase = plan.phases.find(p=>time>=p.at&&time<p.at+p.duration);
+  if (phase?.teachingIndex !== undefined) state.sourceTime = plan.teachingSteps[phase.teachingIndex].end;
+  return {...state,teaching:current?{...current,waiting:!current.final&&time>=current.gate&&time<current.resume}:null};
+}
+
+/** A large frame delta cannot skip a Step-mode gate. Speed scales timeline time. */
+function advanceTeaching(plan,time,delta,mode='auto') {
+  if (!Number.isFinite(time)||!Number.isFinite(delta)||delta<0) throw new RangeError('Invalid playback time');
+  const next = Math.min(plan.duration,time+delta);
+  if(mode==='step') {
+    const gate=plan.teachingSteps?.find(s=>!s.final&&s.resume>time&&s.gate<=next);
+    if(gate) return {time:Math.max(time,gate.gate),waiting:true};
+  }
+  return {time:next,waiting:false};
+}
+
+
+// SOURCE: src/presentation-action.js
+/** General-purpose presentation data. No lesson, mathematics, SVG or audio dependency. */
+const GESTURES = Object.freeze(['thoughtful-explain','present','emphasize','idle']);
+function presentationAction(input) {
+  if(input?.type!=='talk-and-gesture'||typeof input.text!=='string'||!input.text.trim()||input.text.length>4000)
+    throw new TypeError('A talk-and-gesture action needs nonempty text (up to 4000 characters)');
+  if(input.elbowPreference!==undefined&&!['outward','inward'].includes(input.elbowPreference))throw new TypeError('Invalid elbow preference');
+  if(input.indicatingArm!==undefined&&!['left','right'].includes(input.indicatingArm))throw new TypeError('Invalid indicating arm');
+  const {orientation='audience',count=1}=input;
+  const gesture=input.gesture==='explain'?'thoughtful-explain':input.gesture??'thoughtful-explain';
+  if((!GESTURES.includes(gesture)&&gesture!=='count')||orientation!=='audience'||!Number.isInteger(count)||count<1||count>20)
+    throw new TypeError('Invalid presentation gesture, orientation or count');
+  // A deterministic visual slot. Actual browser audio may hold its final instant.
+  const duration=input.duration??Math.max(2400,input.text.trim().split(/\s+/u).length*440+1000);
+  if(!Number.isFinite(duration)||duration<1000||duration>120000)throw new RangeError('Invalid presentation duration');
+  return {type:'talk-and-gesture',text:input.text,gesture,orientation,count,duration,...(input.indicatingArm?{indicatingArm:input.indicatingArm}:{}),...(input.elbowPreference?{elbowPreference:input.elbowPreference}:{})};
+}
+/** Generic standalone action clip; no lesson plan is required by other consumers. */
+function compilePresentationAction(input,{at=0,id='presentation',turn=700,wait=1500}={}) {
+  const action=presentationAction(input);
+  if(![at,turn,wait].every(Number.isFinite)||at<0||turn<=0||wait<0)throw new RangeError('Invalid presentation clip timing');
+  const talkAt=at+turn,talkEnd=talkAt+action.duration,gate=talkEnd,resume=gate+wait,end=resume+turn;
+  return {id,action,at,talkAt,talkEnd,gate,resume,end};
+}
+function samplePresentationAction(p,time) {
+  if(!Number.isFinite(time))throw new RangeError('Presentation time must be finite');
+  if(time<p.at||time>=p.end)return {presentation:null,orientation:'board',audience:0};
+  const stage=time<p.talkAt?'turn-out':time<p.talkEnd?'talk':time<p.resume?'wait':'turn-in';
+  const progress=stage==='turn-out'?(time-p.at)/(p.talkAt-p.at):stage==='turn-in'?1-(time-p.resume)/(p.end-p.resume):1;
+  const audience=progress*progress*(3-2*progress);
+  return {orientation:stage.startsWith('turn')?'transitioning':'audience',audience,
+    presentation:{...p,stage,elapsed:Math.max(0,Math.min(p.action.duration,time-p.talkAt))}};
+}
+
+
+// SOURCE: src/presentation-plan.js
+const PRESENTATION_TURN = 700;
+/** Adapt an existing lesson pause to a generic action; the B1.8 sequencer stays intact. */
+function presentationPlan(base, actions) {
+  if(!base.teachingSteps?.length)return {...base,presentations:[]};
+  const selected=base.teachingSteps.map((step,i)=>{
+    // Explain the NEXT transformation after its prerequisite line is on the board.
+    const next=base.teachingSteps[i+1]??step;
+    return {action:presentationAction(actions?.[i]??{type:'talk-and-gesture',text:next.operation.explanation,
+      gesture:'thoughtful-explain',count:next.index+1}),explanationIndex:next.index};
+  });
+  if(actions&&actions.length!==base.teachingSteps.length)throw new RangeError('Expected one presentation action per teaching pause');
+  const phases=[],presentations=[],shifts=[];let shift=0;
+  for(const phase of base.phases){
+    if(phase.reason!=='teaching-pause'){phases.push({...phase,at:phase.at+shift});continue;}
+    const index=phase.teachingIndex,{action,explanationIndex}=selected[index],at=phase.at+shift;
+    const clip=compilePresentationAction(action,{at,id:`presentation-${index}`,turn:PRESENTATION_TURN,wait:phase.duration});
+    const p={...clip,index,explanationIndex};presentations.push(p);
+    const {talkAt,gate,resume}=p;
+    const add=(stage,start,duration)=>phases.push({...phase,at:start,duration,reason:stage==='talk'?'talk-and-gesture':`presentation-${stage}`,presentation:{id:p.id,stage}});
+    add('turn-out',at,PRESENTATION_TURN);add('talk',talkAt,action.duration);add('wait',gate,phase.duration);add('turn-in',resume,PRESENTATION_TURN);
+    const extra=2*PRESENTATION_TURN+action.duration;
+    shifts.push({at:phase.at,extra});shift+=extra;
+  }
+  const shifted=t=>t+shifts.filter(s=>s.at<t-1e-6).reduce((n,s)=>n+s.extra,0);
+  const teachingSteps=base.teachingSteps.map((s,i)=>({...s,start:shifted(s.start),complete:shifted(s.complete),gate:presentations[i].gate,resume:presentations[i].resume}));
+  return {...base,phases,writes:phases.filter(p=>p.kind==='write'),teachingSteps,presentations,duration:base.duration+shift,
+    sourceToWall:t=>shifted(base.sourceToWall(t))};
+}
+function samplePresentation(plan,time) {
+  const state=sampleTeaching(plan,time);
+  const p=plan.presentations?.find(p=>time>=p.at&&time<p.end);
+  if(!p)return {...state,presentation:null,orientation:'board',audience:0};
+  const sampled=samplePresentationAction(p,time),stage=sampled.presentation.stage;
+  return {...state,...sampled,kind:stage==='talk'?'talk-and-gesture':stage.startsWith('turn')?'turn':state.kind,
+    chalkDown:false,penDown:false};
+}
+/** Ensure a talk slot is observed, then wait for live audio before turning away.
+ * This transport guard never changes a sampled pose or permanently records progress.
+ */
+function presentationAdvance(plan,time,next,busy=false) {
+  const active=plan.presentations?.find(p=>time>=p.talkAt&&time<p.talkEnd);
+  if(active&&busy&&next>=active.talkEnd)return Math.max(time,active.talkEnd-.001);
+  const entering=plan.presentations?.find(p=>time<p.talkAt&&next>=p.talkAt);
+  return entering?entering.talkAt:next;
+}
+
+
+// SOURCE: src/orientation.js
+/** Renderer-independent anatomical coordinates: x = the character's right,
+ * y = down, z = forward. Orthographic camera depth increases away from viewer.
+ * IDs describe anatomy, never the current screen-side ordering.
+ */
+const ANATOMICAL_SIDES=Object.freeze(['left','right']);
+function characterFacing(audience,{boardYaw=Math.PI/6,audienceYaw=Math.PI,pivot=[0,0]}={}) {
+  if(![audience,boardYaw,audienceYaw,...pivot].every(Number.isFinite)||pivot.length!==2)throw new RangeError('Invalid facing transform');
+  const progress=Math.max(0,Math.min(1,audience)),yaw=boardYaw+(audienceYaw-boardYaw)*progress;
+  return {progress,yaw,boardYaw,audienceYaw,pivot:[...pivot],cos:Math.cos(yaw),sin:Math.sin(yaw)};
+}
+function projectAnatomical(point,facing) {
+  const [x,y,z]=point;
+  return {point:[facing.pivot[0]+x*facing.cos+z*facing.sin,facing.pivot[1]+y],depth:-x*facing.sin+z*facing.cos};
+}
+/** Lift a board-space joint with known camera depth into permanent anatomy. */
+function liftProjected(point,depth,facing) {
+  const x=point[0]-facing.pivot[0];
+  return [x*facing.cos-depth*facing.sin,point[1]-facing.pivot[1],x*facing.sin+depth*facing.cos];
+}
+function projectSkeleton(joints,facing) {
+  return Object.fromEntries(Object.entries(joints).map(([id,p])=>[id,projectAnatomical(p,facing)]));
+}
+/** Length-preserving interpolation of a bone, including antipodal directions. */
+function turnBone(from,to,t) {
+  const length=Math.hypot(...from),targetLength=Math.hypot(...to);
+  if(!length||!targetLength)throw new RangeError('Anatomical bones must have positive length');
+  if(t<=0)return [...from];if(t>=1)return to.map(v=>v*length/targetLength);
+  const a=from.map(v=>v/length),b=to.map(v=>v/targetLength),dot=Math.max(-1,Math.min(1,a.reduce((n,v,i)=>n+v*b[i],0)));
+  let unit;
+  if(dot>.9995){unit=a.map((v,i)=>v+(b[i]-v)*t);const n=Math.hypot(...unit);unit=unit.map(v=>v/n);}
+  else if(dot<-.9995){
+    let perpendicular=b.map((v,i)=>v-a[i]*dot),n=Math.hypot(...perpendicular);
+    if(n<1e-10){const axis=Math.abs(a[0])<.9?[1,0,0]:[0,1,0];perpendicular=[a[1]*axis[2]-a[2]*axis[1],a[2]*axis[0]-a[0]*axis[2],a[0]*axis[1]-a[1]*axis[0]];n=Math.hypot(...perpendicular);}
+    perpendicular=perpendicular.map(v=>v/n);const angle=Math.acos(dot);
+    unit=a.map((v,i)=>v*Math.cos(angle*t)+perpendicular[i]*Math.sin(angle*t));
+  }else {const angle=Math.acos(dot),den=Math.sin(angle);unit=a.map((v,i)=>(v*Math.sin((1-t)*angle)+b[i]*Math.sin(t*angle))/den);}
+  return unit.map(v=>v*length);
+}
+/** Coarse whole-arm painter ordering. Stable ties; no geometry/identity swapping.
+ * At the front, a small surface allowance places arms over the torso surface.
+ */
+function armDepthOrder(projected,facing,surface=0) {
+  const arms=ANATOMICAL_SIDES.map(side=>{
+    const depth=['Shoulder','Elbow','Wrist'].reduce((n,joint)=>n+projected[side+joint].depth,0)/3;
+    const allowance=surface*Math.max(0,-facing.cos);
+    return {side,depth,layer:depth<=allowance+1e-9?'near':'far'};
+  });
+  const backToFront=(a,b)=>Math.abs(a.depth-b.depth)>1e-9?b.depth-a.depth:a.side.localeCompare(b.side);
+  const far=arms.filter(a=>a.layer==='far').sort(backToFront),near=arms.filter(a=>a.layer==='near').sort(backToFront);
+  return {arms:Object.fromEntries(arms.map(a=>[a.side,a])),order:[...far.map(a=>a.side),'torso',...near.map(a=>a.side)]};
+}
+
+
+// SOURCE: src/audience-arm.js
+/** Two-link audience pose in anatomical 3D coordinates. x is anatomical right.
+ * A smooth lateral pole selects the elbow independently of screen-space IK branches.
+ */
+function audienceArmPose(arm,target,side,{elbowPreference='outward',maxExtension=.95}={}) {
+  if(!['left','right'].includes(side)||!['outward','inward'].includes(elbowPreference)||!Number.isFinite(maxExtension)||maxExtension<=0||maxExtension>1)
+    throw new RangeError('Invalid audience arm preference');
+  const shoulder=[...arm.shoulder],upper=arm.upper,forearm=arm.forearm,tip=arm.tip??0,lower=forearm+tip;
+  if(shoulder.length!==3||target.length!==3||![...shoulder,...target,upper,forearm,tip].every(Number.isFinite)||upper<=0||forearm<=0||tip<0)
+    throw new RangeError('Invalid anatomical arm/target');
+  const delta=target.map((v,i)=>v-shoulder[i]),desired=Math.hypot(...delta),reach=upper+lower,sign=side==='right'?1:-1;
+  const direction=desired>1e-10?delta.map(v=>v/desired):[sign,0,0];
+  if(reach*maxExtension<=Math.abs(upper-lower))throw new RangeError('Extension preference cannot fit these arm proportions');
+  const distance=Math.max(Math.abs(upper-lower)+reach*1e-8,Math.min(reach*maxExtension,desired));
+  const along=(upper*upper-lower*lower+distance*distance)/(2*distance),radius=Math.sqrt(Math.max(0,upper*upper-along*along));
+  // A forward component prevents a branch flip as a hand passes shoulder height;
+  // the downward component keeps near-horizontal gestures visibly bent and relaxed.
+  const lateral=sign*(elbowPreference==='outward'?1:-1),pole=[lateral,.35,.30];
+  const dot=pole.reduce((sum,v,i)=>sum+v*direction[i],0);
+  let perpendicular=pole.map((v,i)=>v-dot*direction[i]),n=Math.hypot(...perpendicular);
+  if(n<1e-8){const fallback=Math.abs(direction[1])<.9?[0,1,0]:[0,0,1],d=fallback.reduce((sum,v,i)=>sum+v*direction[i],0);perpendicular=fallback.map((v,i)=>v-d*direction[i]);n=Math.hypot(...perpendicular);}
+  const elbow=shoulder.map((v,i)=>v+along*direction[i]+radius*perpendicular[i]/n);
+  const end=shoulder.map((v,i)=>v+distance*direction[i]),wrist=elbow.map((v,i)=>v+(end[i]-v)*forearm/lower);
+  return {shoulder,elbow,wrist,tip:end,elbowPreference,pole};
+}
+
+
+// SOURCE: src/thoughtful-pose.js
+const unitThoughtful=v=>{const n=Math.hypot(...v);return v.map(x=>x/n);};
+const addThoughtful=(a,b)=>a.map((v,i)=>v+b[i]);
+const subtractThoughtful=(a,b)=>a.map((v,i)=>v-b[i]);
+const smoothThoughtful=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
+function fromBonesThoughtful(arm,upper,forearm,extra={}){
+ const elbow=addThoughtful(arm.shoulder,upper),wrist=addThoughtful(elbow,forearm),tip=addThoughtful(wrist,forearm.map(v=>v*(arm.tip??0)/arm.forearm));
+ return {shoulder:[...arm.shoulder],elbow,wrist,tip,elbowPreference:'outward',...extra};
+}
+function relaxedAudienceArm(arm,side){
+ const sign=side==='right'?1:-1;
+ return fromBonesThoughtful(arm,unitThoughtful([sign*.14,.98,.12]).map(v=>v*arm.upper),unitThoughtful([-sign*.36,.90,.25]).map(v=>v*arm.forearm),{role:'relaxed'});
+}
+function blendThoughtful(arm,from,to,t){
+ return fromBonesThoughtful(arm,turnBone(subtractThoughtful(from.elbow,from.shoulder),subtractThoughtful(to.elbow,to.shoulder),t),
+  turnBone(subtractThoughtful(from.wrist,from.elbow),subtractThoughtful(to.wrist,to.elbow),t),{role:to.role??'indicating'});
+}
+/** Coupled, length-preserving pose: anatomical left supports anatomical right.
+ * The contact follows the small elbow motion, rather than two unrelated targets.
+ */
+function thoughtfulArms(arms,elapsed,duration,{emphasis=false}={}){
+ const t=Math.max(0,Math.min(duration,elapsed)),envelope=smoothThoughtful(t/500)*smoothThoughtful((duration-t)/500),wave=Math.sin(2*Math.PI*t/duration)*envelope;
+ const raised=arms.right,support=arms.left,reach=support.upper+support.forearm;
+ let choice;
+ // Prefer a small outward flare; adapt inward only for broad/short-arm proportions.
+ for(const lateral of [.28,.22,.14,.08,.02,-.08,-.2,-.35,-.5,-.7,-.85,-.95]){
+  const yz=Math.sqrt(1-lateral*lateral),upper=unitThoughtful([lateral+.008*wave,.94*yz,.34*yz]).map(v=>v*raised.upper);
+  const fore=unitThoughtful([-.64+(emphasis?.09:.05)*wave,-.72,.26+.015*wave]).map(v=>v*raised.forearm);
+  const right=fromBonesThoughtful(raised,upper,fore,{role:'indicating'}),contact=addThoughtful(right.elbow,[0,.045*support.forearm,.06*support.forearm]);
+  const baseUpper=unitThoughtful([lateral,.94*yz,.34*yz]).map(v=>v*raised.upper),baseContact=addThoughtful(addThoughtful(raised.shoulder,baseUpper),[0,.045*support.forearm,.06*support.forearm]);
+  const score=Math.hypot(...subtractThoughtful(baseContact,support.shoulder));
+  if(!choice||score<choice.score)choice={right,contact,score};
+  if(score+raised.upper*.015<=reach*.96&&score>Math.abs(support.upper-support.forearm)+1e-7)break;
+ }
+ const left=audienceArmPose(support,choice.contact,'left',{maxExtension:.96});left.role='supporting';left.allowsCrossing=true;
+ const gap=Math.hypot(...subtractThoughtful(left.wrist,choice.contact));
+ return {right:choice.right,left,supportContact:{supporting:'left',supported:'right',target:choice.contact,gap,reachable:gap<1e-6}};
+}
+/** Reusable vocabulary; no lesson, SVG or speech dependency. */
+function audienceGestureTargets(arms,action,elapsed){
+ const duration=action.duration,t=Math.max(0,Math.min(duration,elapsed));
+ if(action.gesture==='thoughtful-explain'||action.gesture==='explain')return thoughtfulArms(arms,t,duration);
+ const targets={left:relaxedAudienceArm(arms.left,'left'),right:relaxedAudienceArm(arms.right,'right')};
+ const envelope=smoothThoughtful(t/500)*smoothThoughtful((duration-t)/500);
+ if(action.gesture==='emphasize'||action.gesture==='count'){
+  const indicating=thoughtfulArms(arms,t,duration,{emphasis:true}).right;
+  targets.right=blendThoughtful(arms.right,targets.right,indicating,envelope);
+ }else if(action.gesture==='present'){
+  if(action.indicatingArm==='right'){
+   const arm=arms.right,wave=Math.sin(2*Math.PI*t/duration)*envelope;
+   // A low, bent upper arm and a compact indicating forearm. The other arm rests.
+   const pointing=fromBonesThoughtful(arm,unitThoughtful([.20,.96,.18]).map(v=>v*arm.upper),unitThoughtful([-.89,-.42+.025*wave,.16]).map(v=>v*arm.forearm),{role:'indicating'});
+   targets.right=blendThoughtful(arm,targets.right,pointing,envelope);
+   return targets;
+  }
+  const arm=arms.left,reach=arm.upper+arm.forearm+(arm.tip??0),wave=Math.sin(2*Math.PI*t/duration)*envelope;
+  const pointing=audienceArmPose(arm,addThoughtful(arm.shoulder,[-.80*reach,(.06+.012*wave)*reach,0]),'left',{elbowPreference:action.elbowPreference??'outward'});pointing.role='presenting';
+  targets.left=blendThoughtful(arm,targets.left,pointing,envelope);
+ }
+ return targets;
+}
+
+
+// SOURCE: src/presentation-rig.js
+const mixPresentation=(a,b,t)=>a.map((v,i)=>v+(b[i]-v)*t);
+const smoothPresentation=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
+/** Calibrate the existing rear projection without changing its coordinates.
+ * The right writing arm lifts in a camera-parallel plane; the left rest pose
+ * recovers its foreshortened depth while preserving the original board silhouette.
+ */
+function anatomicalReference(config,base){
+  const b=configureBody(config),p=base??bodyLandmarks(b),pivot=[(p.leftShoulder[0]+p.rightShoulder[0])/2,0];
+  const board=characterFacing(0,{pivot}),joints={};
+  for(const side of ['left','right']){
+    const shoulder=p[side+'Shoulder'],depth=-(shoulder[0]-pivot[0])*Math.tan(board.yaw);
+    joints[side+'Shoulder']=liftProjected(shoulder,depth,board);
+  }
+  for(const key of ['head','neck','torsoTop','shoulderCenter'])joints[key]=[0,p[key][1],(p[key][0]-pivot[0])/board.sin];
+  return {body:b,base:p,board,joints};
+}
+function orientedLandmarks(config,audience=0,base){
+  const r=anatomicalReference(config,base),facing=characterFacing(audience,{pivot:r.board.pivot}),projected=projectSkeleton(r.joints,facing),p=structuredClone(r.base);
+  if(audience!==0)for(const [key,joint]of Object.entries(projected))p[key]=joint.point;
+  return p;
+}
+/** Permanent anatomical arm identities, then projection. Bones keep their actual
+ * 3D lengths; their 2D projections can naturally foreshorten in a three-quarter view.
+ */
+function presentationRig(config,state,base,rig={}) {
+  const r=anatomicalReference(config,base),b=r.body,original=bodyLandmarks(b),a=Math.max(0,Math.min(1,state.audience)),facing=characterFacing(a,{pivot:r.board.pivot});
+  const action=state.presentation?.action??{gesture:'idle',duration:2400};
+  const elapsed=state.presentation?.stage==='talk'?state.presentation.elapsed:0;
+  const joints={...r.joints},anatomicalArms={};
+  const local=p=>p.map((v,i)=>(v-b.origin[i])/b.scale),subtract=(p,q)=>p.map((v,i)=>v-q[i]),add=(p,q)=>p.map((v,i)=>v+q[i]);
+  const armDefinitions={right:{shoulder:joints.rightShoulder,upper:.65*b.torsoLength,forearm:.55*b.torsoLength,tip:.04*b.torsoLength},
+    left:{shoulder:joints.leftShoulder,upper:Math.max(.65*b.torsoLength,distance(original.leftShoulder,original.leftElbow)),forearm:Math.max(.55*b.torsoLength,distance(original.leftElbow,original.leftHand)),tip:0}};
+  const targets=audienceGestureTargets(armDefinitions,action,elapsed);
+  for(const side of ['left','right']){
+    const right=side==='right',shoulder=joints[side+'Shoulder'],definition=armDefinitions[side],lengths={upper:definition.upper,forearm:definition.forearm,tip:definition.tip};
+    const boardDepth=projectAnatomical(shoulder,r.board).depth;
+    const start=right?{shoulder:local(state.pose.shoulder),elbow:local(state.pose.elbow),wrist:local(state.pose.wrist)}:
+      {shoulder:original.leftShoulder,elbow:original.leftElbow,wrist:original.leftHand};
+    // The old left rest pose was a foreshortened projection. Recover depth instead
+    // of treating those short screen segments as a physically shorter arm.
+    const upperDepth=right?0:Math.sqrt(Math.max(0,lengths.upper**2-distance(start.shoulder,start.elbow)**2));
+    const foreDepth=right?0:Math.sqrt(Math.max(0,lengths.forearm**2-distance(start.elbow,start.wrist)**2));
+    const lifted={shoulder:liftProjected(start.shoulder,boardDepth,r.board),elbow:liftProjected(start.elbow,boardDepth+upperDepth,r.board),wrist:liftProjected(start.wrist,boardDepth+upperDepth+foreDepth,r.board)};
+    const target=targets[side];
+    const targetUpper=subtract(target.elbow,target.shoulder),targetFore=subtract(target.wrist,target.elbow);
+    const upperBone=turnBone(subtract(lifted.elbow,lifted.shoulder),targetUpper,a),fore=turnBone(subtract(lifted.wrist,lifted.elbow),targetFore,a);
+    const elbow=add(shoulder,upperBone),wrist=add(elbow,fore),tip=add(wrist,fore.map(v=>v*lengths.tip/lengths.forearm));
+    anatomicalArms[side]={id:side,shoulder:[...shoulder],elbow,wrist,hand:[...wrist],tip,lengths,elbowPreference:target.elbowPreference,pole:target.pole,role:target.role,allowsCrossing:!!target.allowsCrossing};
+    for(const [name,p]of Object.entries({Shoulder:shoulder,Elbow:elbow,Wrist:wrist,Hand:wrist,Tip:tip}))joints[side+name]=p;
+  }
+  const projected=projectSkeleton(joints,facing),p=structuredClone(r.base),arms={};
+  for(const [key,joint]of Object.entries(projected))p[key]=joint.point;
+  if(a===0){for(const key of ['head','neck','torsoTop','shoulderCenter','leftShoulder','rightShoulder','leftElbow','leftHand'])p[key]=[...r.base[key]];}
+  for(const side of ['left','right']){
+    const world=name=>bodyToWorld(projected[side+name].point,b),shoulder=world('Shoulder'),elbow=world('Elbow'),wrist=world('Wrist');
+    const angle=Math.atan2(elbow[1]-shoulder[1],elbow[0]-shoulder[0]);
+    arms[side]={id:side,shoulder,elbow,wrist,tip:world('Tip'),angles:{shoulder:angle,elbow:Math.atan2(wrist[1]-elbow[1],wrist[0]-elbow[0])-angle}};
+  }
+  if(a===0)arms.right={...state.pose,id:'right'};
+  let supportContact;
+  if(targets.supportContact){
+    const offset=subtract(targets.supportContact.target,targets.right.elbow),contact=add(anatomicalArms.right.elbow,offset);
+    supportContact={...targets.supportContact,target:contact,gap:Math.hypot(...subtract(anatomicalArms.left.wrist,contact)),active:a===1};
+  }
+  return {landmarks:p,arms,anatomical:{joints,arms:anatomicalArms,...(supportContact?{supportContact}:{})},projected,facing,depthOrder:armDepthOrder(projected,facing,.06*b.torsoLength)};
+}
+/** Identical Bézier topology allows a continuous rear-profile → frontal head morph. */
+function presentationHead(p,headSize,audience=0) {
+  const rear=[[-9,28],[-32,20],[-33,-18],[-10,-28],[8,-37],[25,-20],[25,-7],[37,1],[26,5],[25,20],[12,28],[-9,28]];
+  const front=[[-10,28],[-31,20],[-31,-20],[-10,-29],[10,-35],[29,-20],[29,-7],[30,1],[29,6],[27,22],[12,29],[-10,28]];
+  const c=rear.map((q,i)=>mixPresentation(q,front[i],audience).map((v,k)=>p.head[k]+v*headSize).join(','));
+  return `M${c[0]} C${c[1]} ${c[2]} ${c[3]} C${c[4]} ${c[5]} ${c[6]} L${c[7]} L${c[8]} C${c[9]} ${c[10]} ${c[11]}Z`;
+}
+
+
+// SOURCE: src/speech.js
+/** Browser-only side effects, deliberately separate from deterministic pose sampling.
+ * Pass a host with speechSynthesis/SpeechSynthesisUtterance for testing or embedding.
+ */
+class PresentationSpeech {
+  constructor(host=globalThis,onStatus=()=>{}) {
+    this.host=host;this.synth=host.speechSynthesis;this.Utterance=host.SpeechSynthesisUtterance;this.onStatus=onStatus;
+    this.supported=!!(this.synth&&this.Utterance);this.muted=false;this.key=null;this.active=null;this.finished=false;this.paused=false;this.timer=null;
+    this.voicesChanged=()=>this.report(this.muted?'Muted.':this.voices().length?'Speech ready.':'No speech voices available; explanations remain visible.');
+    this.synth?.addEventListener?.('voiceschanged',this.voicesChanged);
+    this.report(this.supported?'Speech ready.':'Speech synthesis unavailable; explanations remain visible.');
+  }
+  voices(){try{return this.synth?.getVoices?.()??[];}catch{return [];}}
+  report(text){if(text===this.status)return;this.status=text;this.onStatus(text);}
+  clearTimer(){if(this.timer!==null){this.host.clearTimeout(this.timer);this.timer=null;}}
+  cancel() {
+    this.clearTimer();const had=!!this.active;this.active=null;this.paused=false;this.key=null;this.finished=false;
+    if(had)this.report('Speech stopped.');
+    if(had)try{this.synth.cancel();}catch{/* A failed audio backend must not stop animation. */}
+  }
+  setMuted(value){if(this.muted===!!value)return;this.cancel();this.muted=!!value;this.report(this.muted?'Muted.':this.supported?'Speech ready.':'Speech synthesis unavailable; explanations remain visible.');}
+  get busy(){return !!this.active;}
+  watchdog(){
+    this.clearTimer();if(!this.active||this.paused)return;
+    const key=this.key,utterance=this.active;
+    this.timer=this.host.setTimeout(()=>{
+      if(this.key!==key||this.active!==utterance)return;
+      this.cancel();this.key=key;this.finished=true;this.report('Speech did not complete; continuing with visible explanations.');
+    },Math.min(60000,Math.max(10000,this.active.text.split(/\s+/u).length*1600+5000)));
+  }
+  /** A new key starts once. A seek/reset must call cancel() before sampling again. */
+  sync(action,playing,rate=1) {
+    const key=action?.id??null;
+    if(key!==this.key){this.cancel();this.key=key;}
+    if(!action||this.muted||!this.supported)return;
+    if(this.active){
+      try{
+        if(!playing&&!this.paused){this.synth.pause();this.paused=true;this.clearTimer();this.report('Speech paused.');}
+        else if(playing&&this.paused){this.synth.resume();this.paused=false;this.watchdog();this.report('Speaking.');}
+      }catch{this.cancel();this.key=key;this.finished=true;this.report('Speech unavailable; explanations remain visible.');}
+      return;
+    }
+    if(!playing||this.finished)return;
+    const voices=this.voices();
+    if(!voices.length){this.report('No speech voices available; explanations remain visible.');return;}
+    try{
+      const u=new this.Utterance(action.text);u.rate=Math.max(.5,Math.min(2,rate));
+      u.voice=voices.find(v=>v.lang?.startsWith('en')&&v.localService)??voices.find(v=>v.lang?.startsWith('en'))??voices[0];
+      u.onend=()=>{if(this.active!==u)return;this.clearTimer();this.active=null;this.finished=true;this.report('Speech complete.');};
+      u.onerror=()=>{if(this.active!==u)return;this.clearTimer();this.active=null;this.finished=true;this.report('Speech unavailable; explanations remain visible.');};
+      this.active=u;this.paused=false;this.report('Speaking.');this.synth.cancel();if(this.synth.paused)this.synth.resume();this.synth.speak(u);this.watchdog();
+    }catch{this.cancel();this.key=key;this.finished=true;this.report('Speech unavailable; explanations remain visible.');}
+  }
+  destroy(){this.cancel();this.synth?.removeEventListener?.('voiceschanged',this.voicesChanged);}
+}
+
+
+// SOURCE: src/figure.js
+const SVG_NS='http://www.w3.org/2000/svg';
+function node(tag,attrs,parent){const el=document.createElementNS(SVG_NS,tag);for(const [k,v]of Object.entries(attrs))el.setAttribute(k,v);parent.append(el);return el;}
+function drawBody(group,config={}) {
+  const body=configureBody(config),p=bodyLandmarks(body),[hx,hy]=p.head,h=body.headSize;
+  group.replaceChildren();group.setAttribute('transform',`translate(${body.origin}) scale(${body.scale})`);group.setAttribute('data-view','rear-three-quarter-facing-right');
+  const limb=(name,joints,radii,fill='#b9c4b7')=>node('path',{'data-part':name,d:limbOutline(joints,radii),fill},group);
+  limb('left-leg',[p.leftHip,p.leftKnee,p.leftAnkle],[9,6.5,4.5]);
+  limb('right-leg',[p.rightHip,p.rightKnee,p.rightAnkle],[9,6.5,4.5]);
+  limb('hips',[p.leftHip,p.hips,p.rightHip],[8,9,8]);
+  limb('left-foot',[p.leftFoot,p.leftToe],[5,3]);limb('right-foot',[p.rightFoot,p.rightToe],[5,3]);
+  limb('torso',[p.neck,p.torsoTop,p.hips],[5,13,9]);
+  limb('shoulders',[p.leftShoulder,p.torsoTop,p.rightShoulder],[6,10,6]);
+  const H=(x,y)=>`${hx+x*h},${hy+y*h}`;
+  node('path',{'data-part':'head',d:`M${H(-9,28)} C${H(-32,20)} ${H(-33,-18)} ${H(-10,-28)} C${H(8,-37)} ${H(25,-20)} ${H(25,-7)} L${H(37,1)} L${H(26,5)} C${H(25,20)} ${H(12,28)} ${H(-9,28)}Z`,fill:'#b9c4b7',stroke:'#d5ddcf','stroke-width':2},group);
+  node('path',{'data-part':'front-face',d:'',fill:'#304e38',opacity:0},group);
+  const skeleton=node('g',{'data-part':'body-skeleton',visibility:'hidden'},group);
+  for(const points of [[p.leftShoulder,p.leftElbow,p.leftHand],[p.leftFoot,p.leftKnee,p.leftHip,p.rightHip,p.rightKnee,p.rightFoot],[p.hips,p.torsoTop,p.neck],[p.leftShoulder,p.torsoTop,p.rightShoulder]])node('path',{d:'M'+points.join('L'),fill:'none',stroke:'#20362a','stroke-width':1.2},skeleton);
+  return p;
+}
+class ProfessorFigure {
+  constructor(group,json,{body={},rig={}}={}) {
+    this.group=group;this.debug=false;this.time=0;
+    // Chalk stays in world space behind the translating body and joint-driven arm.
+    this.chalkGroup=node('g',{'data-layer':'chalk'},group);
+    this.farArms=node('g',{'data-layer':'far-arms'},group);
+    this.bodyGroup=node('g',{'data-layer':'body'},group);
+    this.nearArms=node('g',{'data-layer':'near-arms'},group);
+    this.leftArmGroup=node('g',{'data-layer':'left-arm','data-anatomical-side':'left'},this.farArms);
+    this.leftArmSkin=node('path',{'data-part':'left-arm','data-anatomical-side':'left',fill:'#7e9585'},this.leftArmGroup);
+    this.leftHand=node('path',{'data-part':'left-hand','data-anatomical-side':'left',fill:'none',stroke:'#b9c4b7','stroke-width':3,'stroke-linecap':'round',visibility:'hidden'},this.leftArmGroup);
+    this.armGroup=node('g',{'data-layer':'drawing-arm','data-anatomical-side':'right'},this.nearArms);
+    this.armSkin=node('path',{'data-part':'right-arm','data-anatomical-side':'right',fill:'#d6ba76'},this.armGroup);
+    this.hands=node('path',{'data-part':'right-hand','data-anatomical-side':'right',fill:'none',stroke:'#d6ba76','stroke-width':3,'stroke-linecap':'round',visibility:'hidden'},this.armGroup);
+    this.countLabel=node('text',{'data-part':'gesture-count',fill:'#d6ba76','font-size':11,'font-family':'monospace',visibility:'hidden'},this.armGroup);
+    this.pen=node('line',{stroke:'#fff2bf','stroke-width':3,'stroke-linecap':'round'},this.armGroup);
+    this.armSkeleton=node('path',{fill:'none',stroke:'#304e38','stroke-width':1.2},this.armGroup);
+    this.debugGroup=node('g',{'data-layer':'anchors','pointer-events':'none'},group);
+    this.body=configureBody(body);this.rig=structuredClone(rig);this.arm=attachedArm(this.body,this.rig);
+    this.setTimeline(json);
+  }
+  installPlan(plan) {
+    this.chalkGroup.replaceChildren();this.plan=plan;this.duration=plan.duration;
+    this.writers=plan.writes.map(p=>{
+      const group=node('g',{},this.chalkGroup);
+      const json={version:1,strokes:[{at:0,duration:p.duration,points:p.stroke.points,pen:p.stroke.pen}]};
+      return {phase:p,renderer:new SVGArmRenderer(group,compileTimeline(json),p.arm)};
+    });
+    const fallbackJSON={version:1,board:this.raw.board,strokes:[],fallbacks:(this.raw.fallbacks??[]).map(f=>({...f,at:plan.sourceToWall(f.at)}))};
+    this.fallback=new SVGArmRenderer(node('g',{},this.chalkGroup),compileTimeline(fallbackJSON),attachedArm(plan.body,plan.rig));
+  }
+  setConfiguration(body=this.body,rig=this.rig) {
+    const nextBody=configureBody(body),nextRig=structuredClone(rig),plan=presentationPlan(teachingPlan(planWriting(this.timeline,nextBody,nextRig),this.raw.mathSteps),this.raw.presentationActions);
+    this.body=nextBody;this.rig=nextRig;drawBody(this.bodyGroup,this.body);this.installPlan(plan);this.render(Math.min(this.time,this.duration));
+  }
+  setTimeline(json) {
+    const timeline=compileTimeline(json),plan=presentationPlan(teachingPlan(planWriting(timeline,this.body,this.rig),json.mathSteps),json.presentationActions);
+    this.raw=structuredClone(json);this.timeline=timeline;drawBody(this.bodyGroup,this.body);this.installPlan(plan);this.render(0);
+  }
+  setDebug(visible){this.debug=!!visible;this.render(this.time);}
+  render(time) {
+    const state=samplePresentation(this.plan,time);this.time=time;this.currentBody=translatedBody(this.body,state.offset);this.currentBody.origin[1]+=state.bodyLift??0;this.arm=attachedArm(this.currentBody,this.rig);
+    this.bodyGroup.setAttribute('transform',`translate(${this.currentBody.origin}) scale(${this.body.scale})`);
+    this.localPose=walkingLandmarks(this.body,state);
+    const presentation=presentationRig(this.currentBody,state,this.localPose,this.rig);
+    this.facing=presentation.facing;this.anatomicalPose=presentation.anatomical;
+    this.localPose=presentation.landmarks;
+    if(state.audience>0){state.pose=presentation.arms.right;this.arm={...this.arm,shoulder:[...state.pose.shoulder]};}
+    const part=name=>[...this.bodyGroup.children].find(n=>n.getAttribute('data-part')===name),p=this.localPose;
+    // Move the SAME anatomical groups between depth layers; never exchange identities.
+    const groups={left:this.leftArmGroup,right:this.armGroup},order=presentation.depthOrder;
+    this.farArms.replaceChildren(...order.order.filter(side=>side!=='torso'&&order.arms[side].layer==='far').map(side=>groups[side]));
+    this.nearArms.replaceChildren(...order.order.filter(side=>side!=='torso'&&order.arms[side].layer==='near').map(side=>groups[side]));
+    for(const side of ['left','right']){
+      groups[side].setAttribute('data-depth',order.arms[side].depth);
+      groups[side].setAttribute('data-depth-layer',order.arms[side].layer);
+      groups[side].setAttribute('data-shoulder-x',presentation.arms[side].shoulder[0]);
+      groups[side].setAttribute('data-hand-role',presentation.anatomical.arms[side].role??'relaxed');
+      groups[side].setAttribute('data-shoulder-y',presentation.arms[side].shoulder[1]);
+      groups[side].setAttribute('data-elbow-y',presentation.arms[side].elbow[1]);
+      groups[side].setAttribute('data-wrist-y',presentation.arms[side].wrist[1]);
+      groups[side].setAttribute('data-elbow-x',presentation.arms[side].elbow[0]);
+      groups[side].setAttribute('data-wrist-x',presentation.arms[side].wrist[0]);
+    }
+    this.bodyGroup.setAttribute('data-yaw',this.facing.yaw);
+    this.bodyGroup.setAttribute('data-orientation',state.orientation);
+    this.bodyGroup.setAttribute('data-view',state.orientation==='board'?'rear-three-quarter-facing-right':state.orientation==='audience'?'front-facing':'turning');
+    part('head').setAttribute('d',presentationHead(p,this.body.headSize,state.audience));
+    part('torso').setAttribute('d',limbOutline([p.neck,p.torsoTop,p.hips],[5,13,9]));
+    part('shoulders').setAttribute('d',limbOutline([p.leftShoulder,p.torsoTop,p.rightShoulder],[6,10,6]));
+    this.leftArmSkin.setAttribute('d',limbOutline([presentation.arms.left.shoulder,presentation.arms.left.elbow,presentation.arms.left.wrist],[7,5.5,3.5].map(r=>r*this.body.scale)));
+    const [hx,hy]=p.head,hs=this.body.headSize;
+    part('front-face').setAttribute('d',`M${hx-10*hs},${hy-3*hs}a${2*hs},${2*hs} 0 1,0 ${4*hs},0a${2*hs},${2*hs} 0 1,0 ${-4*hs},0 M${hx+6*hs},${hy-3*hs}a${2*hs},${2*hs} 0 1,0 ${4*hs},0a${2*hs},${2*hs} 0 1,0 ${-4*hs},0`);
+    part('front-face').setAttribute('opacity',Math.max(0,(state.audience-.5)*2));
+    for(const side of ['left','right']) {
+      part(side+'-leg').setAttribute('d',limbOutline([p[side+'Hip'],p[side+'Knee'],p[side+'Ankle']],[9,6.5,4.5]));
+      part(side+'-foot').setAttribute('d',limbOutline([p[side+'Foot'],p[side+'Toe']],[5,3]));
+    }
+
+    const skeleton=[...this.bodyGroup.children].find(n=>n.getAttribute('data-part')==='body-skeleton');
+    skeleton.children[0].setAttribute('d','M'+[p.leftShoulder,p.leftElbow,p.leftHand].join('L'));
+    skeleton.children[2].setAttribute('d','M'+[p.hips,p.torsoTop,p.neck].join('L'));
+    skeleton.children[3].setAttribute('d','M'+[p.leftShoulder,p.torsoTop,p.rightShoulder].join('L'));
+    skeleton.children[1].setAttribute('d','M'+[p.leftFoot,p.leftKnee,p.leftHip,p.rightHip,p.rightKnee,p.rightFoot].join('L'));
+    skeleton.setAttribute('visibility',this.debug?'visible':'hidden');
+    for(const {phase,renderer}of this.writers){renderer.render(Math.max(0,Math.min(phase.duration,time-phase.at)));for(const el of [renderer.links,renderer.pen,renderer.target,...renderer.joints])el.setAttribute('visibility','hidden');}
+    this.fallback.render(time);
+    const pose=state.pose;
+    for(const [side,hand]of [['left',this.leftHand],['right',this.hands]]){
+      hand.setAttribute('visibility',state.audience>.95?'visible':'hidden');
+      hand.setAttribute('d','');
+      if(state.audience>0){
+        const [x,y]=presentation.arms[side].wrist,s=this.body.scale,sign=(side==='right'?1:-1)*this.facing.cos;
+        const role=presentation.anatomical.arms[side].role;
+        if(role==='indicating'){
+          const elbow=presentation.arms[side].elbow,dx=x-elbow[0],dy=y-elbow[1],length=Math.hypot(dx,dy)||1;
+          hand.setAttribute('d',`M${x},${y}q${sign*4*s},${-4*s} ${sign*6*s},${-1*s}q${sign*-1*s},${4*s} ${sign*-5*s},${3*s} M${x},${y}q${dx/length*4*s},${dy/length*4*s} ${dx/length*8*s},${dy/length*8*s}`);
+        }else if(role==='supporting')hand.setAttribute('d',`M${x-5*s},${y}q${5*s},${-3*s} ${10*s},0q${-5*s},${5*s} ${-10*s},0`);
+        else hand.setAttribute('d',`M${x},${y}q${sign*8*s},${-7*s} ${sign*11*s},0q${sign*-3*s},${8*s} ${sign*-9*s},${3*s}`);
+      }
+    }
+    const counting=state.presentation?.stage==='talk'&&state.presentation.action.gesture==='count'&&state.presentation.elapsed>500&&state.presentation.elapsed<state.presentation.action.duration-500;
+    this.countLabel.setAttribute('visibility',counting?'visible':'hidden');this.countLabel.textContent=counting?String(state.presentation.action.count):'';
+    this.countLabel.setAttribute('x',pose.wrist[0]+10*this.body.scale*Math.sign(this.facing.cos||1));this.countLabel.setAttribute('text-anchor',this.facing.cos<0?'end':'start');this.countLabel.setAttribute('y',pose.wrist[1]-12*this.body.scale);
+    this.armSkin.setAttribute('d',limbOutline([pose.shoulder,pose.elbow,pose.wrist],[8*this.body.scale,6*this.body.scale,3.5*this.body.scale]));
+    for(const [k,v]of Object.entries({x1:pose.wrist[0],y1:pose.wrist[1],x2:pose.tip[0],y2:pose.tip[1]}))this.pen.setAttribute(k,v);
+    this.pen.setAttribute('opacity',state.chalkDown?'1':'.4');
+    this.armSkeleton.setAttribute('d',`M${pose.shoulder}L${pose.elbow}L${pose.wrist}`);this.armSkeleton.setAttribute('visibility',this.debug?'visible':'hidden');
+    this.debugGroup.replaceChildren();this.debugGroup.setAttribute('visibility',this.debug?'visible':'hidden');
+    for(const [label,p]of [['origin',this.currentBody.origin],['right shoulder',pose.shoulder]]){
+      node('circle',{cx:p[0],cy:p[1],r:7,fill:'none',stroke:'#e6c16e'},this.debugGroup);
+      const text=node('text',{x:p[0]+12,y:p[1]+4,fill:'#e6c16e','font-family':'monospace','font-size':10},this.debugGroup);text.textContent=label;
+    }
+    return state;
+  }
+  getAnatomicalJoints(){return structuredClone(this.anatomicalPose.joints);}
+  getAnchors(){return Object.fromEntries(Object.entries(this.localPose??bodyLandmarks(this.currentBody??this.body)).map(([k,p])=>[k,bodyToWorld(p,this.currentBody??this.body)]));}
+  destroy(){this.group.replaceChildren();}
+}
+
+
+// SOURCE: src/math-timeline.js
+/** Verified algebra → pure math boxes → font strokes → existing timeline v1. */
+function solutionToTimeline(solution,options={}) {
+  if(solution.status!=='unique'||!verifySolution(solution).valid)throw new TypeError('Only verified unique solutions can be written as solution timelines');
+  const {maxSize=24,minSize=12,width=515,height=220,pause=650,speed=135,lift=100,board={origin:[355,140],scale:1,rotation:0}}=options;
+  if(options.lineHeight!==undefined&&(!Number.isFinite(options.lineHeight)||options.lineHeight<=0))throw new RangeError('Invalid legacy line-height option');
+  const rowGap=options.rowGap??(options.lineHeight === undefined ? .5 : Math.max(.1,options.lineHeight-1));
+  if(!Number.isFinite(speed)||speed<=0||!Number.isFinite(lift)||lift<=0||!Number.isFinite(pause)||pause<0)throw new RangeError('Invalid solution timing options');
+  const layout=layoutEquations(solution.steps.map(s=>s.equation),{maxSize,minSize,width,height,rowGap});
+  const geometry=positionStrokes(layout,GLYPHS),strokes=[],mathSteps=[];let at=0;
+  for(const [index,step]of solution.steps.entries()){
+    const start=at;let end=at;
+    for(const stroke of geometry.strokes.filter(s=>s.row===index)){
+      const length=stroke.points.slice(1).reduce((sum,p,i)=>sum+Math.hypot(p[0]-stroke.points[i][0],p[1]-stroke.points[i][1]),0);
+      const duration=Math.max(stroke.symbol==='·'?80:1,length/speed*1000);strokes.push({...stroke,at,duration});end=at+duration;at=end+lift;
+    }
+    mathSteps.push({index,at:start,end,text:step.text,operation:structuredClone(step.operation)});at=end+Math.max(pause,lift);
+  }
+  return validateTimeline({version:1,board,strokes,fallbacks:[],mathSteps,layout:{notation:'stacked-fractions',size:layout.size,width:layout.width,height:layout.height,rows:layout.rows},math:{version:2,status:solution.status,problem:solution.steps[0].text,solutions:structuredClone(solution.solutions),solution:structuredClone(solution),options:{maxSize,minSize,width,height,pause,speed,lift,board:structuredClone(board),rowGap}}});
+}
+
+/** Fail closed at the lesson import/load boundary before any rendering or narration.
+ * Legacy/free-writing timelines without lesson steps remain ordinary drawing data.
+ */
+function validateMathTimeline(input) {
+  if(!input?.math?.solution&&!(Array.isArray(input?.mathSteps)&&input.mathSteps.length))return input;
+  if(!input.math?.solution||!verifySolution(input.math.solution).valid)throw new TypeError('Math lesson has missing or invalid exact step certificates; solve the equation again.');
+  const expected=solutionToTimeline(input.math.solution,input.math.options);
+  const canonical=value=>Array.isArray(value)?value.map(canonical):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(key=>[key,canonical(value[key])])):value;
+  for(const key of ['board','strokes','fallbacks','mathSteps','layout','math'])
+    if(JSON.stringify(canonical(input[key]))!==JSON.stringify(canonical(expected[key])))throw new TypeError(`Math lesson ${key} differs from its verified solution; solve the equation again.`);
+  if(input.presentationActions){
+    if(!Array.isArray(input.presentationActions)||input.presentationActions.length!==input.mathSteps.length)throw new TypeError('Math presentation actions must match the verified steps.');
+    for(const [i,action]of input.presentationActions.entries())if(action.text!==input.mathSteps[Math.min(i+1,input.mathSteps.length-1)].operation.explanation)
+      throw new TypeError('Math narration must match the verified operation.');
+  }
+  return input;
+}
+
+
+// SOURCE: src/compact-scene.js
+
+/** Stable world-space camera; never changes the chalkboard or writing coordinates.
+ * Sample phase boundaries and intermediate rig poses, with silhouette safety padding.
+ */
+function compactScene(plan,timeline) {
+  const ink=timeline.strokes.flatMap(s=>s.points);
+  if(!ink.length)throw new RangeError('Compact demo requires writing strokes');
+  const extent=points=>({left:Math.min(...points.map(p=>p[0])),right:Math.max(...points.map(p=>p[0])),top:Math.min(...points.map(p=>p[1])),bottom:Math.max(...points.map(p=>p[1]))});
+  const box=extent(ink),board={x:box.left-14,y:box.top-14,width:box.right-box.left+28,height:box.bottom-box.top+28};
+  let left=board.x,right=board.x+board.width,top=board.y,bottom=board.y+board.height+5;
+  const include=(p,r=14)=>{left=Math.min(left,p[0]-r);right=Math.max(right,p[0]+r);top=Math.min(top,p[1]-r);bottom=Math.max(bottom,p[1]+r);};
+  const times=new Set([0,plan.duration]);
+  for(const phase of plan.phases)for(let i=0,n=Math.max(2,Math.ceil(phase.duration/80));i<=n;i++)times.add(phase.at+phase.duration*i/n);
+  for(const t of times){
+    const state=samplePresentation(plan,t),body=translatedBody(plan.body,state.offset);body.origin[1]+=state.bodyLift??0;
+    const pose=presentationRig(body,state,walkingLandmarks(plan.body,state),plan.rig);
+    for(const [name,p]of Object.entries(pose.landmarks))if(name!=='origin'&&name!=='head')include(bodyToWorld(p,body),(/Foot|Toe|Ankle/.test(name)?7:14)*body.scale);
+    const head=bodyToWorld(pose.landmarks.head,body),s=body.headSize*body.scale;
+    include([head[0]-33*s,head[1]-37*s],2);include([head[0]+37*s,head[1]+29*s],2);
+    for(const arm of Object.values(pose.arms))for(const name of ['shoulder','elbow','wrist','tip'])if(arm[name])include(arm[name],14*body.scale);
+  }
+  return {board,frame:{x:left-4,y:top-4,width:right-left+8,height:bottom-top+8},floor:plan.body.origin[1]+5*plan.body.scale};
+}
+
+
+// SOURCE: src/compact-demo.js
+
+// The browser speech queue is global. Only one opt-in audible embed owns it at a time.
+const compactSpeechOwners=new WeakMap();
+/** Mount a self-contained scene. All nodes, clocks and observers belong to this instance. */
+function mountProfessorDemo(container,{problem='x/5-4/4=2/5',autoplay=true,loop=true,muted=true}={}) {
+  if(!container?.ownerDocument||typeof container.append!=='function')throw new TypeError('Expected a DOM container');
+  const doc=container.ownerDocument,host=doc.defaultView,ns='http://www.w3.org/2000/svg';
+  if(!host)throw new TypeError('Container must belong to a browser document');
+  const raw=solutionToTimeline(solveEquation(problem));
+  raw.presentationActions=raw.mathSteps.map((step,index)=>({type:'talk-and-gesture',
+    text:raw.mathSteps[Math.min(index+1,raw.mathSteps.length-1)].operation.explanation,
+    gesture:'present',indicatingArm:'right'}));
+  validateMathTimeline(raw);
+  const wrapper=doc.createElement('div');wrapper.setAttribute('data-professor-demo','');
+  Object.assign(wrapper.style,{width:'100%',height:'100%',overflow:'hidden',background:'#1c2c27',lineHeight:'0'});
+  const svg=doc.createElementNS(ns,'svg');svg.setAttribute('role','img');svg.setAttribute('aria-label',`Professor demonstrates ${problem}`);svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+  Object.assign(svg.style,{display:'block',width:'100%',height:'100%'});wrapper.append(svg);
+  const make=(tag,attrs,parent=svg)=>{const el=doc.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs))el.setAttribute(k,v);parent.append(el);return el;};
+  const backdrop=make('g',{'data-layer':'board'}),group=make('g',{'data-layer':'professor'});
+  const figure=new ProfessorFigure(group,raw),scene=compactScene(figure.plan,figure.timeline),b=scene.board,f=scene.frame;
+  if(figure.plan.blocked.length){figure.destroy();throw new RangeError('Problem exceeds the Professor writing workspace');}
+  svg.setAttribute('viewBox',`${f.x} ${f.y} ${f.width} ${f.height}`);
+  wrapper.style.aspectRatio=`${f.width} / ${f.height}`;
+  make('rect',{x:b.x,y:b.y,width:b.width,height:b.height,rx:5,fill:'#173e30',stroke:'#756447','stroke-width':7},backdrop);
+  make('line',{x1:b.x-3,y1:b.y+b.height+5,x2:b.x+b.width+5,y2:b.y+b.height+5,stroke:'#8b7856','stroke-width':5,'stroke-linecap':'round'},backdrop);
+  make('line',{x1:f.x+4,y1:scene.floor,x2:f.x+f.width-4,y2:scene.floor,stroke:'#66776c','stroke-width':1},backdrop);
+  container.append(wrapper);
+  const media=host.matchMedia?.('(prefers-reduced-motion: reduce)');
+  let reduced=!!media?.matches,desired=!!autoplay,playing=false,destroyed=false,time=reduced?figure.duration:0,last=null,raf=null,loops=0,speech=null;
+  const render=()=>figure.render(Math.min(time,figure.duration));
+  const stopFrame=()=>{if(raf!==null)host.cancelAnimationFrame(raf);raf=null;last=null;};
+  const releaseSpeech=()=>{speech?.destroy();speech=null;if(compactSpeechOwners.get(host)===api)compactSpeechOwners.delete(host);};
+  const syncSpeech=state=>{
+    if(!muted&&!reduced&&playing){
+      const previous=compactSpeechOwners.get(host);if(previous&&previous!==api)return;
+      compactSpeechOwners.set(host,api);speech??=new PresentationSpeech(host);
+    }
+    const p=state.presentation;
+    speech?.sync(p?.stage==='talk'?{id:`${loops}:${p.id}`,text:p.action.text}:null,playing);
+  };
+  const tick=stamp=>{
+    raf=null;if(!playing||destroyed)return;
+    const delta=last===null?0:Math.max(0,stamp-last);last=stamp;
+    let next=time+delta;
+    if(speech)next=presentationAdvance(figure.plan,time,next,speech.busy);
+    const cycle=figure.duration+2000;
+    if(loop&&next>=cycle){loops+=Math.floor(next/cycle);next%=cycle;speech?.cancel();}
+    time=Math.min(next,loop?cycle:figure.duration);syncSpeech(render());
+    if(!loop&&time>=figure.duration){playing=false;last=null;return;}
+    raf=host.requestAnimationFrame(tick);
+  };
+  const start=()=>{if(destroyed||reduced||!desired)return;playing=true;last=null;if(raf===null)raf=host.requestAnimationFrame(tick);};
+  const resize=()=>{
+    const width=container.clientWidth||f.width,height=container.clientHeight||width*f.height/f.width;
+    svg.setAttribute('width',width);svg.setAttribute('height',height);
+    // Also works in a width-only div; do not change the host's styles or children.
+    // The wrapper's aspect-ratio supplies height when its parent's height is auto.
+  };
+  const observer=host.ResizeObserver?new host.ResizeObserver(resize):null;
+  const motionChanged=()=>{reduced=!!media.matches;stopFrame();playing=false;releaseSpeech();time=reduced?figure.duration:0;render();start();};
+  const api={
+    play(){if(destroyed)return;desired=true;start();},
+    pause(){if(destroyed)return;desired=false;playing=false;stopFrame();syncSpeech(render());},
+    reset(){if(destroyed)return;stopFrame();playing=false;desired=false;loops=0;time=reduced?figure.duration:0;releaseSpeech();render();},
+    seek(milliseconds){if(destroyed)return;if(!Number.isFinite(milliseconds))throw new TypeError('Seek time must be finite');time=reduced?figure.duration:Math.max(0,Math.min(figure.duration,milliseconds));last=null;releaseSpeech();render();},
+    getState(){return {time:Math.min(time,figure.duration),duration:figure.duration,playing,reducedMotion:reduced,loops,destroyed};},
+    silence(){releaseSpeech();},
+    destroy(){if(destroyed)return;destroyed=true;desired=false;playing=false;stopFrame();releaseSpeech();observer?.disconnect();if(!observer)host.removeEventListener('resize',resize);media?.removeEventListener?.('change',motionChanged);figure.destroy();wrapper.remove();}
+  };
+  media?.addEventListener?.('change',motionChanged);observer?.observe(container);if(!observer)host.addEventListener('resize',resize);
+  resize();render();start();return api;
+}
+
+
+const demo=mountProfessorDemo(document.querySelector('.tile'),{
+  problem:'x/5-4/4=2/5',autoplay:true,loop:true,muted:true
+});
+// On removal from your application: demo.destroy();
+</script></html>

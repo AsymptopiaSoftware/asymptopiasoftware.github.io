@@ -1,10 +1,19 @@
-# Professor B1.9.3b — thoughtful explanations
+# Professor B2.1 — reusable compact demo
+
+B2.1 refines the compact right-arm board gesture. B2.0 adds a container-scoped, silent, looping demo while preserving the full
+B1.9.3b writing tool. Start with **[demo-standalone.html](demo-standalone.html)**
+for the compact scene, **[standalone.html](standalone.html)** for the full tool,
+or **[examples/embedded.html](examples/embedded.html)** for a modular mount.
+See the **[embedding API and lifecycle](docs/compact-demo.md)** for resizing,
+multiple instances, reduced motion, transport, and browser validation.
+
+![Compact desktop browser preview](docs/compact-desktop.svg)
 
 The new [math-problems ES module](../math-problems/README.md) generates and solves fraction equations without any Professor, Drawing Arm, SVG, DOM or clock dependency. The board now typesets those ASTs as centered stacked fractions using a separate reusable math-layout package, then writes their paths using the existing body, B1.5 range planner and B1.4 gait.
 
 After writing a line, the Professor lifts and lowers the chalk, turns toward the viewer, and speaks the **next transformation** in a thoughtful supported-elbow pose. **Auto** proceeds after the explanation and 1.5 s pause; **Step** waits for **Continue** with the figure facing the viewer and holding the supported pose calmly. He then turns back and continues from the same writing position. Play/Pause, Reset, seeking, speed and the collapsed Advanced panel remain available. **Mute** is the only new control and defaults off.
 
-The general-purpose [talk-and-gesture interface](docs/presentation-actions.md) also supports arbitrary stories or chart explanations. It is separate from mathematics and from speech side effects. B1.8 PR #12 remains unchanged on its own branch; this work is on `feature/professor-b1.9-talk-gesture`.
+The general-purpose [talk-and-gesture interface](docs/presentation-actions.md) also supports arbitrary stories or chart explanations. It is separate from mathematics and from speech side effects. B1.8 PR #12 remains unchanged on its own branch; the compact work starts from `milestone/professor-b1.9.3b` on `feature/professor-b2-compact-demo`.
 
 ## Preview
 

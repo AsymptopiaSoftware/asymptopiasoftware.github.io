@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Embedded Professor</title>
+<style>body{margin:0;background:#14211d;display:grid;min-height:100svh;place-items:center}.tile{width:min(100%,480px);height:360px}</style>
+<div class="tile" aria-label="Animated algebra demonstration"></div>
+<script type="module">
+import {mountProfessorDemo} from '../src/compact-demo.js';
+const demo=mountProfessorDemo(document.querySelector('.tile'),{
+  problem:'x/5-4/4=2/5',autoplay:true,loop:true,muted:true
+});
+// On removal from your application: demo.destroy();
+</script></html>

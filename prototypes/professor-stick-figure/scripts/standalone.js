@@ -9,14 +9,24 @@ for (const file of lock.files) {
   const sha = createHash('sha1').update(`blob ${data.length}\0`).update(data).digest('hex');
   if (sha !== file.sha) throw new Error(`Engine source drift: ${file.path}`);
 }
-let source = '';
-for (const path of ['../math-problems/src/rational.js', '../math-problems/src/syntax.js', '../math-problems/src/algebra.js', '../math-problems/src/operations.js', '../math-problems/src/solver.js', '../math-problems/src/generator.js', '../math-layout/src/layout.js', '../math-layout/src/strokes.js', '../drawing-arm/src/kinematics.js', '../drawing-arm/src/glyphs.js', '../drawing-arm/src/timeline.js', '../drawing-arm/src/svg-renderer.js', 'src/body.js', 'src/curves.js', 'src/gait.js', 'src/range-planning.js', 'src/locomotion.js', 'src/teaching.js', 'src/presentation-action.js', 'src/presentation-plan.js', 'src/orientation.js', 'src/audience-arm.js', 'src/thoughtful-pose.js', 'src/presentation-rig.js', 'src/speech.js', 'src/figure.js', 'src/math-timeline.js', 'demo.js']) {
+const modules = ['../math-problems/src/rational.js', '../math-problems/src/syntax.js', '../math-problems/src/algebra.js', '../math-problems/src/operations.js', '../math-problems/src/solver.js', '../math-problems/src/generator.js', '../math-layout/src/layout.js', '../math-layout/src/strokes.js', '../drawing-arm/src/kinematics.js', '../drawing-arm/src/glyphs.js', '../drawing-arm/src/timeline.js', '../drawing-arm/src/svg-renderer.js', 'src/body.js', 'src/curves.js', 'src/gait.js', 'src/range-planning.js', 'src/locomotion.js', 'src/teaching.js', 'src/presentation-action.js', 'src/presentation-plan.js', 'src/orientation.js', 'src/audience-arm.js', 'src/thoughtful-pose.js', 'src/presentation-rig.js', 'src/speech.js', 'src/figure.js', 'src/math-timeline.js'];
+async function bundle(paths) {
+let source='';
+for (const path of paths) {
   const content = await readFile(new URL(path, root), 'utf8');
   source += `\n// SOURCE: ${path}\n` + content.replace(/^import .*;\n/gm, '').replace(/^export /gm, '') + '\n';
 }
+return source;
+}
+const source=await bundle([...modules,'demo.js']);
 let html = await readFile(new URL('index.html', root), 'utf8');
 html = html.replace('<link rel="stylesheet" href="style.css">', `<style>${await readFile(new URL('style.css', root), 'utf8')}</style>`)
   .replace('<script type="module" src="demo.js"></script>', `<script type="module">\n${source}</script>`);
 for (const path of ['README.md', 'docs/coordinates.md']) html = html.replace(`href="${path}"`, `href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/professor-b1.9-talk-gesture/prototypes/professor-stick-figure/${path}"`);
 await writeFile(new URL('standalone.html', root), html);
 console.log('Standalone built; all 5 approved Drawing Arm module hashes verified (B1.9.2 approved handwriting and multiplication dot).');
+
+const compact=await bundle([...modules,'src/compact-scene.js','src/compact-demo.js']);
+const template=await readFile(new URL('examples/embedded.html',root),'utf8');
+await writeFile(new URL('demo-standalone.html',root),template.replace("import {mountProfessorDemo} from '../src/compact-demo.js';",()=>compact));
+console.log('Compact standalone built from the same shared engines.');
