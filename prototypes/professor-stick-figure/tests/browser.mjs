@@ -1,6 +1,8 @@
 // Browser integration: existing rig/gait plus exact-math UI and file:// bundle.
 import assert from 'node:assert/strict';
+import {checkPresentationBrowser} from './browser-presentation.mjs';
 import {compileTimeline} from '../../drawing-arm/src/timeline.js';
+import {presentationPlan} from '../src/presentation-plan.js';
 import {teachingPlan} from '../src/teaching.js';
 import {planWriting} from '../src/locomotion.js';
 import {createServer} from 'node:http';
@@ -21,7 +23,7 @@ try{
  const expected=['x/5-4/4=2/5','x/5=2/5+4/4','x/5=7/5','x=7'],initial=await exportJSON();
  assert.deepEqual(initial.mathSteps.map(s=>s.text),expected);assert.equal(initial.fallbacks.length,0);
  assert.equal(initial.layout.notation,'stacked-fractions');assert.equal(initial.strokes.filter(s=>s.kind==='fraction-bar').length,8);assert.ok(!initial.strokes.some(s=>s.symbol==='/'));
- const planned=teachingPlan(planWriting(compileTimeline(initial)),initial.mathSteps),firstBar=initial.strokes.find(s=>s.kind==='fraction-bar'),barIndex=planned.writes.findIndex(p=>Math.abs(p.sourceAt-firstBar.at)<1e-6),bar=planned.writes[barIndex];
+ const planned=presentationPlan(teachingPlan(planWriting(compileTimeline(initial)),initial.mathSteps)),firstBar=initial.strokes.find(s=>s.kind==='fraction-bar'),barIndex=planned.writes.findIndex(p=>Math.abs(p.sourceAt-firstBar.at)<1e-6),bar=planned.writes[barIndex];
  const chalkBar=page.locator('[data-layer="chalk"] > g').nth(barIndex).locator('path').first();
  const seekTo=async time=>page.locator('#seek').evaluate((el,value)=>{el.value=String(value);el.dispatchEvent(new Event('input',{bubbles:true}));},time);
  const checkTeaching=async()=>{
@@ -32,10 +34,10 @@ try{
   const stopped=Number(await page.locator('#seek').inputValue());assert.ok(Math.abs(stopped-step.gate)<.01);
   const arm=await page.locator('[data-part="right-arm"]').getAttribute('d'),chalk=await page.locator('[data-layer="chalk"]').innerHTML();
   await page.waitForTimeout(100);assert.equal(Number(await page.locator('#seek').inputValue()),stopped);assert.equal(await page.locator('[data-part="right-arm"]').getAttribute('d'),arm);
-  assert.match(await page.locator('#contact').textContent(),/CHALK LIFTED/);assert.match(await page.locator('#operation').textContent(),/Step 1\/4/);
+  assert.match(await page.locator('#contact').textContent(),/CHALK LIFTED/);assert.match(await page.locator('#operation').textContent(),/Step 2\/4/);
   await page.getByRole('button',{name:'Continue',exact:true}).click();await page.waitForFunction(resume=>Number(document.querySelector('#seek').value)>resume,step.resume);
   await seekTo(second.start+1);assert.match(await page.locator('#operation').textContent(),/Step 2\/4: Add 4\/4 to both sides/);
-  await seekTo(planned.duration);await seekTo(step.gate);assert.equal(await page.locator('[data-layer="chalk"]').innerHTML(),chalk);assert.equal(await page.locator('[data-part="right-arm"]').getAttribute('d'),arm);assert.match(await page.locator('#operation').textContent(),/Step 1\/4/);
+  await seekTo(planned.duration);await seekTo(step.gate);assert.equal(await page.locator('[data-layer="chalk"]').innerHTML(),chalk);assert.equal(await page.locator('[data-part="right-arm"]').getAttribute('d'),arm);assert.match(await page.locator('#operation').textContent(),/Step 2\/4/);
   await page.locator('#teaching-mode').selectOption('auto');await page.waitForFunction(resume=>Number(document.querySelector('#seek').value)>resume,step.resume);
   await page.getByRole('button',{name:'Reset',exact:true}).click();assert.equal(await page.locator('#seek').inputValue(),'0');assert.equal(await page.locator('#continue').isDisabled(),true);
  };
@@ -69,6 +71,9 @@ try{
  await page.waitForFunction(()=>document.querySelector('[data-part="right-arm"]')?.getAttribute('d'));assert.equal(await page.locator('#advanced').getAttribute('open'),null);assert.deepEqual((await exportJSON()).mathSteps.map(s=>s.text),expected);
  await checkTeaching();
  await seekTo(planned.teachingSteps[1].gate);
- if(process.env.SCREENSHOT_PATH)await page.screenshot({path:process.env.SCREENSHOT_PATH,fullPage:true});
- assert.deepEqual(errors,[]);console.log(`B1.8 browser checks passed: modular + self-contained (${standaloneTransport}), Auto/Step gates, Continue, relaxed arm, deterministic seeking, stacked fractions, math, walking, controls and responsive layout`);
+ const nativeVoices=await page.evaluate(()=>window.speechSynthesis?.getVoices()?.length??null);
+ await checkPresentationBrowser(browser,`http://127.0.0.1:${server.address().port}/professor-stick-figure/`,planned);
+ await checkPresentationBrowser(browser,standaloneHTTP,planned,process.env.SCREENSHOT_PATH);
+ console.log(`Native browser voices: ${nativeVoices??'unsupported'}; speech lifecycle checked with controllable synthesis in both previews.`);
+ assert.deepEqual(errors,[]);console.log(`B1.9 browser checks passed: modular + self-contained (${standaloneTransport}), turns, two-arm gestures, speech/mute/pause/replay, Auto/Step, deterministic seeking, fractions, math, walking and responsive layout`);
 }finally{await browser?.close();await new Promise(done=>server.close(done));}
