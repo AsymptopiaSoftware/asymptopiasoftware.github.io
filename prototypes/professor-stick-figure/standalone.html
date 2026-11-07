@@ -1,0 +1,1183 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Professor B1.7 · Development tool</title><meta name="description" content="Development prototype with anatomical arms, reach-driven horizontal movement and curved SVG limbs."><style>:root{color-scheme:dark;--bg:#18231f;--line:#425047;--ink:#e5eadf;--muted:#a5b2a6;--accent:#dbc080}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:12px auto;padding:0 12px}.experiment{display:grid;grid-template-columns:minmax(0,1fr) 300px;border:1px solid var(--line)}.stage{min-width:0;align-self:start;background:#202c29}.stage-heading{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font:9px ui-monospace,monospace;color:var(--muted)}#scene{display:block;width:100%;height:auto}.transport{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 14px}.transport label{display:flex;align-items:center;gap:7px;font-size:11px}.scrubber{flex:1;min-width:120px}.scrubber input{width:100%;min-width:60px}.transport output{font:10px ui-monospace,monospace;color:var(--muted)}button,textarea,select{font:inherit;color:var(--ink);background:#29392d;border:1px solid #66735a;border-radius:3px;padding:8px 11px}button{cursor:pointer}button:hover{border-color:var(--accent)}.primary{background:var(--accent);color:#1d2a21;font-weight:600}.wide{width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input[type=range],input[type=checkbox]{accent-color:var(--accent)}.stage-footer{display:flex;gap:12px;justify-content:space-between;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.stage-footer label{display:flex;gap:5px;align-items:center;margin:0}#contact{font-family:ui-monospace,monospace}aside{border-left:1px solid var(--line);padding:16px;min-width:0}.eyebrow{font:11px ui-monospace,monospace;margin:0 0 18px;color:var(--muted)}label{display:block;font-size:11px;margin-bottom:6px}textarea{width:100%;min-height:90px;resize:vertical;font:16px/1.5 ui-monospace,monospace;margin-bottom:10px}#message{font-size:11px;color:var(--muted);min-height:50px}.file-actions{display:flex;gap:8px}.file-actions button,.file-label{font-size:10px}.file-label{position:relative;margin:0;padding:8px 10px;border:1px solid #66735a;border-radius:3px;overflow:hidden;cursor:pointer}.file-label input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.file-label:focus-within{outline:2px solid var(--accent)}#advanced{border-top:1px solid var(--line);margin-top:22px;padding-top:14px}summary{cursor:pointer;font-size:12px}.body-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.slider label{display:flex;justify-content:space-between;gap:5px;min-height:30px;font-size:10px}.slider output{color:var(--accent);font-family:ui-monospace,monospace;white-space:nowrap}.slider input{width:100%}dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font:10px ui-monospace,monospace;color:var(--muted);margin:18px 0}dd{margin:0;text-align:right;color:var(--accent)}.docs{font-size:11px;margin-top:20px}a{color:var(--accent);text-underline-offset:3px}@media(max-width:850px){.experiment{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid var(--line)}.body-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:500px){main{margin:6px auto;padding:0 6px}.stage-heading{font-size:7px}.stage-footer{flex-direction:column}.transport{gap:6px;padding:10px}.body-controls{grid-template-columns:1fr 1fr}}
+
+#math-example{width:100%;margin-bottom:12px}#operation{font-size:11px;color:var(--muted);min-height:35px}
+</style></head>
+<body><main>
+<div class="experiment"><section class="stage" aria-label="Professor writing demonstration">
+<div class="stage-heading"><span><i></i> REAR THREE-QUARTER VIEW</span><span>FACING SCREEN-RIGHT →</span></div>
+<svg id="scene" viewBox="0 0 960 570" role="img" aria-label="Rear-facing figure repositioning horizontally to write with a short right arm at fixed board coordinates">
+<defs><pattern id="board-grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#cfdec9" stroke-opacity=".055"/></pattern></defs>
+<path d="M95 510H905" stroke="#66746a" stroke-width="1"/>
+<rect x="310" y="75" width="590" height="300" rx="7" fill="#574b38"/><rect x="320" y="85" width="570" height="280" rx="4" fill="#17392e"/><rect x="320" y="85" width="570" height="280" rx="4" fill="url(#board-grid)"/>
+<path d="M314 378H905" stroke="#857054" stroke-width="7" stroke-linecap="round"/><path d="M355 166H855M355 210H855" stroke="#d2dec9" stroke-opacity=".1" stroke-dasharray="3 6"/>
+<text x="343" y="109" fill="#94b2a0" font-family="monospace" font-size="9" letter-spacing="2">BOARD / WORLD SPACE</text>
+<g id="professor"></g>
+<g id="board-anchor" visibility="hidden" pointer-events="none"><circle cx="355" cy="140" r="7" fill="none" stroke="#8dbca7"/><text x="365" y="130" fill="#a5c9b8" font-family="monospace" font-size="11">board origin</text></g>
+<text x="124" y="551" fill="#9bada2" font-family="monospace" font-size="10" letter-spacing="1">STEPPING GAIT · CHALK LIFTED WHILE WALKING</text>
+</svg>
+<div class="transport"><button id="play" class="primary">Play</button><button id="reset">Reset</button><label class="scrubber">Timeline<input id="seek" type="range" step="any" min="0" max="1" value="0" aria-label="Timeline position"></label><output id="clock">0.0 / 0.0 s</output><label class="speed-label">Speed<select id="speed"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div>
+<div class="stage-footer"><span id="contact" role="status">Ready</span><label><input id="anchors" type="checkbox"> Show skeleton / anchors</label></div>
+</section><aside><p class="eyebrow">B1.7 / WRITING TOOL</p><label for="math-example">Problem</label><select id="math-example" aria-label="Math problem"><option value="example">Example: x/5-4/4=2/5</option><option value="generated-0">Generated addition</option><option value="generated-1">Generated subtraction</option><option value="generated-2">Generated multiplication</option><option value="free">Free writing</option></select><label for="writing">Equation / writing instructions</label><textarea id="writing" rows="2" spellcheck="false">x/5-4/4=2/5</textarea><button id="load" class="primary wide">Solve &amp; write ↗</button><p id="message" role="status"></p><p id="operation" role="status"></p><div class="file-actions"><button id="export">Export JSON ↓</button><label for="import" class="file-label">Import JSON<input id="import" type="file" accept=".json,application/json"></label></div>
+<details id="advanced"><summary>Advanced / Body Rig</summary><div id="body-controls" class="body-controls"></div><dl><dt>Upper / forearm</dt><dd id="arm-lengths"></dd><dt>Right shoulder</dt><dd id="shoulder-value"></dd><dt>Body origin</dt><dd id="body-origin"></dd></dl><button id="restore" class="wide">Restore body rig</button></details><p class="docs"><a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/reduced-professor-stick-figure/prototypes/professor-stick-figure/README.md">Docs</a> · <a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/blob/feature/reduced-professor-stick-figure/prototypes/professor-stick-figure/docs/coordinates.md">Rig / motion contract</a></p></aside></div>
+</main><script type="module">
+
+// SOURCE: ../math-problems/src/rational.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+/** Exact, normalized rational arithmetic. Public serialization uses decimal strings. */
+class MathProblemError extends Error {
+  constructor(code,message){super(message);this.name='MathProblemError';this.code=code;}
+}
+function integerValue(value) {
+  if(typeof value==='bigint')return value;
+  if(typeof value==='number'&&Number.isSafeInteger(value))return BigInt(value);
+  if(typeof value==='string'&&/^-?\d{1,128}$/.test(value))return BigInt(value);
+  throw new MathProblemError('INVALID_INTEGER','Expected a safe integer, BigInt, or decimal integer string (up to 128 digits)');
+}
+function gcd(a,b){a=a<0n?-a:a;b=b<0n?-b:b;while(b){const t=a%b;a=b;b=t;}return a;}
+class Rational {
+  constructor(numerator,denominator=1n){let n=integerValue(numerator),d=integerValue(denominator);if(d===0n)throw new MathProblemError('ZERO_DENOMINATOR','A denominator cannot be zero');if(d<0n){n=-n;d=-d;}const g=gcd(n,d);this.n=n/g;this.d=d/g;Object.freeze(this);}
+  static from(value){if(value instanceof Rational)return value;if(value&&typeof value==='object')return new Rational(value.numerator,value.denominator);return new Rational(value);}
+  add(value){const q=Rational.from(value);return new Rational(this.n*q.d+q.n*this.d,this.d*q.d);}
+  sub(value){return this.add(Rational.from(value).neg());}
+  mul(value){const q=Rational.from(value);return new Rational(this.n*q.n,this.d*q.d);}
+  div(value){const q=Rational.from(value);return new Rational(this.n*q.d,this.d*q.n);}
+  neg(){return new Rational(-this.n,this.d);}
+  equals(value){const q=Rational.from(value);return this.n===q.n&&this.d===q.d;}
+  get isZero(){return this.n===0n;}
+  toString(){return this.d===1n?String(this.n):`${this.n}/${this.d}`;}
+  toJSON(){return {numerator:String(this.n),denominator:String(this.d)};}
+}
+
+
+// SOURCE: ../math-problems/src/syntax.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+const integerNode=value=>({type:'integer',value:String(value)});
+const variableNode=()=>({type:'variable',name:'x'});
+const binaryNode=(op,left,right)=>({type:'binary',op,left,right});
+function rationalNode(value){const q=Rational.from(value);return q.d===1n?integerNode(q.n):binaryNode('/',integerNode(q.n),integerNode(q.d));}
+function parseEquation(text) {
+  if(typeof text!=='string'||text.length>2048)throw new MathProblemError('INVALID_SYNTAX','Equation must be a string of at most 2048 characters');
+  const source=text.replace(/−/g,'-').replace(/[×·]/g,'*').replace(/÷/g,'/'),tokens=[];
+  let pos=0;
+  while(pos<source.length){if(/\s/.test(source[pos])){pos++;continue;}const number=source.slice(pos).match(/^\d+/);if(number){if(number[0].length>128)throw new MathProblemError('INVALID_INTEGER','Integer literal is too long');tokens.push(number[0]);pos+=number[0].length;}else if('x+-*/()='.includes(source[pos]))tokens.push(source[pos++]);else throw new MathProblemError('INVALID_SYNTAX',`Unsupported character at position ${pos}`);}
+  if(tokens.length>256)throw new MathProblemError('TOO_COMPLEX','Equation exceeds 256 tokens');let index=0,depth=0;
+  const atom=()=>{if(++depth>48)throw new MathProblemError('TOO_COMPLEX','Equation nesting exceeds 48');let node;const token=tokens[index++];if(token==='x')node=variableNode();else if(token&&/^\d+$/.test(token))node=integerNode(token);else if(token==='+'||token==='-'){const operand=atom();node=token==='+'?operand:{type:'negate',operand};}else if(token==='('){node=expression();if(tokens[index++]!==')')throw new MathProblemError('INVALID_SYNTAX','Missing closing parenthesis');}else throw new MathProblemError('INVALID_SYNTAX','Expected an integer, x or parenthesized expression');depth--;return node;};
+  const product=()=>{let node=atom();while(tokens[index]==='*'||tokens[index]==='/'){const op=tokens[index++];node=binaryNode(op,node,atom());}return node;};
+  const expression=()=>{let node=product();while(tokens[index]==='+'||tokens[index]==='-'){const op=tokens[index++];node=binaryNode(op,node,product());}return node;};
+  const left=expression();if(tokens[index++]!=='=')throw new MathProblemError('INVALID_SYNTAX','Expected exactly one equality');const right=expression();if(index!==tokens.length)throw new MathProblemError('INVALID_SYNTAX','Unexpected trailing input');return {type:'equation',left,right};
+}
+function validateEquation(input) {
+  if(typeof input==='string')return parseEquation(input);
+  let nodes=0;
+  const check=(node,depth=0)=>{if(++nodes>256||depth>48)throw new MathProblemError('TOO_COMPLEX','AST size/depth exceeds limits');if(!node||typeof node!=='object')throw new MathProblemError('INVALID_AST','Expected an expression node');
+    if(node.type==='integer'){new Rational(node.value);return integerNode(node.value);}
+    if(node.type==='variable'&&node.name==='x')return variableNode();
+    if(node.type==='negate')return {type:'negate',operand:check(node.operand,depth+1)};
+    if(node.type==='binary'&&['+','-','*','/'].includes(node.op))return binaryNode(node.op,check(node.left,depth+1),check(node.right,depth+1));
+    throw new MathProblemError('INVALID_AST','Unsupported expression node');};
+  if(input?.type!=='equation')throw new MathProblemError('INVALID_AST','Expected an equation AST');return {type:'equation',left:check(input.left),right:check(input.right)};
+}
+function countUnknowns(node){return node.type==='variable'?1:node.type==='binary'?countUnknowns(node.left)+countUnknowns(node.right):node.type==='negate'?countUnknowns(node.operand):node.type==='equation'?countUnknowns(node.left)+countUnknowns(node.right):0;}
+function precedence(node){return node.type==='binary'?(['+','-'].includes(node.op)?1:2):node.type==='negate'?3:4;}
+function formatExpression(node){
+ if(node.type==='integer')return node.value;
+ if(node.type==='variable')return 'x';
+ if(node.type==='negate'){const value=formatExpression(node.operand);return '-'+(precedence(node.operand)<3?`(${value})`:value);}
+ const p=precedence(node),l=formatExpression(node.left),r=formatExpression(node.right);
+ const left=precedence(node.left)<p?`(${l})`:l;
+ const right=r.startsWith('-')||precedence(node.right)<p||(precedence(node.right)===p&&['-','/'].includes(node.op))||(node.op==='*'&&node.right.type==='binary'&&node.right.op==='/')?`(${r})`:r;
+ return left+node.op+right;
+}
+const formatEquation=e=>`${formatExpression(e.left)}=${formatExpression(e.right)}`;
+function evaluateExpression(node,value){
+ if(node.type==='integer')return new Rational(node.value);
+ if(node.type==='variable'){if(value===undefined)throw new MathProblemError('MISSING_VALUE','x needs a value');return Rational.from(value);}
+ if(node.type==='negate')return evaluateExpression(node.operand,value).neg();
+ const a=evaluateExpression(node.left,value),b=evaluateExpression(node.right,value);return node.op==='+'?a.add(b):node.op==='-'?a.sub(b):node.op==='*'?a.mul(b):a.div(b);
+}
+
+
+// SOURCE: ../math-problems/src/algebra.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+const Q0=new Rational(0),Q1=new Rational(1);
+function trimPolynomial(p){while(p.length>1&&p.at(-1).isZero)p.pop();return p;}
+function addPolynomial(a,b,subtract=false){return trimPolynomial(Array.from({length:Math.max(a.length,b.length)},(_,i)=>(a[i]??Q0).add(subtract?(b[i]??Q0).neg():(b[i]??Q0))));}
+function multiplyPolynomial(a,b){if(a.length+b.length-2>8)throw new MathProblemError('UNSUPPORTED_DEGREE','Polynomial degree exceeds 8');const p=Array(a.length+b.length-1).fill(Q0);for(let i=0;i<a.length;i++)for(let j=0;j<b.length;j++)p[i+j]=p[i+j].add(a[i].mul(b[j]));return trimPolynomial(p);}
+function evaluatePolynomial(p,x){let value=Q0;for(let i=p.length-1;i>=0;i--)value=value.mul(x).add(p[i]);return value;}
+const zeroPolynomial=p=>p.length===1&&p[0].isZero;
+function symbolic(node,restrictions){
+ if(node.type==='integer')return {n:[new Rational(node.value)],d:[Q1]};
+ if(node.type==='variable')return {n:[Q0,Q1],d:[Q1]};
+ if(node.type==='negate'){const r=symbolic(node.operand,restrictions);return {...r,n:r.n.map(q=>q.neg())};}
+ const a=symbolic(node.left,restrictions),b=symbolic(node.right,restrictions);
+ if(node.op==='/'){
+  if(zeroPolynomial(b.n))throw new MathProblemError('ZERO_DENOMINATOR',`Denominator ${formatExpression(node.right)} is identically zero`);
+  restrictions.push({expression:node.right,polynomial:b.n});return {n:multiplyPolynomial(a.n,b.d),d:multiplyPolynomial(a.d,b.n)};
+ }
+ if(node.op==='*')return {n:multiplyPolynomial(a.n,b.n),d:multiplyPolynomial(a.d,b.d)};
+ return {n:addPolynomial(multiplyPolynomial(a.n,b.d),multiplyPolynomial(b.n,a.d),node.op==='-'),d:multiplyPolynomial(a.d,b.d)};
+}
+function integerSqrt(n){if(n<0n)return null;if(n<2n)return n;let x=n,y=(x+1n)/2n;while(y<x){x=y;y=(x+n/x)/2n;}return x*x===n?x:null;}
+function rationalSqrt(q){if(q.n<0n)return null;const n=integerSqrt(q.n),d=integerSqrt(q.d);return n===null||d===null?null:new Rational(n,d);}
+function polynomialRoots(p){
+ if(p.length===1)return {status:p[0].isZero?'infinite':'none',roots:[]};
+ if(p.length===2)return {status:'unique',roots:[p[0].neg().div(p[1])]};
+ if(p.length===3){const [c,b,a]=p,discriminant=b.mul(b).sub(a.mul(c).mul(4));if(discriminant.n<0n)return {status:'none',roots:[]};const root=rationalSqrt(discriminant);if(!root)return {status:'unsupported',roots:[],reason:'Irrational roots require an algebraic-number extension'};const roots=[b.neg().sub(root).div(a.mul(2)),b.neg().add(root).div(a.mul(2))];return {status:roots[0].equals(roots[1])?'unique':'multiple',roots:roots[0].equals(roots[1])?[roots[0]]:roots};}
+ return {status:'unsupported',roots:[],reason:'Only affine and rational-root quadratic equations are classified'};
+}
+function analyzeEquation(input,extraRestrictions=[]) {
+ const equation=validateEquation(input);if(!countUnknowns(equation))throw new MathProblemError('MISSING_UNKNOWN','An equation problem must contain x');
+ const restrictions=[],left=symbolic(equation.left,restrictions),right=symbolic(equation.right,restrictions);
+ const polynomial=addPolynomial(multiplyPolynomial(left.n,right.d),multiplyPolynomial(right.n,left.d),true);
+ const domain=[...extraRestrictions,...restrictions],classification=polynomialRoots(polynomial);
+ const roots=classification.roots.filter(x=>domain.every(r=>!evaluatePolynomial(r.polynomial,x).isZero));
+ let status=classification.status;if(status==='unique'||status==='multiple')status=roots.length===0?'none':roots.length===1?'unique':'multiple';
+ return {equation,polynomial,restrictions:domain,status,roots,reason:classification.reason};
+}
+function serializeRestrictions(restrictions){return restrictions.map(r=>({expression:structuredClone(r.expression),text:`${formatExpression(r.expression)}!=0`,polynomial:r.polynomial.map(q=>q.toJSON())}));}
+function sameSolutionSet(a,b){
+ if(a.status!==b.status)return false;
+ if(a.status==='unsupported')return false;
+ if(a.status==='unique'||a.status==='multiple')return a.roots.length===b.roots.length&&a.roots.every(x=>b.roots.some(y=>x.equals(y)));
+ if(a.status==='none')return true;
+ // Infinite equations are equivalent only if they exclude the same rational values.
+ const exclusions=analysis=>{
+  const roots=[];for(const r of analysis.restrictions){const result=polynomialRoots(r.polynomial);if(result.status==='unsupported'||result.status==='infinite')return null;roots.push(...result.roots);}return roots;
+ };
+ const x=exclusions(a),y=exclusions(b);return !!x&&!!y&&x.every(q=>y.some(r=>r.equals(q)))&&y.every(q=>x.some(r=>r.equals(q)));
+}
+function equivalentExpressions(a,b){
+ const restrictions=[],x=symbolic(a,restrictions),y=symbolic(b,restrictions);
+ return zeroPolynomial(addPolynomial(multiplyPolynomial(x.n,y.d),multiplyPolynomial(y.n,x.d),true));
+}
+
+
+// SOURCE: ../math-problems/src/solver.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+const equationNode=(left,right)=>({type:'equation',left,right});
+function proofFor(analysis){const lead=analysis.polynomial.at(-1);return {classification:analysis.status,normalizedPolynomial:analysis.polynomial.map(q=>(lead.isZero?q:q.div(lead)).toJSON()),solutions:analysis.roots.map(q=>q.toJSON())};}
+function verifyOperation(previous,current,operation,index) {
+ if(!operation||typeof operation.explanation!=='string'||!operation.explanation)return false;
+ const same=equivalentExpressions,op=operation.kind,a=previous.equation,b=current.equation;
+ if(operation.calculation&&(!evaluateExpression(operation.calculation.expression).equals(evaluateExpression(operation.calculation.result))||!evaluateExpression(operation.calculation.result).equals(evaluateExpression(b.right))))return false;
+ if(op==='given')return index===0;
+ if(op==='swap-sides')return same(a.left,b.right)&&same(a.right,b.left);
+ if(op==='simplify-rational')return same(a.left,b.left)&&same(a.right,b.right);
+ const operations={'add-both-sides':'+','subtract-both-sides':'-','multiply-both-sides':'*','divide-both-sides':'/'};
+ if(operations[op]){
+  const operand=operation.operand;
+  if(!operand||countUnknowns(operand))return false;
+  const q=evaluateExpression(operand);if(['*','/'].includes(operations[op])&&q.isZero)return false;
+  if(!same(binaryNode(operations[op],a.left,operand),b.left)||!same(binaryNode(operations[op],a.right,operand),b.right))return false;
+ }else if(op==='isolate-denominator'){
+  if(a.left.type!=='binary'||a.left.op!=='/'||!operation.operand||!same(operation.operand,a.left.left)||!same(a.left.right,b.left)||!same(binaryNode('/',a.left.left,a.right),b.right))return false;
+ }else if(op==='collect-terms'||op==='quadratic-formula'){
+  if(JSON.stringify(operation.coefficients)!==JSON.stringify(previous.polynomial.map(q=>q.toJSON())))return false;
+  if(op==='quadratic-formula'&&previous.polynomial.length!==3)return false;
+  if(op==='collect-terms'&&(previous.polynomial.length!==2||!same(b.left,binaryNode('*',rationalNode(previous.polynomial[1]),variableNode()))||!same(b.right,rationalNode(previous.polynomial[0].neg()))))return false;
+ }else return false;
+ return true;
+}
+function verifySolution(solution) {
+ try {
+  const original=analyzeEquation(solution.equation),steps=solution.steps;
+  if(solution.status!==original.status||!Array.isArray(steps)||!steps.length)return {valid:false,reason:'Classification or steps mismatch'};
+  const expected=original.roots,reported=(solution.solutions??[]).map(q=>Rational.from(q));
+  if(reported.length!==expected.length||!expected.every(q=>reported.some(r=>q.equals(r))))return {valid:false,reason:'Reported solution mismatch'};
+  if(JSON.stringify(solution.domain)!==JSON.stringify(serializeRestrictions(original.restrictions)))return {valid:false,reason:'Original domain restrictions were changed'};
+  if(formatEquation(validateEquation(steps[0].equation))!==formatEquation(original.equation))return {valid:false,reason:'First step is not the original problem'};
+  let previous=original;const checks=[];
+  for(const step of steps){
+   const current=analyzeEquation(step.equation,original.restrictions);
+   if(step.text!==formatEquation(current.equation)||!sameSolutionSet(previous,current)||!verifyOperation(previous,current,step.operation,checks.length))return {valid:false,reason:'Step changes the equation solution set'};
+   checks.push({equivalent:true,...proofFor(current)});previous=current;
+  }
+  for(const x of expected){const l=evaluateExpression(original.equation.left,x),r=evaluateExpression(original.equation.right,x);if(!l.equals(r))return {valid:false,reason:'Substitution failed'};}
+  if(original.status==='unique'){
+   const last=steps.at(-1).equation;
+   if(last.left.type!=='variable'||countUnknowns(last.right)!==0||!evaluateExpression(last.right).equals(expected[0]))return {valid:false,reason:'Final step does not isolate x'};
+  }
+  return {valid:true,method:'exact solution-set equivalence under original denominator restrictions',steps:checks,substitution:expected.map(q=>({value:q.toJSON(),valid:true}))};
+ }catch(error){return {valid:false,reason:error.message};}
+}
+function solveEquation(input) {
+ try {
+  const equation=validateEquation(input),analysis=analyzeEquation(equation);
+  const result={version:1,status:analysis.status,equation,domain:serializeRestrictions(analysis.restrictions),solutions:analysis.roots.map(q=>q.toJSON()),steps:[]};
+  const append=(eq,operation)=>result.steps.push({index:result.steps.length,equation:structuredClone(eq),text:formatEquation(eq),operation});
+  append(equation,{kind:'given',explanation:'Start with the given equation and keep every original denominator nonzero.'});
+  if(analysis.status!=='unique'){
+   result.explanation=analysis.status==='none'?'No value satisfies the equation in its original domain.':analysis.status==='infinite'?'Every rational value in the original domain satisfies this identity.':analysis.status==='multiple'?'More than one rational value satisfies this equation.':analysis.reason;
+   result.verification=analysis.status==='unsupported'?{valid:false,reason:analysis.reason}:verifySolution(result);return result;
+  }
+  let left=equation.left,right=equation.right;
+  if(countUnknowns(equation)!==1){
+   // Normalize repeated-x affine expressions without inventing a second unknown.
+   if(analysis.polynomial.length===2){left=binaryNode('*',rationalNode(analysis.polynomial[1]),variableNode());right=rationalNode(analysis.polynomial[0].neg());append(equationNode(left,right),{kind:'collect-terms',explanation:'Clear defined denominators and collect the x terms, preserving the original domain.',coefficients:analysis.polynomial.map(q=>q.toJSON())});}
+   else {append(equationNode(variableNode(),rationalNode(analysis.roots[0])),{kind:'quadratic-formula',explanation:'Apply the exact quadratic formula and discard values outside the original domain.',coefficients:analysis.polynomial.map(q=>q.toJSON())});result.verification=verifySolution(result);return result;}
+  }
+  if(countUnknowns(left)===0){[left,right]=[right,left];append(equationNode(left,right),{kind:'swap-sides',explanation:'Swap the two sides of the equality.'});}
+  let guard=0;
+  while(left.type!=='variable'){
+   if(++guard>64)throw new MathProblemError('TOO_COMPLEX','Isolation exceeds 64 operations');
+   let next,operand,kind,explanation,conditions=[];
+   if(left.type==='negate'){next=left.operand;operand=integerNode(-1);right=binaryNode('*',right,operand);kind='multiply-both-sides';explanation='Multiply both sides by -1.';}
+   else if(left.type==='binary'){
+    const unknownLeft=countUnknowns(left.left)>0,unknown=unknownLeft?left.left:left.right,constant=unknownLeft?left.right:left.left;
+    operand=constant;next=unknown;
+    if(left.op==='+'){right=binaryNode('-',right,constant);kind='subtract-both-sides';explanation=`Subtract ${formatExpression(constant)} from both sides.`;}
+    else if(left.op==='-'&&unknownLeft){right=binaryNode('+',right,constant);kind='add-both-sides';explanation=`Add ${formatExpression(constant)} to both sides.`;}
+    else if(left.op==='-'){next={type:'negate',operand:unknown};right=binaryNode('-',right,constant);kind='subtract-both-sides';explanation=`Subtract ${formatExpression(constant)} from both sides.`;}
+    else if(left.op==='*'){const q=evaluateExpression(constant);if(q.isZero)throw new MathProblemError('INTERNAL_VERIFICATION','Cannot divide by zero');right=binaryNode('/',right,constant);kind='divide-both-sides';explanation=`Divide both sides by ${q}.`;conditions=[`${formatExpression(constant)}!=0`];}
+    else if(unknownLeft){right=binaryNode('*',right,constant);kind='multiply-both-sides';explanation=`Multiply both sides by ${formatExpression(constant)}.`;conditions=[`${formatExpression(constant)}!=0`];}
+    else {const q=evaluateExpression(right);if(q.isZero)throw new MathProblemError('INTERNAL_VERIFICATION','Cannot invert a zero right side');right=binaryNode('/',constant,right);kind='isolate-denominator';explanation='Multiply by the nonzero unknown denominator, then divide by the nonzero right side.';conditions=[`${formatExpression(unknown)}!=0`,`${q}!=0`];}
+   }else throw new MathProblemError('UNSUPPORTED_EXPRESSION','Cannot isolate this expression');
+   left=next;const unevaluated=structuredClone(right),simple=rationalNode(evaluateExpression(right));
+   if(left.type==='variable')right=simple;
+   append(equationNode(left,right),{kind,operand:structuredClone(operand),conditions,explanation,...(left.type==='variable'?{calculation:{expression:unevaluated,result:structuredClone(simple)}}:{})});
+   if(left.type!=='variable'&&formatExpression(right)!==formatExpression(simple)){right=simple;append(equationNode(left,right),{kind:'simplify-rational',explanation:'Evaluate and reduce the rational arithmetic exactly.',calculation:{expression:unevaluated,result:structuredClone(simple)}});}
+  }
+  // Input may already be x = an unsimplified rational expression.
+  const simple=rationalNode(evaluateExpression(right));if(formatExpression(simple)!==formatExpression(right)){right=simple;append(equationNode(left,right),{kind:'simplify-rational',explanation:'Reduce the rational answer exactly.'});}
+  result.verification=verifySolution(result);
+  if(!result.verification.valid)throw new MathProblemError('INTERNAL_VERIFICATION',result.verification.reason);
+  return result;
+ }catch(error){if(!(error instanceof MathProblemError))throw error;return {version:1,status:(error.code.startsWith('UNSUPPORTED')||error.code==='TOO_COMPLEX')?'unsupported':'invalid',error:{code:error.code,message:error.message},solutions:[],steps:[],verification:{valid:false,reason:error.message}};}
+}
+
+
+// SOURCE: ../math-problems/src/generator.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+/** Modernized from Charles B. Cossé's crosswordbuilder fraction-toggle-OFF algorithm.
+ * Original copyright (C) 2001-2010 Asymptopia Software, GPL. See NOTICE.md. */
+function seededRandom(seed=0){
+ if(!['number','string'].includes(typeof seed)||(typeof seed==='number'&&!Number.isFinite(seed))||String(seed).length>200)throw new MathProblemError('INVALID_SEED','Seed must be a finite number or string of at most 200 characters');
+ let state=2166136261;for(const c of String(seed)){state^=c.charCodeAt(0);state=Math.imul(state,16777619)>>>0;}
+ return ()=>{state=(state+0x6D2B79F5)>>>0;let t=state;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};
+}
+function createProblemGenerator(options={}) {
+ const {seed=0,min=1,max=9,operator,missingSlot,maxAttempts=500}=options;
+ if(!Number.isSafeInteger(min)||!Number.isSafeInteger(max)||min>max||Math.abs(min)>1000000||Math.abs(max)>1000000||(min===0&&max===0))throw new MathProblemError('INVALID_RANGE','Use an inclusive integer range within ±1000000 containing a nonzero integer');
+ if(operator!==undefined&&!['+','-','*'].includes(operator))throw new MathProblemError('INVALID_OPERATOR','Operator must be +, - or *');
+ const slots=['a','b','c','d','e','f'];if(missingSlot!==undefined&&!slots.includes(missingSlot))throw new MathProblemError('INVALID_SLOT','Unknown slot must be a, b, c, d, e or f');
+ if(!Number.isInteger(maxAttempts)||maxAttempts<1||maxAttempts>10000)throw new MathProblemError('INVALID_BUDGET','maxAttempts must be 1…10000');
+ const random=seededRandom(seed),nonzeroCount=max-min+1-(min<=0&&max>=0?1:0);
+ const sample=()=>{let value=min+Math.floor(random()*nonzeroCount);if(min<=0&&value>=0)value++;return BigInt(value);};
+ return ()=>{
+  for(let attempt=0;attempt<maxAttempts;attempt++){
+   const a=sample(),b=sample(),d=sample(),e=sample(),op=operator??['+','-','*'][Math.floor(random()*3)];
+   const first=new Rational(a,d),second=new Rational(b,e),value=op==='+'?first.add(second):op==='-'?first.sub(second):first.mul(second);
+   const values={a,b,c:value.n,d,e,f:value.d},slot=missingSlot??slots[Math.floor(random()*6)];
+   const n=key=>key===slot?variableNode():integerNode(values[key]);
+   const equation={type:'equation',left:binaryNode(op,binaryNode('/',n('a'),n('d')),binaryNode('/',n('b'),n('e'))),right:binaryNode('/',n('c'),n('f'))};
+   const solution=solveEquation(equation),answer=new Rational(values[slot]);
+   if(solution.status!=='unique'||!solution.verification.valid||!verifySolution(solution).valid||!Rational.from(solution.solutions[0]).equals(answer))continue;
+   return {version:1,text:formatEquation(equation),equation,operator:op,missingSlot:slot,answer:answer.toJSON(),completed:Object.fromEntries(Object.entries(values).map(([k,v])=>[k,String(v)])),validation:{unique:true,transformationsVerified:true,originalArithmeticValid:value.equals(new Rational(values.c,values.f))}};
+  }
+  throw new MathProblemError('GENERATION_EXHAUSTED','No unique valid problem was found within the attempt budget');
+ };
+}
+function generateProblem(options={}){return createProblemGenerator(options)();}
+function generateProblems(options={}){const {count=3,...rest}=options;if(!Number.isInteger(count)||count<1||count>1000)throw new MathProblemError('INVALID_COUNT','count must be 1…1000');const next=createProblemGenerator(rest);return Array.from({length:count},()=>next());}
+
+
+// SOURCE: ../math-layout/src/layout.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+const metrics17={glyphWidth:.62,advance:.95,operatorGap:.25,fractionScale:.78,fractionGap:.15,fractionPadding:.16};
+const shift17=(items,x,y,role)=>items.map(item=>({...item,x:item.x+x,y:item.y+y,...(item.points?{points:item.points.map(p=>[p[0]+x,p[1]+y])}:{}),role:role?`${role}/${item.role??'content'}`:item.role}));
+function textBox17(text,size,m){
+ const width=text.length?(text.length-1)*m.advance*size+m.glyphWidth*size:0;
+ return {width,height:size,axis:size/2,items:[...text].map((text,i)=>({kind:'glyph',text,x:i*m.advance*size,y:0,width:m.glyphWidth*size,height:size,role:'glyph'}))};
+}
+function rowBox17(boxes,gap=0){
+ const axis=Math.max(...boxes.map(b=>b.axis)),below=Math.max(...boxes.map(b=>b.height-b.axis));let x=0;const items=[];
+ for(const [i,b]of boxes.entries()){if(i)x+=gap;items.push(...shift17(b.items,x,axis-b.axis));x+=b.width;}
+ return {width:x,height:axis+below,axis,items};
+}
+function parentheses17(box,size,m){
+ const width=.35*size,left={kind:'glyph',text:'(',x:0,y:0,width,height:box.height,role:'parenthesis'};
+ return {width:box.width+2*width+.16*size,height:box.height,axis:box.axis,items:[left,...shift17(box.items,width+.08*size,0),{...left,text:')',x:box.width+width+.16*size}]};
+}
+const precedence17=node=>node.type==='binary'?(node.op==='+'||node.op==='-'?1:2):3;
+function expressionBox17(node,size,m){
+ if(node.type==='integer')return textBox17(node.value,size,m);
+ if(node.type==='variable')return textBox17('x',size,m);
+ if(node.type==='negate'){
+  let child=expressionBox17(node.operand,size,m);
+  if(node.operand.type==='binary'&&node.operand.op!=='/')child=parentheses17(child,size,m);
+  return rowBox17([textBox17('-',size,m),child],.1*size);
+ }
+ if(node.op==='/'){
+  const n=expressionBox17(node.left,size*m.fractionScale,m),d=expressionBox17(node.right,size*m.fractionScale,m);
+  const padding=m.fractionPadding*size,gap=m.fractionGap*size,width=Math.max(n.width,d.width)+2*padding,axis=n.height+gap,denY=axis+gap;
+  return {width,height:denY+d.height,axis,items:[...shift17(n.items,(width-n.width)/2,0,'numerator'),
+   {kind:'fraction-bar',x:0,y:axis,width,height:0,points:[[0,axis],[width,axis]],role:'fraction-bar'},
+   ...shift17(d.items,(width-d.width)/2,denY,'denominator')]};
+ }
+ let left=expressionBox17(node.left,size,m),right=expressionBox17(node.right,size,m);
+ if(precedence17(node.left)<precedence17(node))left=parentheses17(left,size,m);
+ if(node.right.type==='negate'||(node.right.type==='integer'&&node.right.value.startsWith('-'))||precedence17(node.right)<precedence17(node)||(node.op==='-'&&precedence17(node.right)===precedence17(node)))right=parentheses17(right,size,m);
+ return rowBox17([left,textBox17(node.op==='*'?'×':node.op,size,m),right],m.operatorGap*size);
+}
+function options17(options){const {size=24,...custom}=options;const m={...metrics17,...custom};if(!Number.isFinite(size)||size<=0||Object.values(m).some(v=>!Number.isFinite(v)||v<=0)||m.fractionScale>=1)throw new RangeError('Invalid math layout metrics');return {size,m};}
+/** Pure boxes/positioned symbols; no font paths, SVG or animation clocks. */
+function layoutExpression(expression,options={}){
+ const node=validateEquation({type:'equation',left:expression,right:{type:'integer',value:'0'}}).left;
+ const {size,m}=options17(options);return {version:1,...expressionBox17(node,size,m),size};
+}
+function layoutEquation(input,options={}){
+ const eq=validateEquation(input),{size,m}=options17(options),left=expressionBox17(eq.left,size,m),right=expressionBox17(eq.right,size,m),equals=textBox17('=',size,m);
+ return {version:1,...rowBox17([left,equals,right],m.operatorGap*size),size,equalsX:left.width+m.operatorGap*size};
+}
+/** Size/line placement uses measured expression boxes, not slash-string lengths. */
+function layoutEquations(equations,options={}){
+ const {maxSize=24,minSize=12,width=515,height=220,rowGap=.5,alignEquals=true}=options;
+ if(!Array.isArray(equations)||!equations.length)throw new TypeError('At least one equation is required');
+ if(![maxSize,minSize,width,height,rowGap].every(v=>Number.isFinite(v)&&v>0)||maxSize<minSize)throw new RangeError('Invalid equation layout bounds');
+ const units=equations.map(eq=>layoutEquation(eq,{size:1})),eqX=Math.max(...units.map(b=>b.equalsX));
+ const unitWidth=Math.max(...units.map(b=>b.width+(alignEquals?eqX-b.equalsX:0))),unitHeight=units.reduce((sum,b)=>sum+b.height,0)+(units.length-1)*rowGap;
+ const size=Math.min(maxSize,width/unitWidth,height/unitHeight);if(size<minSize)throw new RangeError('Solution has too many/large expressions for this board; use a paged consumer');
+ const rows=[],items=[];let y=0;
+ for(const [row,eq]of equations.entries()){
+  const box=layoutEquation(eq,{size}),x=alignEquals?eqX*size-box.equalsX:0;
+  rows.push({index:row,x,y,width:box.width,height:box.height,axis:y+box.axis,equalsX:x+box.equalsX});
+  items.push(...shift17(box.items,x,y).map(item=>({...item,row})));y+=box.height+rowGap*size;
+ }
+ return {version:1,width:unitWidth*size,height:unitHeight*size,size,rows,items};
+}
+
+
+// SOURCE: ../math-layout/src/strokes.js
+// SPDX-License-Identifier: GPL-2.0-or-later
+/** Geometry placement is separate from layout and separate from timing/rendering.
+ * The consumer supplies its own normalized [0..1] reusable vector glyph set. */
+function positionStrokes(layout,glyphs){
+ if(!layout||!Array.isArray(layout.items)||!glyphs)throw new TypeError('Layout items and a vector glyph set are required');
+ const strokes=[];
+ for(const [itemIndex,item]of layout.items.entries()){
+  if(![item.x,item.y,item.width,item.height].every(Number.isFinite)||item.width<0||item.height<0)throw new RangeError('Invalid positioned math bounds');
+  if(item.kind==='fraction-bar')strokes.push({points:item.points.map(p=>[...p]),pen:true,kind:'fraction-bar',role:item.role,row:item.row,item:itemIndex});
+  else if(item.kind==='glyph'){
+   const paths=glyphs[item.text];if(!paths)throw new RangeError(`Missing vector glyph: ${item.text}`);
+   for(const path of paths)if(!Array.isArray(path)||path.length<2||path.some(p=>!Array.isArray(p)||p.length!==2||!p.every(Number.isFinite)))throw new RangeError(`Invalid vector glyph: ${item.text}`);
+   for(const [stroke,path]of paths.entries())strokes.push({points:path.map(p=>[item.x+p[0]*item.width,item.y+p[1]*item.height]),pen:true,kind:'glyph',symbol:item.text,role:item.role,row:item.row,item:itemIndex,stroke});
+  }else throw new TypeError('Unsupported positioned math item');
+ }
+ return {version:1,width:layout.width,height:layout.height,strokes};
+}
+
+
+// SOURCE: ../drawing-arm/src/kinematics.js
+/** Character-independent planar two-link IK. Angles are radians, SVG y points down. */
+const TAU = 2 * Math.PI;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+const point = (p, name) => {
+  if (!Array.isArray(p) || p.length !== 2 || !p.every(Number.isFinite)) throw new TypeError(`${name} must be [finite x, finite y]`);
+  return [...p];
+};
+function configureArm(options = {}) {
+  const c = { upper: 190, forearm: 170, shoulder: [80, 280], side: 'right', elbow: 'positive', tip: 8,
+    limits: { shoulder: [-Math.PI, Math.PI], elbow: [-Math.PI, Math.PI] }, ...options };
+  for (const key of ['upper', 'forearm']) if (!Number.isFinite(c[key]) || c[key] <= 0) throw new RangeError(`${key} must be positive`);
+  if (!Number.isFinite(c.tip) || c.tip < 0) throw new RangeError('tip must be nonnegative');
+  c.shoulder = point(c.shoulder, 'shoulder');
+  if (!['left', 'right'].includes(c.side) || !['positive', 'negative'].includes(c.elbow)) throw new RangeError('Invalid side or elbow orientation');
+  c.limits = { shoulder: [-Math.PI, Math.PI], elbow: [-Math.PI, Math.PI], ...c.limits };
+  for (const key of ['shoulder', 'elbow']) {
+    const range = point(c.limits[key], `${key} limits`);
+    if (range[0] > range[1] || range[1] - range[0] > TAU + 1e-10) throw new RangeError('Limits must be ordered and span at most 2π');
+    c.limits[key] = range;
+  }
+  return c;
+}
+function forward(arm, shoulderAngle, elbowAngle) {
+  const c = configureArm(arm), s = c.shoulder;
+  const elbow = [s[0] + c.upper * Math.cos(shoulderAngle), s[1] + c.upper * Math.sin(shoulderAngle)];
+  const angle = shoulderAngle + elbowAngle;
+  const wrist = [elbow[0] + c.forearm * Math.cos(angle), elbow[1] + c.forearm * Math.sin(angle)];
+  const tip = [wrist[0] + c.tip * Math.cos(angle), wrist[1] + c.tip * Math.sin(angle)];
+  return { shoulder: [...s], elbow, wrist, tip, angles: { shoulder: shoulderAngle, elbow: elbowAngle } };
+}
+// Pick the equivalent angle closest to the configured interval, including seam crossings.
+function fit(angle, range) {
+  const center = (range[0] + range[1]) / 2;
+  const a = angle + TAU * Math.round((center - angle) / TAU);
+  return clamp(a, ...range);
+}
+function solveIK(arm, target) {
+  const c = configureArm(arm); point(target, 'target');
+  const dx = target[0] - c.shoulder[0], dy = target[1] - c.shoulder[1];
+  const r = Math.hypot(dx, dy), a = c.upper, b = c.forearm + c.tip;
+  const projectedRadius = clamp(r, Math.abs(a - b), a + b);
+  const direction = r < 1e-12 ? 0 : Math.atan2(dy, dx);
+  const bend = Math.acos(clamp((projectedRadius ** 2 - a * a - b * b) / (2 * a * b), -1, 1));
+  const sign = (c.elbow === 'positive' ? 1 : -1) * (c.side === 'left' ? -1 : 1);
+  const candidates = [sign, -sign].map(s => {
+    const e = s * bend;
+    const sh = direction - Math.atan2(b * Math.sin(e), a + b * Math.cos(e));
+    return [sh, e];
+  });
+  // Exact preferred branch, or exact opposite branch when required by limits.
+  let chosen = null;
+  for (const [sh, e] of candidates) {
+    const fitted = [fit(sh, c.limits.shoulder), fit(e, c.limits.elbow)];
+    const pose = forward(c, ...fitted);
+    if (distance(pose.tip, target) <= 1e-6) { chosen = pose; break; }
+  }
+  if (!chosen) {
+    // Global closest point on the rectangular joint domain: an interior optimum
+    // is analytic IK (above), otherwise at least one joint lies on a boundary.
+    const poses = [];
+    const add = (sh, e) => poses.push(forward(c, fit(sh, c.limits.shoulder), fit(e, c.limits.elbow)));
+    for (const [sh, e] of candidates) add(sh, e);
+    for (const e of c.limits.elbow) add(direction - Math.atan2(b * Math.sin(e), a + b * Math.cos(e)), e);
+    for (const sh of c.limits.shoulder) {
+      const ex = c.shoulder[0] + a * Math.cos(sh), ey = c.shoulder[1] + a * Math.sin(sh);
+      add(sh, Math.atan2(target[1] - ey, target[0] - ex) - sh);
+      for (const e of c.limits.elbow) add(sh, e);
+    }
+    chosen = poses.reduce((best, p) => distance(p.tip, target) < distance(best.tip, target) - 1e-9 ? p : best);
+  }
+  const error = distance(chosen.tip, target), radialReachable = r >= Math.abs(a - b) - 1e-7 && r <= a + b + 1e-7;
+  return { ...chosen, target: [...target], error, reachable: error <= 1e-6,
+    reason: error <= 1e-6 ? 'reachable' : radialReachable ? 'joint-limits' : 'out-of-reach' };
+}
+function boardToWorld(p, board = {}) {
+  point(p, 'board point');
+  const { origin = [0, 0], scale = 1, rotation = 0 } = board; point(origin, 'board origin');
+  if (!Number.isFinite(scale) || scale <= 0 || !Number.isFinite(rotation)) throw new RangeError('Invalid board transform');
+  return [origin[0] + scale * (p[0] * Math.cos(rotation) - p[1] * Math.sin(rotation)),
+    origin[1] + scale * (p[0] * Math.sin(rotation) + p[1] * Math.cos(rotation))];
+}
+
+
+// SOURCE: ../drawing-arm/src/glyphs.js
+/** Original single-line polyline glyphs. Local cell is 1 × 1. */
+const GLYPHS = {
+ 'x': [[[0,.25],[1,.95]],[[1,.25],[0,.95]]],
+ '0': [[[.2,0],[.8,0],[1,.2],[1,.8],[.8,1],[.2,1],[0,.8],[0,.2],[.2,0]]],
+ '1': [[[.2,.2],[.5,0],[.5,1]],[[.2,1],[.8,1]]],
+ '2': [[[0,.2],[.2,0],[.8,0],[1,.2],[1,.4],[0,1],[1,1]]],
+ '3': [[[0,.15],[.25,0],[.75,0],[1,.2],[.85,.4],[.5,.5],[.85,.6],[1,.8],[.75,1],[.25,1],[0,.85]]],
+ '4': [[[.25,0],[0,.6],[1,.6]],[[.75,0],[.75,1]]],
+ '5': [[[0,0],[0,.48],[.65,.48],[.95,.62],[1,.82],[.8,1],[.1,1]],[[0,0],[1,0]]],
+ '6': [[[1,0],[.3,0],[0,.3],[0,.8],[.2,1],[.8,1],[1,.8],[1,.6],[.8,.5],[0,.5]]],
+ '7': [[[0,0],[1,0],[.3,1]]],
+ '8': [[[.2,.5],[0,.3],[0,.2],[.2,0],[.8,0],[1,.2],[1,.3],[.8,.5],[.2,.5],[0,.7],[0,.8],[.2,1],[.8,1],[1,.8],[1,.7],[.8,.5]]],
+ '9': [[[.9,.1],[.7,0],[.25,0],[0,.2],[0,.4],[.25,.55],[.7,.55],[1,.35],[.9,.1],[1,.65],[.75,1]]],
+ '+': [[[0,.5],[1,.5]],[[.5,0],[.5,1]]],
+ '-': [[[0,.5],[1,.5]]], '−': [[[0,.5],[1,.5]]],
+ '×': [[[0,0],[1,1]],[[1,0],[0,1]]], '*': [[[0,0],[1,1]],[[1,0],[0,1]]],
+ '=': [[[0,.3],[1,.3]],[[0,.7],[1,.7]]],
+ '/': [[[1,0],[0,1]]], '÷': [[[.5,.1],[.5,.15]],[[0,.5],[1,.5]],[[.5,.85],[.5,.9]]],
+ '(': [[[.7,0],[.35,.2],[.2,.5],[.35,.8],[.7,1]]],
+ ')': [[[.3,0],[.65,.2],[.8,.5],[.65,.8],[.3,1]]],
+ '.': [[[.5,.95],[.5,1]]]
+};
+
+
+// SOURCE: ../drawing-arm/src/timeline.js
+const finite = (v, name, min = -Infinity) => { if (!Number.isFinite(v) || v < min) throw new RangeError(`Invalid ${name}`); };
+function validateTimeline(input) {
+  if (input?.version !== 1 || !Array.isArray(input.strokes)) throw new TypeError('Expected timeline version 1 and strokes array');
+  const t = structuredClone(input); boardToWorld([0,0], t.board);
+  let end = 0;
+  for (const s of t.strokes) {
+    finite(s.at, 'stroke start', end); finite(s.duration, 'stroke duration', Number.MIN_VALUE);
+    if (!Array.isArray(s.points) || s.points.length < 2) throw new TypeError('Stroke needs at least two points');
+    s.points.forEach(p => boardToWorld(p));
+    if (s.pen !== undefined && typeof s.pen !== 'boolean') throw new TypeError('pen must be boolean');
+    end = s.at + s.duration; finite(end, 'stroke end');
+  }
+  if (t.fallbacks !== undefined) {
+    if (!Array.isArray(t.fallbacks)) throw new TypeError('fallbacks must be an array');
+    for (const f of t.fallbacks) {
+      finite(f.at, 'fallback start', 0); finite(f.size, 'fallback size', Number.MIN_VALUE); boardToWorld(f.position);
+      if (typeof f.text !== 'string') throw new TypeError('fallback text must be a string');
+    }
+  }
+  t.duration = Math.max(end, ...(t.fallbacks ?? []).map(f => f.at), 0);
+  return t;
+}
+/** Compile once; points interpolate at constant arc-length speed within each stroke. */
+function compileTimeline(input) {
+  const t = validateTimeline(input);
+  t.strokes = t.strokes.map(s => {
+    const points = s.points.map(p => boardToWorld(p, t.board)), lengths = [0];
+    for (let i = 1; i < points.length; i++) lengths.push(lengths.at(-1) + distance(points[i-1], points[i]));
+    return { ...s, points, lengths, length: lengths.at(-1) };
+  });
+  return t;
+}
+function strokePoint(stroke, fraction) {
+  const d = Math.max(0, Math.min(1, fraction)) * stroke.length;
+  for (let i = 1; i < stroke.points.length; i++) {
+    if (d <= stroke.lengths[i]) {
+      const span = stroke.lengths[i] - stroke.lengths[i-1], f = span ? (d - stroke.lengths[i-1]) / span : 0;
+      return stroke.points[i-1].map((v, j) => v + f * (stroke.points[i][j] - v));
+    }
+  }
+  return [...stroke.points.at(-1)];
+}
+function sampleTimeline(timeline, time) {
+  finite(time, 'time');
+  const strokes = timeline.strokes;
+  if (!strokes.length) return { point: null, penDown: false, index: -1, progress: 0, done: time >= timeline.duration };
+  let previous = strokes[0].points[0], previousEnd = 0;
+  for (let i = 0; i < strokes.length; i++) {
+    const s = strokes[i];
+    if (time < s.at) {
+      const f = Math.max(0, (time - previousEnd) / (s.at - previousEnd || 1));
+      return { point: previous.map((v,j) => v + f * (s.points[0][j] - v)), penDown: false, index: i, progress: 0, done: false };
+    }
+    if (time < s.at + s.duration) {
+      const progress = (time - s.at) / s.duration;
+      return { point: strokePoint(s, progress), penDown: s.pen !== false, index: i, progress, done: false };
+    }
+    previous = s.points.at(-1); previousEnd = s.at + s.duration;
+  }
+  return { point: [...previous], penDown: false, index: strokes.length - 1, progress: 1, done: time >= timeline.duration };
+}
+function sampleArm(timeline, time, arm) {
+  const sample = sampleTimeline(timeline, time), pose = sample.point ? solveIK(arm, sample.point) : null;
+  return { ...sample, pose, chalkDown: sample.penDown && !!pose?.reachable };
+}
+function textTimeline(text, options = {}) {
+  const { x = 150, y = 100, size = 36, speed = 120, lift = 100, lineHeight = 1.8, board } = options;
+  [x,y].forEach(v => finite(v, 'text origin')); finite(size,'size',Number.MIN_VALUE); finite(speed,'speed',Number.MIN_VALUE); finite(lift,'lift',0); finite(lineHeight,'lineHeight',Number.MIN_VALUE);
+  if (typeof text !== 'string') throw new TypeError('text must be a string');
+  const strokes = [], fallbacks = []; let at = 0, col = 0, row = 0;
+  for (const char of text) {
+    if (char === '\n') { col = 0; row++; continue; }
+    const origin = [x + col * size * .95, y + row * size * lineHeight];
+    if (char !== ' ') {
+      if (!GLYPHS[char]) fallbacks.push({ text: char, position: origin, size, at });
+      else for (const path of GLYPHS[char]) {
+        const points = path.map(p => [origin[0] + p[0] * size * .62, origin[1] + p[1] * size]);
+        const length = points.slice(1).reduce((n,p,i) => n + distance(p,points[i]), 0);
+        const duration = Math.max(1, length / speed * 1000);
+        strokes.push({ at, duration, points, pen: true }); at += duration + lift;
+      }
+    }
+    col++;
+  }
+  return validateTimeline({ version: 1, board: board ?? { origin: [0,0], scale: 1, rotation: 0 }, strokes, fallbacks });
+}
+
+
+// SOURCE: ../drawing-arm/src/svg-renderer.js
+const NS = 'http://www.w3.org/2000/svg';
+function element(tag, attrs, parent) {
+  const el = document.createElementNS(NS, tag);
+  for (const [k,v] of Object.entries(attrs)) el.setAttribute(k,v);
+  parent.append(el); return el;
+}
+/** Owns only the supplied group. No global DOM, character assets or clock. */
+class SVGArmRenderer {
+  constructor(group, timeline, arm, { color = '#f4c976' } = {}) {
+    this.group = group; this.timeline = timeline; this.arm = arm; this.color = color;
+    this.chalk = element('path', { fill:'none', stroke:'#eef6e8', 'stroke-width':2.5, 'stroke-linecap':'round', 'stroke-linejoin':'round' },group);
+    this.fallback = element('g', { fill:'#eef6e8', 'font-family':'Chalkboard, Chalkboard SE, cursive' }, group);
+    for (const f of timeline.fallbacks ?? []) {
+      const transform = timeline.board ?? {};
+      const p = boardToWorld(f.position, transform);
+      const el = element('text',{ x:p[0], y:p[1], 'font-size':f.size * (transform.scale ?? 1),
+        transform:`rotate(${(transform.rotation ?? 0)*180/Math.PI} ${p[0]} ${p[1]})`, 'dominant-baseline':'hanging' },this.fallback);
+      el.textContent = f.text;
+    }
+    this.links = element('path', { fill:'none', stroke:color, 'stroke-width':9, 'stroke-linecap':'round', 'stroke-linejoin':'round' }, group);
+    this.joints = Array.from({length:3},()=>element('circle',{r:6, fill:'#172e2a',stroke:color,'stroke-width':2},group));
+    this.pen = element('line', { stroke:'#fff9ce', 'stroke-width':4, 'stroke-linecap':'round' }, group);
+    this.target = element('circle',{r:5,fill:'none',stroke:'#ff8878','stroke-width':1.5},group);
+    this.setArm(arm);
+  }
+  setArm(arm) {
+    this.arm = arm; this.segments = [];
+    for (const s of this.timeline.strokes) {
+      if (s.pen === false) continue;
+      for (let i=1;i<s.points.length;i++) {
+        const p = s.points[i-1], q = s.points[i], length = distance(p,q), count = Math.max(1, Math.ceil(length/2));
+        for (let j=0;j<count;j++) {
+          const from = p.map((v,k)=>v+(q[k]-v)*j/count), to = p.map((v,k)=>v+(q[k]-v)*(j+1)/count);
+          const t0=s.at+s.duration*(s.length ? (s.lengths[i-1]+length*j/count)/s.length : 0);
+          const t1=s.at+s.duration*(s.length ? (s.lengths[i-1]+length*(j+1)/count)/s.length : 1);
+          const valid=[from,to,from.map((v,k)=>(v+to[k])/2)].every(pt=>solveIK(arm,pt).reachable);
+          this.segments.push({from,to,t0,t1,valid});
+        }
+      }
+    }
+  }
+  render(time) {
+    const sample = sampleArm(this.timeline,time,this.arm); let d='';
+    for (const s of this.segments) {
+      if (s.t0 >= time) break;
+      if (!s.valid) continue;
+      const f=Math.min(1,(time-s.t0)/(s.t1-s.t0 || 1)), p=s.from.map((v,k)=>v+f*(s.to[k]-v));
+      d+=`M${s.from}L${p}`;
+    }
+    this.chalk.setAttribute('d',d);
+    [...this.fallback.children].forEach((el,i)=>el.setAttribute('visibility',time >= this.timeline.fallbacks[i].at ? 'visible':'hidden'));
+    const pose=sample.pose;
+    for (const el of [this.links,this.pen,this.target,...this.joints]) el.setAttribute('visibility',pose?'visible':'hidden');
+    if (!pose) return sample;
+    this.links.setAttribute('d',`M${pose.shoulder}L${pose.elbow}L${pose.wrist}`);
+    [pose.shoulder,pose.elbow,pose.wrist].forEach((p,i)=>{this.joints[i].setAttribute('cx',p[0]);this.joints[i].setAttribute('cy',p[1]);});
+    for (const [key,value] of Object.entries({x1:pose.wrist[0],y1:pose.wrist[1],x2:pose.tip[0],y2:pose.tip[1]})) this.pen.setAttribute(key,value);
+    this.pen.setAttribute('opacity',sample.chalkDown ? 1 : .45);
+    this.target.setAttribute('cx',sample.point[0]);this.target.setAttribute('cy',sample.point[1]);
+    this.target.setAttribute('visibility',pose.reachable?'hidden':'visible');
+    return sample;
+  }
+  destroy() { this.group.replaceChildren(); }
+}
+
+
+// SOURCE: src/body.js
+
+/** SVG axes: +x screen-right, +y down. Origin is the fixed floor point between feet. */
+const BODY_DEFAULTS = Object.freeze({
+  origin: Object.freeze([230, 505]), scale: 1, lean: 0,
+  headSize: 1, neckLength: 21, shoulderWidth: 46,
+  shoulderOffset: Object.freeze([1, -10]),
+  rightShoulderOffset: Object.freeze([0, 0]), leftShoulderOffset: Object.freeze([0, -4]),
+  torsoLength: 115, hipWidth: 24, legHeight: 115, footLength: 19
+});
+const ranges = {
+  headSize: [.6, 1.5], neckLength: [8, 40], shoulderWidth: [24, 90],
+  torsoLength: [70, 160], hipWidth: [12, 60], legHeight: [80, 160], footLength: [10, 40],
+  lean: [-35, 35]
+};
+function pair(value, name) {
+  if (!Array.isArray(value) || value.length !== 2 || !value.every(Number.isFinite)) throw new TypeError(`${name} must be [finite x, finite y]`);
+  return [...value];
+}
+function configureBody(options = {}) {
+  const body = { ...BODY_DEFAULTS, ...options };
+  body.origin = pair(body.origin, 'Body origin');
+  for (const key of ['shoulderOffset', 'rightShoulderOffset', 'leftShoulderOffset']) {
+    body[key] = pair(body[key], key);
+    if (body[key].some(n => Math.abs(n) > 60)) throw new RangeError(`${key} must be within ±60 local units`);
+  }
+  if (!Number.isFinite(body.scale) || body.scale <= 0) throw new RangeError('Body scale must be positive');
+  for (const [key, [min, max]] of Object.entries(ranges)) {
+    if (!Number.isFinite(body[key]) || body[key] < min || body[key] > max) throw new RangeError(`${key} must be between ${min} and ${max}`);
+  }
+  if (body.shoulderWidth + body.rightShoulderOffset[0] - body.leftShoulderOffset[0] <= 0) throw new RangeError('Right shoulder must remain screen-right of the left shoulder');
+  // Ignore unknown fields, and detach every mutable coordinate from caller input.
+  return Object.fromEntries(Object.keys(BODY_DEFAULTS).map(key => [key, body[key]]));
+}
+function bodyToWorld(point, config = {}) {
+  const body = configureBody(config), p = pair(point, 'Local point');
+  return p.map((v, i) => body.origin[i] + v * body.scale);
+}
+/** Reuse the original two-link solver for flexed, constant-length walking legs. */
+function legKnee(hip,ankle,legHeight) {
+  return solveIK({shoulder:hip,upper:.58*legHeight,forearm:.58*legHeight,tip:0,elbow:'positive'},ankle).elbow;
+}
+function bodyLandmarks(config = {}) {
+  const b = configureBody(config), hips = [-3, -b.legHeight];
+  const torsoTop = [b.lean, hips[1] - b.torsoLength];
+  const neck = [b.lean, torsoTop[1] - b.neckLength];
+  const center = [torsoTop[0] + b.shoulderOffset[0], torsoTop[1] + b.shoulderOffset[1]];
+  const shoulder = (side, offset) => [center[0] + side * b.shoulderWidth / 2 + offset[0], center[1] + offset[1]];
+  const rightShoulder = shoulder(1, b.rightShoulderOffset), leftShoulder = shoulder(-1, b.leftShoulderOffset);
+  const leftHip = [hips[0] - b.hipWidth / 2, hips[1]], rightHip = [hips[0] + b.hipWidth / 2, hips[1]];
+  const leftFoot = [-34, 0], rightFoot = [31, 0];
+  return {
+    origin: [0, 0], head: [7 + b.lean, neck[1] - 31 * b.headSize], neck,
+    rightShoulder, leftShoulder, shoulderCenter: center, torsoTop, hips, leftHip, rightHip,
+    leftElbow: [leftShoulder[0] - 12 - b.lean / 2, leftShoulder[1] + b.torsoLength * 59 / 115],
+    leftHand: [leftShoulder[0] - 2 - b.lean, leftShoulder[1] + b.torsoLength * 101 / 115],
+    leftKnee: legKnee(leftHip,leftFoot,b.legHeight),
+    rightKnee: legKnee(rightHip,rightFoot,b.legHeight),
+    leftFoot, rightFoot, leftAnkle: [...leftFoot], rightAnkle: [...rightFoot], leftToe: [leftFoot[0] + b.footLength, 0], rightToe: [rightFoot[0] + b.footLength, 0]
+  };
+}
+/** Anatomical defaults: upper = .65 torso, forearm = .55 torso, tool = .04 torso.
+ * The adapter owns lengths and anchor; rig options supply bend/limits only. */
+function attachedArm(bodyConfig = {}, rig = {}) {
+  const body = configureBody(bodyConfig), local = configureArm({ elbow: 'negative', ...rig,
+    upper: .65 * body.torsoLength, forearm: .55 * body.torsoLength, tip: .04 * body.torsoLength });
+  return configureArm({ ...local, shoulder: bodyToWorld(bodyLandmarks(body).rightShoulder, body),
+    upper: local.upper * body.scale, forearm: local.forearm * body.scale, tip: local.tip * body.scale });
+}
+
+
+// SOURCE: src/curves.js
+/** Smooth tapered silhouette through joint-derived offsets; no skeleton changes. */
+function limbOutline(points, radii) {
+  if(points.length<2||radii.length!==points.length)throw new TypeError('Limb needs matching joints and radii');
+  if(points.some(p=>p.length!==2||!p.every(Number.isFinite))||radii.some(r=>!Number.isFinite(r)||r<0))throw new TypeError('Invalid limb geometry');
+  const tangents=points.map((p,i)=>{const a=points[Math.max(0,i-1)],b=points[Math.min(points.length-1,i+1)],l=Math.hypot(b[0]-a[0],b[1]-a[1])||1;return [(b[0]-a[0])/l,(b[1]-a[1])/l];});
+  const side=sign=>points.map((p,i)=>[p[0]-sign*tangents[i][1]*radii[i],p[1]+sign*tangents[i][0]*radii[i]]);
+  const curve=ps=>ps.slice(1).map((p,j)=>{const i=j+1,a=ps[i-1],before=ps[Math.max(0,i-2)],after=ps[Math.min(ps.length-1,i+1)];return `C${a[0]+(p[0]-before[0])/6},${a[1]+(p[1]-before[1])/6} ${p[0]-(after[0]-a[0])/6},${p[1]-(after[1]-a[1])/6} ${p}`;}).join('');
+  const left=side(1),right=side(-1).reverse(),last=points.at(-1),first=points[0];
+  const end=last.map((v,i)=>v+tangents.at(-1)[i]*radii.at(-1)),start=first.map((v,i)=>v-tangents[0][i]*radii[0]);
+  return `M${left[0]}${curve(left)}Q${end} ${right[0]}${curve(right)}Q${start} ${left[0]}Z`;
+}
+
+
+// SOURCE: src/gait.js
+const easeGait=t=>t*t*(3-2*t);
+/** Step cadence derives from actual root displacement, not an independent timer. */
+function stepCycle(bodyOptions,state) {
+  const body=configureBody(bodyOptions);
+  if(state?.kind!=='move'||!state.move||Math.abs(state.move.to-state.move.from)<1e-8)return null;
+  const {from,to}=state.move,delta=(to-from)/body.scale;
+  const progress=Math.max(0,Math.min(1,(state.offset-from)/(to-from)));
+  const pairs=Math.max(1,Math.ceil(Math.abs(delta)/(.35*body.legHeight))),steps=2*pairs;
+  const phase=Math.min(steps-1,Math.floor(progress*steps)),u=Math.min(1,progress*steps-phase);
+  return {from,to,delta,progress,pairs,steps,phase,u,first:delta>=0?'right':'left',stride:delta/pairs};
+}
+/** Small upright rise at mid-step, zero value and velocity at contact/stop. */
+function walkingBob(body,state) {
+  const cycle=stepCycle(body,state);
+  return cycle?-.015*body.legHeight*body.scale*Math.sin(Math.PI*cycle.u)**2:0;
+}
+/** Alternating steps: stance shoe is fixed in world space, swing shoe lifts. */
+function walkingLandmarks(bodyOptions,state) {
+  const body=configureBody(bodyOptions),p=bodyLandmarks(body),cycle=stepCycle(body,state);
+  if(cycle) {
+    const {from,phase,u,first,stride}=cycle,lift=Math.min(.105*body.legHeight,.6*body.footLength);
+    const bob=walkingBob(body,state)/body.scale;
+    for(const side of ['left','right']) {
+      const parity=side===first?0:1,completed=Math.floor((phase+1-parity)/2),swing=phase%2===parity;
+      const shift=(completed+(swing?easeGait(u):0))*stride;
+      const foot=[p[side+'Foot'][0]+(from-state.offset)/body.scale+shift,(swing?-lift*Math.sin(Math.PI*u)**2:0)-bob];
+      const pitch=swing?-.18*Math.sin(Math.PI*u)**2:0;
+      p[side+'Foot']=foot;p[side+'Ankle']=[...foot];p[side+'Toe']=[foot[0]+body.footLength*Math.cos(pitch),foot[1]+body.footLength*Math.sin(pitch)];
+    }
+  }
+  p.leftKnee=legKnee(p.leftHip,p.leftAnkle,body.legHeight);
+  p.rightKnee=legKnee(p.rightHip,p.rightAnkle,body.legHeight);
+  return p;
+}
+
+
+// SOURCE: src/range-planning.js
+/** Geometry-only line/symbol inference. Source timeline/glyphs are never modified. */
+function boundsOf(points) {
+  return points.reduce((b,p)=>({minX:Math.min(b.minX,p[0]),maxX:Math.max(b.maxX,p[0]),minY:Math.min(b.minY,p[1]),maxY:Math.max(b.maxY,p[1])}),{minX:Infinity,maxX:-Infinity,minY:Infinity,maxY:-Infinity});
+}
+function unionBounds(a,b){return {minX:Math.min(a.minX,b.minX),maxX:Math.max(a.maxX,b.maxX),minY:Math.min(a.minY,b.minY),maxY:Math.max(a.maxY,b.maxY)};}
+function groupWritingStrokes(timeline) {
+  const boxes=timeline.strokes.map(s=>boundsOf(s.points));
+  const heights=boxes.map(b=>b.maxY-b.minY).filter(h=>h>1e-6).sort((a,b)=>a-b);
+  const widths=boxes.map(b=>b.maxX-b.minX).filter(w=>w>1e-6).sort((a,b)=>a-b);
+  const nominal=heights[Math.floor(heights.length/2)]??(widths[Math.floor(widths.length/2)]??24)/.62;
+  const groups=[],byStroke=[];let line=-1,lineBounds=null,previous=null;
+  for(const [i,stroke]of timeline.strokes.entries()) {
+    const box=boxes[i];
+    const newLine=!lineBounds||stroke.pen===false||previous?.pen===false||box.minY>lineBounds.maxY+.45*nominal||box.maxY<lineBounds.minY-.45*nominal;
+    if(newLine){line++;lineBounds=box;}else lineBounds=unionBounds(lineBounds,box);
+    const last=groups.at(-1),margin=.08*nominal;
+    const sameSymbol=last&&last.line===line&&box.minX<=last.bounds.maxX+margin&&box.maxX>=last.bounds.minX-margin;
+    if(sameSymbol){last.end=i;last.points.push(...stroke.points);last.bounds=unionBounds(last.bounds,box);}
+    else groups.push({line,start:i,end:i,points:[...stroke.points],bounds:{...box}});
+    byStroke[i]=groups.length-1;previous=stroke;
+  }
+  return {groups,byStroke,nominalHeight:nominal};
+}
+/** Plan against the whole remaining line, preferring natural symbol boundaries.
+ * Greedy longest feasible prefixes minimize new stances for ordered groups.
+ * Retain a free current prefix if that saves a move; on a tie pre-position once
+ * for a longer run rather than introduce an avoidable extra standing position.
+ */
+function chooseWritingRange(groups,start,currentOffset,place) {
+  const first=groups[start];if(!first)return null;
+  const cache=new Map();
+  const longest=from=>{
+    if(cache.has(from))return cache.get(from);
+    let points=[],range=null;
+    for(let j=from;j<groups.length&&groups[j].line===first.line;j++){
+      points.push(...groups[j].points);const offset=place(points,currentOffset);
+      if(offset===null)break;
+      range={start:from,end:j,offset,line:first.line};
+    }
+    cache.set(from,range);return range;
+  };
+  const movedCost=from=>{
+    let count=0;
+    while(from<groups.length&&groups[from].line===first.line){
+      const r=longest(from);if(!r)return Infinity;
+      count++;from=r.end+1;
+    }
+    return count;
+  };
+  const best=longest(start);
+  if(!best)return {start,end:start,offset:null,line:first.line};
+  let points=[],retained=null;
+  for(let j=start;j<=best.end;j++){
+    points.push(...groups[j].points);const offset=place(points,currentOffset);
+    if(offset===null||Math.abs(offset-currentOffset)>1e-7)break;
+    retained={start,end:j,offset:currentOffset,line:first.line};
+  }
+  if(!retained)return best;
+  if(retained.end===best.end)return retained;
+  return 1+movedCost(best.end+1)<=movedCost(retained.end+1)?best:retained;
+}
+
+
+// SOURCE: src/locomotion.js
+const clamp12 = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
+const ease12 = t => t * t * (3 - 2 * t);
+function translatedBody(body, offset) {
+  return { ...body, origin: [body.origin[0] + offset, body.origin[1]] };
+}
+function segmentDistance12(p, a, b) {
+  const dx=b[0]-a[0],dy=b[1]-a[1],den=dx*dx+dy*dy;
+  const t=den ? clamp12(((p[0]-a[0])*dx+(p[1]-a[1])*dy)/den,0,1) : 0;
+  return distance(p,[a[0]+t*dx,a[1]+t*dy]);
+}
+function validPlacement12(points, arm) {
+  const outer=arm.upper+arm.forearm+arm.tip, inner=Math.abs(arm.upper-arm.forearm-arm.tip);
+  for (const p of points) if (!solveIK(arm,p).reachable) return false;
+  for(let i=1;i<points.length;i++) {
+    // Exact annular test for every point on each straight vector segment.
+    if(segmentDistance12(arm.shoulder,points[i-1],points[i])<inner-1e-7) return false;
+    // Original solver checks preferred/limited IK throughout each segment.
+    const n=Math.max(1,Math.ceil(distance(points[i-1],points[i])/2));
+    for(let j=1;j<n;j++)if(!solveIK(arm,points[i-1].map((v,k)=>v+(points[i][k]-v)*j/n)).reachable)return false;
+  }
+  return points.every(p=>distance(p,arm.shoulder)<=outer+1e-7);
+}
+/** Internal posture band, in world units. No new UI or joint constraints. */
+function writingRange(body, rig={}) {
+  const arm=attachedArm(body,rig),reach=arm.upper+arm.forearm+arm.tip;
+  return {min:.18*reach,max:.98*reach,preferred:.5*reach};
+}
+/** Keep a valid placement; otherwise center the forward-writing band. */
+function placementFor(points, body={}, rig={}, currentOffset=0) {
+  body=configureBody(body);
+  const base=attachedArm(body,rig), R=base.upper+base.forearm+base.tip;
+  const current=attachedArm(translatedBody(body,currentOffset),rig),band=writingRange(body,rig);
+  const comfortable=arm=>points.every(p=>p[0]-arm.shoulder[0]>=band.min-1e-7&&p[0]-arm.shoulder[0]<=band.max+1e-7);
+  if(comfortable(current)&&validPlacement12(points,current))return currentOffset;
+  for(const radius of [R*.94,R]) {
+    let lo=-Infinity,hi=Infinity;
+    for(const p of points) {
+      const dy=p[1]-base.shoulder[1];
+      if(Math.abs(dy)>radius+1e-8){lo=1;hi=0;break;}
+      const dx=Math.sqrt(Math.max(0,radius*radius-dy*dy));
+      lo=Math.max(lo,p[0]-dx-base.shoulder[0],p[0]-band.max-base.shoulder[0]);
+      hi=Math.min(hi,p[0]+dx-base.shoulder[0],p[0]-band.min-base.shoulder[0]);
+    }
+    if(lo>hi+1e-8)continue;
+    const targetCenter=(Math.min(...points.map(p=>p[0]))+Math.max(...points.map(p=>p[0])))/2;
+    const preferred=clamp12(targetCenter-band.preferred-base.shoulder[0],lo,hi),candidates=[preferred,lo,hi,(lo+hi)/2];
+    // Bounded search also handles inner dead zones and explicit joint limits.
+    const n=Math.max(1,Math.ceil((hi-lo)/2));
+    for(let i=0;i<=n;i++)candidates.push(lo+(hi-lo)*i/n);
+    candidates.sort((a,b)=>Math.abs(a-preferred)-Math.abs(b-preferred));
+    for(const x of candidates)if(comfortable(attachedArm(translatedBody(body,x),rig))&&validPlacement12(points,attachedArm(translatedBody(body,x),rig)))return x;
+  }
+  return null;
+}
+function angles12(pose) { return [pose.angles.shoulder,pose.angles.elbow]; }
+/** Inserts grounded moves and pen-up approaches; source coordinates/timing are untouched. */
+function planWriting(timeline, bodyOptions={}, rig={}) {
+  const body=configureBody(bodyOptions), phases=[],writes=[],blocked=[];
+  if(timeline.strokes.some(s=>s.points.some(p=>!p.every(Number.isFinite))))throw new RangeError('Transformed writing points must be finite');
+  const probes=timeline.strokes.reduce((sum,s)=>sum+s.points.slice(1).reduce((n,p,i)=>n+Math.max(1,Math.ceil(distance(s.points[i],p)/2)),0),0);
+  if(!Number.isFinite(probes)||probes>100000)throw new RangeError('Timeline exceeds the spatial planning budget');
+  let cursor=0,offset=0,sourceEnd=0,operations=0;
+  const initial=attachedArm(body,rig);
+  let pose=solveIK(initial,[initial.shoulder[0]+40*body.scale,initial.shoulder[1]+70*body.scale]);
+  const restPose=pose;
+  const add=(phase,duration)=>{const p={...phase,at:cursor,duration};phases.push(p);cursor+=duration;if(!Number.isFinite(cursor))throw new RangeError('Planned playback duration overflow');return p;};
+  const hold=(duration,sourceTime,reason='gap')=>{if(duration>0)add({kind:'hold',offset,angles:angles12(pose),sourceTime,reason},duration);};
+  function writePiece(points,duration,sourceAt,pen=true,clusterOffset=null) {
+    if(++operations>5000)throw new RangeError('Timeline exceeds the 5000-piece planning budget');
+    const next=placementFor(points,body,rig,clusterOffset??offset);
+    if(next===null){blocked.push({sourceAt,points});hold(duration,sourceAt,'blocked');return;}
+    if(Math.abs(next-offset)>1e-7) {
+      const from=offset,angles=angles12(pose);
+      // smoothstep peak speed <= 90 world units/second; every foot stays on floor.
+      add({kind:'move',from,to:next,angles,sourceTime:sourceAt},Math.max(440*Math.max(1,Math.ceil(Math.abs(next-from)/(body.scale*.35*body.legHeight))),Math.abs(next-from)/90*1500));
+      offset=next;pose=forward(attachedArm(translatedBody(body,offset),rig),...angles);
+    }
+    const arm=attachedArm(translatedBody(body,offset),rig),start=solveIK(arm,points[0]);
+    if(distance(pose.tip,start.tip)>1e-6) {
+      const a=angles12(pose),b=angles12(start),duration=Math.max(120,Math.max(Math.abs(a[0]-b[0]),Math.abs(a[1]-b[1]))/2*1000);
+      add({kind:'approach',offset,fromAngles:a,toAngles:b,sourceTime:sourceAt},duration);
+    }
+    const lengths=[0];for(let i=1;i<points.length;i++)lengths.push(lengths.at(-1)+distance(points[i-1],points[i]));
+    const stroke={at:0,duration,points,pen,lengths,length:lengths.at(-1)};
+    const p=add({kind:'write',offset,arm,stroke,sourceAt,sourceTime:sourceAt},duration);writes.push(p);
+    pose=solveIK(arm,points.at(-1));
+  }
+  const grouping=groupWritingStrokes(timeline),ranges=[];
+  let rangeUntil=-1,rangeOffset=null;
+  for(const [index,s] of timeline.strokes.entries()) {
+    hold(s.at-sourceEnd,sourceEnd);
+    if(index>rangeUntil) {
+      const range=chooseWritingRange(grouping.groups,grouping.byStroke[index],offset,
+        (points,current)=>placementFor(points,body,rig,current));
+      rangeUntil=grouping.groups[range.end].end;rangeOffset=range.offset;
+      ranges.push({...range,firstStroke:index,lastStroke:rangeUntil});
+    }
+    if(placementFor(s.points,body,rig,offset)!==null)writePiece(s.points,s.duration,s.at,s.pen!==false,rangeOffset);
+    else {
+      // A path wider than one workspace is split on its original straight edges.
+      // No points are rescaled or shifted; reposition at lifted-chalk boundaries.
+      for(let i=1;i<s.points.length;i++) {
+        const p=s.points[i-1],q=s.points[i],length=distance(p,q),n=Math.max(1,Math.ceil(length/12));
+        for(let j=0;j<n;j++) {
+          const a=p.map((v,k)=>v+(q[k]-v)*j/n),b=p.map((v,k)=>v+(q[k]-v)*(j+1)/n);
+          const fraction=s.length?length/n/s.length:1/(s.points.length-1)/n;
+          writePiece([a,b],Math.max(.0001,s.duration*fraction),s.at+s.duration*(s.length?(s.lengths[i-1]+length*j/n)/s.length:0),s.pen!==false);
+        }
+      }
+    }
+    sourceEnd=s.at+s.duration;
+  }
+  hold(timeline.duration-sourceEnd,sourceEnd);
+  const sourceToWall=sourceTime=>{
+    const p=phases.find(p=>p.kind==='write'&&sourceTime<=p.sourceAt+p.duration);
+    return p?p.at+clamp12(sourceTime-p.sourceAt,0,p.duration):cursor;
+  };
+  return {body,rig:structuredClone(rig),phases,writes,blocked,duration:cursor,restPose,sourceToWall,ranges,groups:grouping.groups};
+}
+function samplePlan(plan,time) {
+  if(!Number.isFinite(time))throw new RangeError('Time must be finite');
+  const t=Math.max(0,time),phases=plan.phases;
+  let p=phases.find(p=>t<p.at+p.duration);
+  if(!p) {
+    const last=phases.at(-1),offset=last?(last.offset??last.to):0;
+    const end=last?samplePlan(plan,Math.max(0,plan.duration-1e-7)):null;
+    return {kind:'done',offset,pose:end?.pose??plan.restPose,point:end?.point??null,penDown:false,chalkDown:false,done:true,sourceTime:Infinity};
+  }
+  const u=clamp12((t-p.at)/p.duration,0,1),f=ease12(u);
+  if(p.kind==='write') {
+    const point=strokePoint(p.stroke,u),pose=solveIK(p.arm,point),penDown=p.stroke.pen!==false;
+    return {kind:'write',offset:p.offset,pose,point,penDown,chalkDown:penDown&&pose.reachable,done:false,sourceTime:p.sourceAt+u*p.duration};
+  }
+  const offset=p.kind==='move'?p.from+(p.to-p.from)*f:p.offset;
+  const angles=p.kind==='approach'?p.fromAngles.map((v,i)=>v+(p.toAngles[i]-v)*f):p.angles;
+  const motion={kind:p.kind,offset,...(p.kind==='move'?{move:{from:p.from,to:p.to}}:{})};
+  const bodyLift=walkingBob(plan.body,motion),body=translatedBody(plan.body,offset);
+  body.origin[1]+=bodyLift;
+  return {...motion,bodyLift,reason:p.reason,pose:forward(attachedArm(body,plan.rig),...angles),point:null,penDown:false,chalkDown:false,done:false,sourceTime:p.kind==='hold'?p.sourceTime+u*p.duration:p.sourceTime};
+}
+
+
+// SOURCE: src/figure.js
+const SVG_NS='http://www.w3.org/2000/svg';
+function node(tag,attrs,parent){const el=document.createElementNS(SVG_NS,tag);for(const [k,v]of Object.entries(attrs))el.setAttribute(k,v);parent.append(el);return el;}
+function drawBody(group,config={}) {
+  const body=configureBody(config),p=bodyLandmarks(body),[hx,hy]=p.head,h=body.headSize;
+  group.replaceChildren();group.setAttribute('transform',`translate(${body.origin}) scale(${body.scale})`);group.setAttribute('data-view','rear-three-quarter-facing-right');
+  const limb=(name,joints,radii,fill='#b9c4b7')=>node('path',{'data-part':name,d:limbOutline(joints,radii),fill},group);
+  limb('left-arm',[p.leftShoulder,p.leftElbow,p.leftHand],[7,5.5,3.5],'#7e9585');
+  limb('left-leg',[p.leftHip,p.leftKnee,p.leftAnkle],[9,6.5,4.5]);
+  limb('right-leg',[p.rightHip,p.rightKnee,p.rightAnkle],[9,6.5,4.5]);
+  limb('hips',[p.leftHip,p.hips,p.rightHip],[8,9,8]);
+  limb('left-foot',[p.leftFoot,p.leftToe],[5,3]);limb('right-foot',[p.rightFoot,p.rightToe],[5,3]);
+  limb('torso',[p.neck,p.torsoTop,p.hips],[5,13,9]);
+  limb('shoulders',[p.leftShoulder,p.torsoTop,p.rightShoulder],[6,10,6]);
+  const H=(x,y)=>`${hx+x*h},${hy+y*h}`;
+  node('path',{'data-part':'head',d:`M${H(-9,28)} C${H(-32,20)} ${H(-33,-18)} ${H(-10,-28)} C${H(8,-37)} ${H(25,-20)} ${H(25,-7)} L${H(37,1)} L${H(26,5)} C${H(25,20)} ${H(12,28)} ${H(-9,28)}Z`,fill:'#b9c4b7',stroke:'#d5ddcf','stroke-width':2},group);
+  const skeleton=node('g',{'data-part':'body-skeleton',visibility:'hidden'},group);
+  for(const points of [[p.leftShoulder,p.leftElbow,p.leftHand],[p.leftFoot,p.leftKnee,p.leftHip,p.rightHip,p.rightKnee,p.rightFoot],[p.hips,p.torsoTop,p.neck],[p.leftShoulder,p.torsoTop,p.rightShoulder]])node('path',{d:'M'+points.join('L'),fill:'none',stroke:'#20362a','stroke-width':1.2},skeleton);
+  return p;
+}
+class ProfessorFigure {
+  constructor(group,json,{body={},rig={}}={}) {
+    this.group=group;this.debug=false;this.time=0;
+    // Chalk stays in world space behind the translating body and joint-driven arm.
+    this.chalkGroup=node('g',{'data-layer':'chalk'},group);
+    this.bodyGroup=node('g',{'data-layer':'body'},group);
+    this.armGroup=node('g',{'data-layer':'drawing-arm'},group);
+    this.armSkin=node('path',{'data-part':'right-arm',fill:'#d6ba76'},this.armGroup);
+    this.pen=node('line',{stroke:'#fff2bf','stroke-width':3,'stroke-linecap':'round'},this.armGroup);
+    this.armSkeleton=node('path',{fill:'none',stroke:'#304e38','stroke-width':1.2},this.armGroup);
+    this.debugGroup=node('g',{'data-layer':'anchors','pointer-events':'none'},group);
+    this.body=configureBody(body);this.rig=structuredClone(rig);this.arm=attachedArm(this.body,this.rig);
+    this.setTimeline(json);
+  }
+  installPlan(plan) {
+    this.chalkGroup.replaceChildren();this.plan=plan;this.duration=plan.duration;
+    this.writers=plan.writes.map(p=>{
+      const group=node('g',{},this.chalkGroup);
+      const json={version:1,strokes:[{at:0,duration:p.duration,points:p.stroke.points,pen:p.stroke.pen}]};
+      return {phase:p,renderer:new SVGArmRenderer(group,compileTimeline(json),p.arm)};
+    });
+    const fallbackJSON={version:1,board:this.raw.board,strokes:[],fallbacks:(this.raw.fallbacks??[]).map(f=>({...f,at:plan.sourceToWall(f.at)}))};
+    this.fallback=new SVGArmRenderer(node('g',{},this.chalkGroup),compileTimeline(fallbackJSON),attachedArm(plan.body,plan.rig));
+  }
+  setConfiguration(body=this.body,rig=this.rig) {
+    const nextBody=configureBody(body),nextRig=structuredClone(rig),plan=planWriting(this.timeline,nextBody,nextRig);
+    this.body=nextBody;this.rig=nextRig;drawBody(this.bodyGroup,this.body);this.installPlan(plan);this.render(Math.min(this.time,this.duration));
+  }
+  setTimeline(json) {
+    const timeline=compileTimeline(json),plan=planWriting(timeline,this.body,this.rig);
+    this.raw=structuredClone(json);this.timeline=timeline;drawBody(this.bodyGroup,this.body);this.installPlan(plan);this.render(0);
+  }
+  setDebug(visible){this.debug=!!visible;this.render(this.time);}
+  render(time) {
+    const state=samplePlan(this.plan,time);this.time=time;this.currentBody=translatedBody(this.body,state.offset);this.currentBody.origin[1]+=state.bodyLift??0;this.arm=attachedArm(this.currentBody,this.rig);
+    this.bodyGroup.setAttribute('transform',`translate(${this.currentBody.origin}) scale(${this.body.scale})`);
+    this.localPose=walkingLandmarks(this.body,state);
+    const part=name=>[...this.bodyGroup.children].find(n=>n.getAttribute('data-part')===name),p=this.localPose;
+    for(const side of ['left','right']) {
+      part(side+'-leg').setAttribute('d',limbOutline([p[side+'Hip'],p[side+'Knee'],p[side+'Ankle']],[9,6.5,4.5]));
+      part(side+'-foot').setAttribute('d',limbOutline([p[side+'Foot'],p[side+'Toe']],[5,3]));
+    }
+
+    const skeleton=[...this.bodyGroup.children].find(n=>n.getAttribute('data-part')==='body-skeleton');
+    skeleton.children[1].setAttribute('d','M'+[p.leftFoot,p.leftKnee,p.leftHip,p.rightHip,p.rightKnee,p.rightFoot].join('L'));
+    skeleton.setAttribute('visibility',this.debug?'visible':'hidden');
+    for(const {phase,renderer}of this.writers){renderer.render(Math.max(0,Math.min(phase.duration,time-phase.at)));for(const el of [renderer.links,renderer.pen,renderer.target,...renderer.joints])el.setAttribute('visibility','hidden');}
+    this.fallback.render(time);
+    const pose=state.pose;
+    this.armSkin.setAttribute('d',limbOutline([pose.shoulder,pose.elbow,pose.wrist],[8*this.body.scale,6*this.body.scale,3.5*this.body.scale]));
+    for(const [k,v]of Object.entries({x1:pose.wrist[0],y1:pose.wrist[1],x2:pose.tip[0],y2:pose.tip[1]}))this.pen.setAttribute(k,v);
+    this.pen.setAttribute('opacity',state.chalkDown?'1':'.4');
+    this.armSkeleton.setAttribute('d',`M${pose.shoulder}L${pose.elbow}L${pose.wrist}`);this.armSkeleton.setAttribute('visibility',this.debug?'visible':'hidden');
+    this.debugGroup.replaceChildren();this.debugGroup.setAttribute('visibility',this.debug?'visible':'hidden');
+    for(const [label,p]of [['origin',this.currentBody.origin],['right shoulder',pose.shoulder]]){
+      node('circle',{cx:p[0],cy:p[1],r:7,fill:'none',stroke:'#e6c16e'},this.debugGroup);
+      const text=node('text',{x:p[0]+12,y:p[1]+4,fill:'#e6c16e','font-family':'monospace','font-size':10},this.debugGroup);text.textContent=label;
+    }
+    return state;
+  }
+  getAnchors(){return Object.fromEntries(Object.entries(this.localPose??bodyLandmarks(this.currentBody??this.body)).map(([k,p])=>[k,bodyToWorld(p,this.currentBody??this.body)]));}
+  destroy(){this.group.replaceChildren();}
+}
+
+
+// SOURCE: src/math-timeline.js
+/** Verified algebra → pure math boxes → font strokes → existing timeline v1. */
+function solutionToTimeline(solution,options={}) {
+  if(solution.status!=='unique'||!verifySolution(solution).valid)throw new TypeError('Only verified unique solutions can be written as solution timelines');
+  const {maxSize=24,minSize=12,width=515,height=220,pause=650,speed=135,lift=100,board={origin:[355,140],scale:1,rotation:0}}=options;
+  if(options.lineHeight!==undefined&&(!Number.isFinite(options.lineHeight)||options.lineHeight<=0))throw new RangeError('Invalid legacy line-height option');
+  const rowGap=options.rowGap??(options.lineHeight === undefined ? .5 : Math.max(.1,options.lineHeight-1));
+  if(!Number.isFinite(speed)||speed<=0||!Number.isFinite(lift)||lift<=0||!Number.isFinite(pause)||pause<0)throw new RangeError('Invalid solution timing options');
+  const layout=layoutEquations(solution.steps.map(s=>s.equation),{maxSize,minSize,width,height,rowGap});
+  const geometry=positionStrokes(layout,GLYPHS),strokes=[],mathSteps=[];let at=0;
+  for(const [index,step]of solution.steps.entries()){
+    const start=at;let end=at;
+    for(const stroke of geometry.strokes.filter(s=>s.row===index)){
+      const length=stroke.points.slice(1).reduce((sum,p,i)=>sum+Math.hypot(p[0]-stroke.points[i][0],p[1]-stroke.points[i][1]),0);
+      const duration=Math.max(1,length/speed*1000);strokes.push({...stroke,at,duration});end=at+duration;at=end+lift;
+    }
+    mathSteps.push({index,at:start,end,text:step.text,operation:structuredClone(step.operation)});at=end+Math.max(pause,lift);
+  }
+  return validateTimeline({version:1,board,strokes,fallbacks:[],mathSteps,layout:{notation:'stacked-fractions',size:layout.size,width:layout.width,height:layout.height,rows:layout.rows},math:{version:1,status:solution.status,problem:solution.steps[0].text,solutions:structuredClone(solution.solutions)}});
+}
+
+
+// SOURCE: demo.js
+const q = selector => document.querySelector(selector);
+let raw, figure, time = 0, playing = false, previous = null;
+let body = configureBody();
+const rig = { elbow: 'negative' };
+const examples = [generateProblem({seed:'B1.6-add',operator:'+',missingSlot:'a'}),generateProblem({seed:'B1.6-subtract',operator:'-',missingSlot:'e'}),generateProblem({seed:'B1.6-multiply',operator:'*',missingSlot:'f'})];
+for(const [i,p] of examples.entries())q(`#math-example option[value="generated-${i}"]`).textContent=p.text;
+function refresh() {
+  const state = figure.render(time);
+  q('#seek').max = figure.duration || 1; q('#seek').value = time;
+  q('#clock').textContent = `${(time / 1000).toFixed(1)} / ${(figure.duration / 1000).toFixed(1)} s`;
+  q('#play').textContent = playing ? 'Pause' : 'Play';
+  q('#contact').textContent = `${state.chalkDown ? '● CHALK DOWN' : '○ CHALK LIFTED'} / ${state.reason === 'blocked' ? 'BLOCKED: NO FORWARD WRITING STANCE' : state.kind.toUpperCase()}`;
+  q('#arm-lengths').textContent = `${figure.arm.upper.toFixed(1)} / ${figure.arm.forearm.toFixed(1)}`;
+  q('#body-origin').textContent = figure.currentBody.origin.map(n => n.toFixed(1)).join(', ');
+  q('#shoulder-value').textContent = figure.arm.shoulder.map(n => Number(n.toFixed(2))).join(', ');
+  const mathSteps=Array.isArray(raw?.mathSteps)?raw.mathSteps.filter(s=>s&&Number.isFinite(s.at)&&Number.isInteger(s.index)&&typeof s.operation?.explanation==='string'):[];
+  const mathStep=mathSteps.filter(s=>s.at<=state.sourceTime).at(-1);
+  q('#operation').textContent=mathStep?`Step ${mathStep.index+1}/${mathSteps.length}: ${mathStep.operation.explanation}`:'';
+}
+function load(json) {
+  // Validation in setTimeline happens before the previous rendering is replaced.
+  const nextRaw=structuredClone(json);
+  if (figure) figure.setTimeline(json);
+  else figure = new ProfessorFigure(q('#professor'), json, { body, rig });
+  raw = nextRaw; time = 0; playing = false; previous = null; refresh();
+}
+function statusMessage() {
+  return figure.plan.blocked.length ? `${figure.plan.blocked.length} portion(s) blocked: no reachable forward-writing stance at this height / joint limits. No chalk is drawn there.` : (raw.fallbacks?.length ? 'Unsupported characters use font fallback, not traced strokes.' : 'Ready. Writing coordinates fixed; moves and reaches add playback time.');
+}
+function loadWriting() {
+  try {
+    if (q('#writing').value.length > 200) throw new Error('Keep this writing study to 200 characters.');
+    if(q('#math-example').value==='free')load(textTimeline(q('#writing').value, { x: 0, y: 0, size: 24, speed: 135, lift: 100, board: { origin: [355, 140], scale: 1, rotation: 0 } }));
+    else {
+      const solution=solveEquation(q('#writing').value);
+      if(solution.status!=='unique')throw new Error(solution.error?.message??solution.explanation??`No unique solution (${solution.status})`);
+      load(solutionToTimeline(solution));
+    }
+    q('#message').textContent = statusMessage();
+  } catch (error) { playing=false;previous=null;q('#play').textContent='Play';q('#message').textContent=error.message; }
+}
+q('#load').onclick = loadWriting;
+q('#math-example').onchange=()=>{const selected=q('#math-example').value;q('#load').textContent=selected==='free'?'Load writing ↗':'Solve & write ↗';if(selected==='example')q('#writing').value='x/5-4/4=2/5';else if(selected.startsWith('generated-'))q('#writing').value=examples[Number(selected.split('-')[1])].text;if(selected!=='free')loadWriting();};
+q('#play').onclick = () => { if (time >= figure.duration) time = 0; playing = !playing; previous = null; refresh(); };
+q('#reset').onclick = () => { time = 0; playing = false; refresh(); };
+q('#seek').oninput = () => { const value=Number(q('#seek').value);time=Math.abs(value-figure.duration)<1e-6?figure.duration:value;playing=false;refresh(); };
+q('#anchors').onchange = () => { figure.setDebug(q('#anchors').checked); q('#board-anchor').setAttribute('visibility', q('#anchors').checked ? 'visible' : 'hidden'); };
+// UI values are body-local. The adapter alone converts the shoulder to world units.
+const bodyFields = [
+  ['headSize', 'Head size', .7, 1.3, .05], ['neckLength', 'Neck length', 8, 40, 1],
+  ['shoulderWidth', 'Shoulder width', 24, 90, 1], ['torsoLength', 'Torso length', 70, 160, 1],
+  ['hipWidth', 'Hip width', 12, 60, 1], ['legHeight', 'Leg height', 80, 160, 1],
+  ['footLength', 'Foot length', 10, 40, 1], ['lean', 'Upper-body offset', -25, 25, 1],
+  ['shoulderY', 'Shoulder height offset', -30, 10, 1],
+  ['rightShoulderX', 'Right shoulder X offset', -20, 30, 1],
+  ['rightShoulderY', 'Right shoulder Y offset', -30, 30, 1]
+];
+function bodyValue(key) {
+  if (key === 'shoulderY') return body.shoulderOffset[1];
+  if (key === 'rightShoulderX') return body.rightShoulderOffset[0];
+  if (key === 'rightShoulderY') return body.rightShoulderOffset[1];
+  return body[key];
+}
+for (const [key, title, min, max, step] of bodyFields) {
+  const div = document.createElement('div'); div.className = 'slider';
+  div.innerHTML = `<label for="${key}">${title}<output id="${key}-value"></output></label><input id="${key}" type="range" min="${min}" max="${max}" step="${step}">`;
+  q('#body-controls').append(div);
+}
+function syncControls() {
+  for (const [key] of bodyFields) { q(`#${key}`).value = bodyValue(key); q(`#${key}-value`).textContent = bodyValue(key); }
+
+}
+function attachment() {
+  playing = false;
+  const next = structuredClone(body);
+  for (const [key] of bodyFields) {
+    const value = Number(q(`#${key}`).value);
+    if (key === 'shoulderY') next.shoulderOffset[1] = value;
+    else if (key === 'rightShoulderX') next.rightShoulderOffset[0] = value;
+    else if (key === 'rightShoulderY') next.rightShoulderOffset[1] = value;
+    else next[key] = value;
+  }
+  body = configureBody(next);
+  figure.setConfiguration(body, rig); time = Math.min(time, figure.duration); syncControls(); refresh(); q('#message').textContent = statusMessage();
+}
+for (const [key] of bodyFields) q(`#${key}`).oninput = attachment;
+q('#restore').onclick = () => { body = configureBody(); syncControls(); attachment(); };
+syncControls();
+q('#export').onclick = () => {
+  const url = URL.createObjectURL(new Blob([JSON.stringify(raw, null, 2)], { type: 'application/json' }));
+  const a = document.createElement('a'); a.href = url; a.download = 'professor-timeline.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+q('#import').onchange = async event => {
+  try {
+    const file = event.target.files[0]; if (!file) return;
+    if (file.size > 1024 * 1024) throw new Error('Timeline must be smaller than 1 MB.');
+    load(JSON.parse(await file.text())); q('#message').textContent = statusMessage();
+  } catch (error) { q('#message').textContent = `Import failed: ${error.message}`; }
+  event.target.value = '';
+};
+function frame(now) {
+  if (playing) {
+    if (previous !== null) time = Math.min(figure.duration, time + (now - previous) * Number(q('#speed').value));
+    previous = now; if (time >= figure.duration) playing = false; refresh();
+  } else previous = null;
+  requestAnimationFrame(frame);
+}
+loadWriting(); requestAnimationFrame(frame);
+
+</script></body></html>

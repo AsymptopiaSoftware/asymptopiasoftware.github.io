@@ -1,0 +1,30 @@
+{
+  "repository": "AsymptopiaSoftware/asymptopiasoftware.github.io",
+  "commit": "611e0af2d6ec2b8a007ae2b93e4ef027162010b9",
+  "directory": "prototypes/drawing-arm",
+  "files": [
+    {
+      "path": "src/kinematics.js",
+      "sha": "83e3993664afa85eb99a8341371d1a603def3fa4"
+    },
+    {
+      "path": "src/glyphs.js",
+      "sha": "ee36e5c4bfea38b089b7c46e6dc4efa3f43e2b8a",
+      "originalSha": "8f6081e8e16c1d1f63f521806a3348d35de36af9",
+      "extension": "B1.6 traced x; B1.7 natural strokes for 3, 4, 5, 9 and division operator",
+      "previousSha": "19f2a3da9941f20ec562b3a8c62ea1d2d97bc68d"
+    },
+    {
+      "path": "src/timeline.js",
+      "sha": "6c234b0ca127dc1acf9d430e7ea92f4a0c8e748b"
+    },
+    {
+      "path": "src/svg-renderer.js",
+      "sha": "8cb95b122433ee5677237a9c3f41118e913a913f"
+    },
+    {
+      "path": "src/index.js",
+      "sha": "ffd9c364fd0fdcaf108036724dc2169f1bf2287f"
+    }
+  ]
+}
