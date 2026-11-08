@@ -29,15 +29,15 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber;
       />
     </section>
     <section class="project-image-viewport" aria-label="d3 Sight Reading Trainer + Cosmic Harmony visual preview">
-      <img class="project-viewport-image" src="https://www.asymptopia.com/images/d3srt-unified-harmony-focus-20261023.png" alt="Unified music workspace with Cosmic Harmony planets and d3SRT instruments" loading="lazy" decoding="async" />
+      <img class="project-viewport-image" src="/images/d3srt-unified-harmony-focus-20261023.png" alt="Unified music workspace with Cosmic Harmony planets and d3SRT instruments" loading="lazy" decoding="async" />
       <ProjectDemoActions title="d3 Sight Reading Trainer + Cosmic Harmony" sourceUrl="https://github.com/ccosse/d3SightReadingTrainer" liveUrl="https://ccosse.github.io/d3SightReadingTrainer/#/" pageUrl="/projects/d3srt/" />
     </section>
     <section class="project-image-viewport" aria-label="TuxMathScrabble visual preview">
-      <img class="project-viewport-image" src="https://www.asymptopia.com/images/tuxmathscrabble.png" alt="TuxMathScrabble equation-building game screenshot" loading="lazy" decoding="async" />
+      <img class="project-viewport-image" src="/images/tuxmathscrabble.png" alt="TuxMathScrabble equation-building game screenshot" loading="lazy" decoding="async" />
       <ProjectDemoActions title="TuxMathScrabble" sourceUrl="https://github.com/ccosse/TuxMathScrabble" liveUrl="https://www.asymptopia.com/tuxmathscrabble" pageUrl="/projects/tuxmathscrabble/" />
     </section>
     <section class="project-image-viewport" aria-label="d3Plot visual preview">
-      <img class="project-viewport-image" src="https://www.asymptopia.com/images/d3plot-multiwindow-session.png" alt="d3Plot multiwindow interactive data visualization screenshot" loading="lazy" decoding="async" />
+      <img class="project-viewport-image" src="/images/d3plot-multiwindow-session.png" alt="d3Plot multiwindow interactive data visualization screenshot" loading="lazy" decoding="async" />
       <ProjectDemoActions title="d3Plot" sourceUrl="https://github.com/ccosse/d3plot" liveUrl="https://ccosse.github.io/d3plot/#/" pageUrl="/projects/d3plot/" />
     </section>
     <section class="professor-embed" aria-label={professor.demoLabel}>
@@ -54,7 +54,7 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber;
 </BaseLayout>
 
 <style>
-.project-image-viewport {position:relative;width:100%;height:clamp(280px,44vw,420px);margin:24px 0;overflow:hidden;border-radius:20px;background:#303030;}
+.project-image-viewport {position:relative;width:100%;aspect-ratio:1000 / 154;margin:24px 0;overflow:hidden;border-radius:20px;background:#303030;}
 .project-viewport-image {display:block;width:100%;height:100%;object-fit:cover;object-position:center center;}
 .professor-embed {position:relative;width:100%;height:clamp(280px,44vw,420px);margin:24px 0;overflow:hidden;border-radius:20px;background:#303030;}
 </style>
