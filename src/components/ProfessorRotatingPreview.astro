@@ -1,0 +1,81 @@
+---
+import {PROFESSOR_PROBLEMS} from '../../prototypes/professor-stick-figure/src/homepage-problems.js';
+---
+<professor-rotation-preview>
+  <div class="preview-controls">
+    <label for="professor-problem-picker">Problem</label>
+    <select id="professor-problem-picker" data-problem-picker aria-label="Select a prepared math problem">
+      {PROFESSOR_PROBLEMS.map((problem,index)=><option value={problem}>{index+1}. {problem}</option>)}
+    </select>
+    <button type="button" data-next>Next problem ↻</button>
+    <span data-progress aria-live="polite"></span>
+  </div>
+  <div class="preview-stage" data-stage aria-label="Animated professor at the chalkboard"></div>
+</professor-rotation-preview>
+<script>
+  import {mountProfessorDemo} from '../../prototypes/professor-stick-figure/src/compact-demo.js';
+  import {PROFESSOR_PROBLEMS,chooseProfessorProblem} from '../../prototypes/professor-stick-figure/src/homepage-problems.js';
+  class ProfessorRotationPreview extends HTMLElement {
+    private controller: ReturnType<typeof mountProfessorDemo> | undefined;
+    private pending: ReturnType<typeof setTimeout> | undefined;
+    private currentProblem = '';
+    private lessonCount = 0;
+    private disposed = false;
+    private stage!: HTMLElement;
+    private picker!: HTMLSelectElement;
+    private progress!: HTMLElement;
+
+    private mountProblem(problem: string) {
+      if (this.disposed) return;
+      if (this.pending !== undefined) { clearTimeout(this.pending); this.pending = undefined; }
+      this.controller?.destroy();
+      this.currentProblem = problem;
+      this.lessonCount++;
+      this.stage.classList.remove('changing');
+      this.picker.value = problem;
+      this.progress.textContent = 'Lesson ' + this.lessonCount + ' of ∞';
+      this.controller = mountProfessorDemo(this.stage, {
+        problem, autoplay:true, loop:true, muted:true,
+        onCycle: () => this.transitionTo(chooseProfessorProblem(this.currentProblem))
+      });
+    }
+    private transitionTo(problem: string) {
+      if (this.disposed || this.pending !== undefined) return;
+      this.controller?.pause();
+      this.stage.classList.add('changing');
+      this.pending = setTimeout(() => {
+        this.pending = undefined;
+        if (this.disposed || !this.isConnected) return;
+        this.mountProblem(problem);
+      }, 360);
+    }
+    connectedCallback() {
+      this.disposed = false;
+      this.stage = this.querySelector('[data-stage]') as HTMLElement;
+      this.picker = this.querySelector('[data-problem-picker]') as HTMLSelectElement;
+      this.progress = this.querySelector('[data-progress]') as HTMLElement;
+      this.querySelector('[data-next]')?.addEventListener('click', () => this.transitionTo(chooseProfessorProblem(this.currentProblem)));
+      this.picker.addEventListener('change', () => this.transitionTo(this.picker.value));
+      if (!this.controller) this.mountProblem(PROFESSOR_PROBLEMS[0]);
+    }
+    disconnectedCallback() {
+      this.disposed = true;
+      if (this.pending !== undefined) clearTimeout(this.pending);
+      this.pending = undefined;
+      this.controller?.destroy();
+      this.controller = undefined;
+    }
+  }
+  if (!customElements.get('professor-rotation-preview')) customElements.define('professor-rotation-preview',ProfessorRotationPreview);
+</script>
+<style>
+professor-rotation-preview {display:block;width:100%;background:#1c2c27;border-radius:16px;overflow:hidden}
+.preview-controls {display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 15px;color:#e8eee9;background:#26332d;font:14px system-ui,sans-serif}
+.preview-controls select {min-width:160px;flex:1;max-width:420px;background:#182620;color:#fff;border:1px solid #879c89;border-radius:6px;padding:8px}
+.preview-controls button {background:#344a3b;color:#fff;border:1px solid #93aa97;border-radius:6px;padding:9px 12px;cursor:pointer}
+.preview-controls button:hover {border-color:#e7ef72}
+.preview-controls span {font-size:12px;color:#b9d1bd}
+.preview-stage {height:clamp(320px,49vw,570px);transition:opacity .35s ease;opacity:1}
+.preview-stage.changing {opacity:0}
+@media(prefers-reduced-motion:reduce){.preview-stage {transition:none}}
+</style>
