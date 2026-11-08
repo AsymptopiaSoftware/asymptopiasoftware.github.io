@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SlotMachineOriginal from '../components/slotmachine/SlotMachineOriginal.vue';
 import ProjectDemoActions from '../components/ProjectDemoActions.astro';
 import ProfessorDemo from '../components/ProfessorDemo.astro';
+import D3SRTGlimpse from '../components/D3SRTGlimpse.astro';
 import professor from '../content/professor.json';
 import brand from '../content/brand.json';
 
@@ -33,6 +34,15 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber;
       <ProjectDemoActions title={professor.title} sourceUrl={professor.sourceUrl}
         liveUrl={professor.liveUrl} pageUrl={professor.pageUrl} />
     </section>
+    <section class="d3srt-embed" aria-label="Static preview of d3SightReadingTrainer and Cosmic Harmony">
+      <D3SRTGlimpse />
+      <ProjectDemoActions
+        title="d3SightReadingTrainer + Cosmic Harmony"
+        sourceUrl="https://github.com/ccosse/d3SightReadingTrainer"
+        liveUrl="https://ccosse.github.io/d3SightReadingTrainer/#/"
+        pageUrl="/projects/d3srt/"
+      />
+    </section>
   </main>
   <footer class="site-footer">
     <div class="build-info">
@@ -43,4 +53,5 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber;
 
 <style>
 .professor-embed {position:relative;width:100%;height:clamp(280px,44vw,420px);margin:24px 0;overflow:hidden;border-radius:20px;background:#303030;}
+.d3srt-embed {position:relative;width:100%;height:clamp(148px,18vw,185px);margin:24px 0;overflow:hidden;border-radius:20px;background:#18232e;}
 </style>
