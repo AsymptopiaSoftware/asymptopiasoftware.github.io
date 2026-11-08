@@ -1,0 +1,54 @@
+---
+interface Props { problem?: string; label?: string; }
+const {problem='x/5-4/4=2/5',label='Animated Professor solving different fraction problems'}=Astro.props;
+---
+<professor-auto-demo data-problem={problem} aria-label={label}></professor-auto-demo>
+<script>
+  import {mountProfessorDemo} from '../../prototypes/professor-stick-figure/src/compact-demo.js';
+  import {chooseProfessorProblem} from '../../prototypes/professor-stick-figure/src/homepage-problems.js';
+
+  class ProfessorAutoDemo extends HTMLElement {
+    private controller: ReturnType<typeof mountProfessorDemo> | undefined;
+    private pending: ReturnType<typeof setTimeout> | undefined;
+    private disposed = false;
+    private currentProblem = '';
+    private mountLesson(problem: string) {
+      if (this.disposed) return;
+      if (this.pending !== undefined) clearTimeout(this.pending);
+      this.pending = undefined;
+      this.controller?.destroy();
+      this.currentProblem=problem;
+      this.classList.remove('changing');
+      this.controller=mountProfessorDemo(this,{
+        problem,autoplay:true,loop:true,muted:true,wideBoard:true,
+        onCycle:()=>this.nextLesson()
+      });
+    }
+    private nextLesson(){
+      if (this.pending !== undefined || this.disposed) return;
+      this.controller?.pause();
+      this.classList.add('changing');
+      const next=chooseProfessorProblem(this.currentProblem);
+      this.pending=setTimeout(()=>{
+        this.pending=undefined;
+        if (!this.disposed && this.isConnected) this.mountLesson(next);
+      },400);
+    }
+    connectedCallback(){
+      this.disposed=false;
+      if(!this.controller) this.mountLesson(this.dataset.problem||chooseProfessorProblem(''));
+    }
+    disconnectedCallback(){
+      this.disposed=true;
+      if (this.pending !== undefined) clearTimeout(this.pending);
+      this.pending=undefined;
+      this.controller?.destroy();this.controller=undefined;
+    }
+  }
+  if(!customElements.get('professor-auto-demo'))customElements.define('professor-auto-demo',ProfessorAutoDemo);
+</script>
+<style>
+professor-auto-demo {display:block;width:100%;height:100%;min-width:0;background:#1c2c27;opacity:1;transition:opacity 400ms ease}
+professor-auto-demo.changing {opacity:0}
+@media(prefers-reduced-motion:reduce){professor-auto-demo{transition:none}}
+</style>
