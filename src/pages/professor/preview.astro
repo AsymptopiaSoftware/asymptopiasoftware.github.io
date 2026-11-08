@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProfessorRotatingPreview from '../../components/ProfessorRotatingPreview.astro';
+---
+<BaseLayout title="Professor — rotating math problems preview" description="Review 30 prepared fraction problems with animated chalkboard Professor.">
+  <main class="preview-page">
+    <nav><a href="/">← Asymptopia Software</a><a href="https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/pull/20" target="_blank" rel="noopener noreferrer">Development PR #20</a></nav>
+    <h1>Professor · rotating problems</h1>
+    <p>Preview the chalkboard Professor choosing from 30 prepared, verified equations. After each completed explanation, the board clears and he starts a different problem. Choose a specific problem or use Next problem to review without waiting for a full cycle.</p>
+    <ProfessorRotatingPreview />
+  </main>
+</BaseLayout>
+<style>
+.preview-page {max-width:960px;width:100%;margin:24px auto 50px}
+.preview-page h1 {font:700 clamp(22px,3vw,32px) system-ui,sans-serif;color:#1d312b;margin:20px 0 10px}
+.preview-page p {font:15px/1.5 system-ui,sans-serif;color:#40534a;max-width:780px;margin:0 0 18px}
+.preview-page nav {display:flex;gap:20px;flex-wrap:wrap}
+.preview-page a{color:#17633f}
+</style>
