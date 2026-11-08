@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+<BaseLayout title="TuxMathScrabble | Asymptopia Software" description="TuxMathScrabble is an educational math game built around arithmetic equation construction.">
+  <main class="project-page">
+    <a href="/" class="back-link">← Asymptopia Software</a>
+    <h1>TuxMathScrabble</h1>
+    <p>TuxMathScrabble is an educational math game built around arithmetic equation construction.</p>
+    <p>The homepage shows a static image preview. Use the live link to open the working application.</p>
+    <nav aria-label="TuxMathScrabble links">
+      <a href="https://github.com/ccosse/TuxMathScrabble" target="_blank" rel="noopener noreferrer">Source</a>
+      <a href="https://www.asymptopia.com/tuxmathscrabble" target="_blank" rel="noopener noreferrer">Live application</a>
+      <a href="/">Homepage preview</a>
+    </nav>
+  </main>
+</BaseLayout>
+<style>
+.project-page{width:min(760px,100%);margin:48px auto;color:#303030;line-height:1.65}
+.project-page h1{font-size:2rem;margin:20px 0}
+.back-link,.project-page nav a{color:#165a39}
+.project-page nav{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.project-page nav a{padding:8px 12px;border:1px solid #aaa;border-radius:8px;text-decoration:none}
+</style>
