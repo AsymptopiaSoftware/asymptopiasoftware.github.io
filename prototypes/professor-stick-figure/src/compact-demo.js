@@ -8,7 +8,7 @@ import {presentationAdvance} from './presentation-plan.js';
 // The browser speech queue is global. Only one opt-in audible embed owns it at a time.
 const compactSpeechOwners=new WeakMap();
 /** Mount a self-contained scene. All nodes, clocks and observers belong to this instance. */
-export function mountProfessorDemo(container,{problem='x/5-4/4=2/5',autoplay=true,loop=true,muted=true,onCycle=null}={}) {
+export function mountProfessorDemo(container,{problem='x/5-4/4=2/5',autoplay=true,loop=true,muted=true,onCycle=null,wideBoard=false}={}) {
   if(!container?.ownerDocument||typeof container.append!=='function')throw new TypeError('Expected a DOM container');
   const doc=container.ownerDocument,host=doc.defaultView,ns='http://www.w3.org/2000/svg';
   if(!host)throw new TypeError('Container must belong to a browser document');
@@ -23,7 +23,10 @@ export function mountProfessorDemo(container,{problem='x/5-4/4=2/5',autoplay=tru
   Object.assign(svg.style,{display:'block',width:'100%',height:'100%'});wrapper.append(svg);
   const make=(tag,attrs,parent=svg)=>{const el=doc.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs))el.setAttribute(k,v);parent.append(el);return el;};
   const backdrop=make('g',{'data-layer':'board'}),group=make('g',{'data-layer':'professor'});
-  const figure=new ProfessorFigure(group,raw),scene=compactScene(figure.plan,figure.timeline),b=scene.board,f=scene.frame;
+  const figure=new ProfessorFigure(group,raw),scene=compactScene(figure.plan,figure.timeline),f=scene.frame;
+  // Presentation-only wall-length chalkboard. The verified writing positions and
+  // camera stay unchanged; the drawing board extends to the scene edges.
+  const b=wideBoard?{...scene.board,x:f.x+14,width:f.width-28}:scene.board;
   if(figure.plan.blocked.length){figure.destroy();throw new RangeError('Problem exceeds the Professor writing workspace');}
   svg.setAttribute('viewBox',`${f.x} ${f.y} ${f.width} ${f.height}`);
   wrapper.style.aspectRatio=`${f.width} / ${f.height}`;

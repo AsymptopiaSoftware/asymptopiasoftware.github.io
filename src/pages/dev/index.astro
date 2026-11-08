@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SlotMachineOriginal from '../../components/slotmachine/SlotMachineOriginal.vue';
+import ProjectDemoActions from '../../components/ProjectDemoActions.astro';
+import ProfessorAutoDemo from '../../components/ProfessorAutoDemo.astro';
+import professor from '../../content/professor.json';
+import brand from '../../content/brand.json';
+
+const siteVersion='v'+brand.versionSeries+'.dev';
+---
+<BaseLayout title="Asymptopia Software · Development Preview" description="Development preview of Asymptopia Software project windows and Professor demo.">
+  <header class="site-header">
+    <a class="brand-home" href="/" aria-label="Asymptopia Software homepage">
+      <img class="brand-logo" src={brand.logo} alt={brand.logoAlt} width="380" height="127"/>
+    </a>
+  </header>
+  <main class="dev-homepage" id="main-content">
+    <h1 class="sr-only">Asymptopia Software development homepage</h1>
+    <section class="slotmachine-embed" aria-label="Animated WELCOME slot machine">
+      <SlotMachineOriginal client:only="vue" />
+      <ProjectDemoActions title="Slot Machine" sourceUrl="https://github.com/ccosse/slotmachine"
+        liveUrl="https://www.asymptopia.com/slotmachine/#/" pageUrl="/projects/slotmachine/" />
+    </section>
+
+    <section class="glimpse-viewport glimpse--harmony" aria-label="Glimpse into d3SRT and Cosmic Harmony">
+      <img src="/images/d3srt-unified-harmony-focus-20261023.png" loading="lazy" decoding="async"
+        alt="Cosmic Harmony planets and the connected d3SRT musical workspace" />
+      <ProjectDemoActions title="d3SRT + Cosmic Harmony" sourceUrl="https://github.com/ccosse/d3SightReadingTrainer"
+        liveUrl="https://ccosse.github.io/d3SightReadingTrainer/#/" pageUrl="/projects/d3srt/" />
+    </section>
+
+    <section class="glimpse-viewport glimpse--tms" aria-label="Glimpse into TuxMathScrabble">
+      <img src="/images/tuxmathscrabble.png" loading="lazy" decoding="async"
+        alt="A portion of the colorful TuxMathScrabble math crossword board" />
+      <ProjectDemoActions title="TuxMathScrabble" sourceUrl="https://github.com/ccosse/TuxMathScrabble"
+        liveUrl="https://www.asymptopia.com/tuxmathscrabble" pageUrl="/projects/tuxmathscrabble/" />
+    </section>
+
+    <section class="glimpse-viewport glimpse--d3plot" aria-label="Glimpse into d3Plot">
+      <img src="/images/d3plot-multiwindow-session.png" loading="lazy" decoding="async"
+        alt="A portion of a multiwindow d3Plot plotting session" />
+      <ProjectDemoActions title="d3Plot" sourceUrl="https://github.com/ccosse/d3plot"
+        liveUrl="https://ccosse.github.io/d3plot/#/" pageUrl="/projects/d3plot/" />
+    </section>
+
+    <section class="professor-embed" aria-label="Professor working through rotating fraction problems">
+      <ProfessorAutoDemo problem={professor.problem} label={professor.demoLabel} />
+      <ProjectDemoActions title={professor.title} sourceUrl={professor.sourceUrl}
+        liveUrl="/professor/preview/" pageUrl={professor.pageUrl} />
+    </section>
+    <p class="dev-note">Development homepage · changes here do not replace the public homepage</p>
+  </main>
+  <footer class="site-footer"><div class="build-info"><span class="site-version">{siteVersion}</span></div></footer>
+</BaseLayout>
+
+<style>
+:global(body:has(.dev-homepage)){background:#111312}
+:global(body:has(.dev-homepage) .site-header){border-bottom-color:#343c38}
+:global(body:has(.dev-homepage) .site-footer){border-top-color:#343c38}
+.dev-homepage{width:100%;min-width:0}
+.dev-note{text-align:center;color:#aebdb3;font:12px system-ui,sans-serif;padding:8px}
+.glimpse-viewport{position:relative;width:100%;aspect-ratio:1000 / 154;overflow:hidden;margin:24px 0;border-radius:20px;background:#202523;isolation:isolate}
+.glimpse-viewport>img{
+  position:absolute;display:block;left:var(--portal-x,50%);top:var(--portal-y,50%);
+  width:var(--portal-width,140%);height:auto;max-width:none;
+  transform:translate(-50%,-50%);pointer-events:none;
+}
+/* These are glimpses through shallow windows, not images resized to fit cards. */
+.glimpse--harmony{--portal-width:140%;--portal-x:49%;--portal-y:44%}
+.glimpse--tms{--portal-width:150%;--portal-x:49%;--portal-y:49%;background:#0d8655}
+.glimpse--d3plot{--portal-width:145%;--portal-x:50%;--portal-y:48%}
+.professor-embed{position:relative;width:100%;height:clamp(280px,44vw,420px);margin:24px 0;overflow:hidden;border-radius:20px;background:#1c2c27}
+@media(max-width:600px){
+  .glimpse-viewport>img{width:max(var(--portal-width),750px)}
+  .glimpse--harmony{--portal-width:750px;--portal-x:43%}
+  .glimpse--tms{--portal-width:800px;--portal-x:50%}
+  .glimpse--d3plot{--portal-width:800px;--portal-x:54%}
+}
+</style>

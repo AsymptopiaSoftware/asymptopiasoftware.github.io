@@ -1,5 +1,6 @@
 // Curated, bounded fraction equations for the silent homepage Professor.
 // Every entry is an exact-rational, uniquely solvable equation in x.
+// Two Crossword Builder-style families: sum/difference and product/quotient.
 export const PROFESSOR_PROBLEMS = Object.freeze([
   "x/2-1/2=1/2",
   "x/3-1/3=2/3",
@@ -21,16 +22,16 @@ export const PROFESSOR_PROBLEMS = Object.freeze([
   "x/4+2/4=4/4",
   "x/5+2/5=3/5",
   "x/6+1/6=4/6",
-  "x/2+1/4=3/4",
-  "x/3+1/6=3/6",
-  "x/4-1/2=1/4",
-  "x/5+1/5=3/5",
-  "x/6-2/3=1/6",
-  "x/7-1/7=4/7",
-  "x/8-1/4=3/8",
-  "x/9-1/3=2/9",
-  "x/5-2/5=2/5",
-  "x/6+3/6=5/6"
+  "x/3*2=4/3",
+  "x/4*3=9/4",
+  "x/5*2=6/5",
+  "x/6*3=3/2",
+  "x/8*2=3/4",
+  "x/2/2=1/2",
+  "x/3/3=1/3",
+  "x/4/2=1/4",
+  "x/5/2=3/5",
+  "x/6/3=1/3"
 ])
 
 /** Pick another curated problem without immediately repeating the previous one. */

@@ -1,0 +1,24 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {PROFESSOR_PROBLEMS} from '../prototypes/professor-stick-figure/src/homepage-problems.js';
+const read = path => readFileSync(new URL('../'+path,import.meta.url),'utf8');
+
+test('curated Professor pool covers both fraction families',()=>{
+  assert.equal(PROFESSOR_PROBLEMS.length,30);
+  assert.ok(PROFESSOR_PROBLEMS.some(x=>x.includes('*')));
+  assert.ok(PROFESSOR_PROBLEMS.some(x=>/\/[0-9]+\/[0-9]+/.test(x)));
+  assert.ok(PROFESSOR_PROBLEMS.some(x=>x.includes('+')));
+  assert.ok(PROFESSOR_PROBLEMS.some(x=>x.includes('-')));
+});
+
+test('dev homepage keeps public homepage separate and previews all projects as masked images',()=>{
+  const dev=read('src/pages/dev/index.astro'),live=read('src/pages/index.astro');
+  assert.match(dev,/ProfessorAutoDemo/);
+  for(const name of ['glimpse--harmony','glimpse--tms','glimpse--d3plot'])assert.ok(dev.includes(name));
+  assert.match(dev,/overflow:hidden/);
+  assert.match(dev,/position:absolute/);
+  assert.match(dev,/width:var\(--portal-width,140%\)/);
+  assert.match(dev,/aspect-ratio:1000 \/ 154/);
+  assert.doesNotMatch(live,/ProfessorAutoDemo|glimpse-viewport/);
+});
