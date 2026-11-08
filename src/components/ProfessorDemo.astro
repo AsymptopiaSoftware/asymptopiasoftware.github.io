@@ -26,11 +26,7 @@ const {problem,label}=Astro.props;
       this.disposed = false;
       if(!this.controller)this.mountLesson(this.dataset.problem || chooseProfessorProblem(''));
     }
-    disconnectedCallback(){
-      this.disposed = true;
-      this.controller?.destroy();
-      this.controller = undefined;
-    }
+    disconnectedCallback(){ this.disposed = true; this.controller?.destroy(); this.controller = undefined; }
   }
   if(!customElements.get('professor-demo'))customElements.define('professor-demo',ProfessorDemoElement);
 </script>
