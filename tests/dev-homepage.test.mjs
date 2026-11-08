@@ -18,7 +18,12 @@ test('dev homepage keeps public homepage separate and previews all projects as m
   for(const name of ['glimpse--harmony','glimpse--tms','glimpse--d3plot'])assert.ok(dev.includes(name));
   assert.match(dev,/overflow:hidden/);
   assert.match(dev,/position:absolute/);
-  assert.match(dev,/width:var\(--portal-width,140%\)/);
+  assert.match(dev,/width:var\(--portal-width,210%\)/);
+  assert.equal((dev.match(/class="portal-window"/g)||[]).length,3);
+  assert.match(dev,/padding:12px/);
+  assert.match(dev,/\.portal-window\s*\{[^}]*border-radius:20px/s);
+  assert.match(dev,/PUBLIC_BUILD_NUMBER/);
+  assert.match(dev,/siteVersion.*buildNumber/);
   assert.match(dev,/aspect-ratio:1000 \/ 154/);
   assert.doesNotMatch(live,/ProfessorAutoDemo|glimpse-viewport/);
 });
