@@ -8,7 +8,7 @@ import {presentationAdvance} from './presentation-plan.js';
 // The browser speech queue is global. Only one opt-in audible embed owns it at a time.
 const compactSpeechOwners=new WeakMap();
 /** Mount a self-contained scene. All nodes, clocks and observers belong to this instance. */
-export function mountProfessorDemo(container,{problem='x/5-4/4=2/5',autoplay=true,loop=true,muted=true}={}) {
+export function mountProfessorDemo(container,{problem='x/5-4/4=2/5',autoplay=true,loop=true,muted=true,onCycle=null}={}) {
   if(!container?.ownerDocument||typeof container.append!=='function')throw new TypeError('Expected a DOM container');
   const doc=container.ownerDocument,host=doc.defaultView,ns='http://www.w3.org/2000/svg';
   if(!host)throw new TypeError('Container must belong to a browser document');
@@ -50,7 +50,13 @@ export function mountProfessorDemo(container,{problem='x/5-4/4=2/5',autoplay=tru
     let next=time+delta;
     if(speech)next=presentationAdvance(figure.plan,time,next,speech.busy);
     const cycle=figure.duration+2000;
-    if(loop&&next>=cycle){loops+=Math.floor(next/cycle);next%=cycle;speech?.cancel();}
+    if(loop&&next>=cycle){
+      loops+=Math.floor(next/cycle);next%=cycle;speech?.cancel();
+      // The host can replace the completed lesson at the cycle boundary.
+      // It may destroy this instance, so stop before touching its figure again.
+      onCycle?.(loops);
+      if(destroyed)return;
+    }
     time=Math.min(next,loop?cycle:figure.duration);syncSpeech(render());
     if(!loop&&time>=figure.duration){playing=false;last=null;return;}
     raf=host.requestAnimationFrame(tick);
