@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+<BaseLayout title="d3 Sight Reading Trainer | Asymptopia Software" description="Interactive browser-based sight reading, piano, guitar, musical notation and Cosmic Harmony.">
+  <main class="project-page">
+    <a class="back-link" href="/">← Asymptopia Software</a>
+    <h1>d3 Sight Reading Trainer</h1>
+    <p>Explore musical notation and harmony with a working, interactive piano and scrolling staff. The homepage demo uses the same Vue and Quasar instruments as the full d3SRT application, presented in a compact viewport.</p>
+    <p>Launch the full application for the unified d3SRT and Cosmic Harmony workspace, MIDI integration, recording, playback, guitar fretboard, and harmonic exploration.</p>
+    <nav aria-label="d3SRT project links">
+      <a href="https://github.com/ccosse/d3SightReadingTrainer" target="_blank" rel="noopener noreferrer">Source</a>
+      <a href="https://ccosse.github.io/d3SightReadingTrainer/#/" target="_blank" rel="noopener noreferrer">Full application</a>
+      <a href="/">Homepage demo</a>
+    </nav>
+  </main>
+</BaseLayout>
+<style>
+.project-page {width:min(760px,100%);margin:48px auto;color:#303030;line-height:1.65;}
+.project-page h1 {font-size:2rem;margin:20px 0;}
+.back-link,.project-page nav a {color:#165a39;}
+.project-page nav {display:flex;flex-wrap:wrap;gap:12px;margin-top:24px;}
+.project-page nav a {padding:8px 12px;border:1px solid #aaa;border-radius:8px;text-decoration:none;}
+</style>
