@@ -5,14 +5,32 @@ const {problem,label}=Astro.props;
 <professor-demo data-problem={problem} aria-label={label}></professor-demo>
 <script>
   import {mountProfessorDemo} from '../../prototypes/professor-stick-figure/src/compact-demo.js';
+  import {chooseProfessorProblem} from '../../prototypes/professor-stick-figure/src/homepage-problems.js';
   class ProfessorDemoElement extends HTMLElement {
     controller: ReturnType<typeof mountProfessorDemo> | undefined;
-    connectedCallback(){
-      this.controller??=mountProfessorDemo(this,{
-        problem:this.dataset.problem,autoplay:true,loop:true,muted:true
+    private currentProblem = '';
+    private disposed = false;
+    private mountLesson(problem: string) {
+      this.controller?.destroy();
+      this.currentProblem = problem;
+      this.controller = mountProfessorDemo(this,{
+        problem,autoplay:true,loop:true,muted:true,
+        onCycle: () => {
+          if (!this.disposed && this.isConnected) {
+            this.mountLesson(chooseProfessorProblem(this.currentProblem));
+          }
+        }
       });
     }
-    disconnectedCallback(){this.controller?.destroy();this.controller=undefined;}
+    connectedCallback(){
+      this.disposed = false;
+      if(!this.controller)this.mountLesson(this.dataset.problem || chooseProfessorProblem(''));
+    }
+    disconnectedCallback(){
+      this.disposed = true;
+      this.controller?.destroy();
+      this.controller = undefined;
+    }
   }
   if(!customElements.get('professor-demo'))customElements.define('professor-demo',ProfessorDemoElement);
 </script>
