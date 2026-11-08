@@ -54,9 +54,6 @@ const siteVersion='v'+brand.versionSeries+'.dev';
 </BaseLayout>
 
 <style>
-:global(body:has(.dev-homepage)){background:#111312}
-:global(body:has(.dev-homepage) .site-header){border-bottom-color:#343c38}
-:global(body:has(.dev-homepage) .site-footer){border-top-color:#343c38}
 .dev-homepage{width:100%;min-width:0}
 .dev-note{text-align:center;color:#aebdb3;font:12px system-ui,sans-serif;padding:8px}
 .glimpse-viewport{position:relative;width:100%;aspect-ratio:1000 / 154;overflow:hidden;margin:24px 0;border-radius:20px;background:#202523;isolation:isolate}
@@ -76,4 +73,18 @@ const siteVersion='v'+brand.versionSeries+'.dev';
   .glimpse--tms{--portal-width:800px;--portal-x:50%}
   .glimpse--d3plot{--portal-width:800px;--portal-x:54%}
 }
+</style>
+<style is:global>
+/* The global site theme declares a light :root background. Override the entire
+   dev document, not only the content area, to avoid a white band below the fold. */
+html:has(.dev-homepage),
+html:has(.dev-homepage) body,
+html:has(.dev-homepage) .shell {
+  background: #111312;
+  color: #e0e8e1;
+  min-height: 100%;
+}
+html:has(.dev-homepage) .site-header { border-bottom-color: #343c38; }
+html:has(.dev-homepage) .site-footer { border-top-color: #343c38; }
+html:has(.dev-homepage) .site-version { color: #d7e0d7; background: #26312b; }
 </style>
