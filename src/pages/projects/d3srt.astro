@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const title = 'd3SightReadingTrainer + Cosmic Harmony | Asymptopia Software';
+const description = 'An integrated music practice workspace linking staff notation, piano, guitar, and the Cosmic Harmony map.';
+---
+<BaseLayout title={title} description={description}>
+  <main class="project-page">
+    <a class="back-link" href="/">← Asymptopia Software</a>
+    <h1>d3SightReadingTrainer + Cosmic Harmony</h1>
+    <p>A music practice workspace connecting sight-reading staff notation, piano and guitar, MIDI input, and the Cosmic Harmony map of chord relationships.</p>
+    <p>Explore chord progressions on the harmonic map, send journeys to the staff, and practice with linked instrumental displays. The homepage image is an intentionally still, cropped glimpse of the application; it doesn't run the music software or play audio.</p>
+    <img class="workstation" src="/images/d3srt-cosmic-workstation-m25.png" width="2048" height="559" alt="Cosmic Harmony map and d3SightReadingTrainer workspace side by side" loading="lazy"/>
+    <nav class="project-links" aria-label="d3SightReadingTrainer links">
+      <a href="https://github.com/ccosse/d3SightReadingTrainer" target="_blank" rel="noopener noreferrer">Source</a>
+      <a href="https://ccosse.github.io/d3SightReadingTrainer/#/" target="_blank" rel="noopener noreferrer">Launch d3SRT</a>
+      <a href="https://www.asymptopia.com/projects/d3sightreadingtrainer/" target="_blank" rel="noopener noreferrer">Project archive</a>
+      <a href="/">Homepage</a>
+    </nav>
+  </main>
+</BaseLayout>
+<style>
+.project-page { width:min(1000px,100%); margin:40px auto; color:#e8e8e8; line-height:1.65; }
+.project-page h1 {font-size:clamp(1.5rem,3vw,2.2rem);}
+.back-link {color:#f1ff00;}
+.workstation {display:block;width:100%;height:auto;border:1px solid #4e5e61;border-radius:10px;margin:22px 0;}
+.project-links {display:flex;flex-wrap:wrap;gap:12px;margin-top:24px;}
+.project-links a {color:#f1ff00;padding:8px 12px;border:1px solid #555;border-radius:8px;text-decoration:none;}
+.project-links a:hover {border-color:#f1ff00;}
+</style>
