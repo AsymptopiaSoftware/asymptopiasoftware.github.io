@@ -27,3 +27,12 @@ test('dev homepage keeps public homepage separate and previews all projects as m
   assert.match(dev,/aspect-ratio:1000 \/ 154/);
   assert.doesNotMatch(live,/ProfessorAutoDemo|glimpse-viewport/);
 });
+
+test('portal compositions maintain inset mask, distinct offsets and no TMS zoom on small screens',()=>{
+  const dev=read('src/pages/dev/index.astro');
+  assert.match(dev,/\.glimpse--tms\{--portal-width:100%;--portal-x:50%;--portal-y:50%\}/);
+  assert.match(dev,/\.glimpse--harmony\{--portal-width:185%;--portal-x:56%;--portal-y:50%\}/);
+  assert.match(dev,/\.glimpse--d3plot\{--portal-width:175%;--portal-x:58%;--portal-y:56%\}/);
+  assert.doesNotMatch(dev,/portal-window>img\{width:max/);
+  assert.match(dev,/\.portal-window\s*\{[^}]*overflow:hidden/s);
+});
