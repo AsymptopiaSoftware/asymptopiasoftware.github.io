@@ -1,0 +1,48 @@
+{
+  "startX": 65,
+  "character": {
+    "position": [
+      300,
+      230
+    ],
+    "scale": 2,
+    "shoulder": [
+      88,
+      100
+    ],
+    "arm": {
+      "upper": 65,
+      "forearm": 60,
+      "tip": 4,
+      "side": "right",
+      "elbow": "positive"
+    }
+  },
+  "timing": {
+    "walk": 2600,
+    "turn": 900,
+    "react": 2200,
+    "returnWalk": 2600
+  },
+  "profiles": {
+    "original": {},
+    "compact": {
+      "scale": 1.75,
+      "position": [
+        325,
+        260
+      ],
+      "shoulder": [
+        88,
+        100
+      ],
+      "arm": {
+        "upper": 76,
+        "forearm": 58,
+        "tip": 4,
+        "side": "right",
+        "elbow": "positive"
+      }
+    }
+  }
+}
