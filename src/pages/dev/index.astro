@@ -77,16 +77,15 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber + '-dev';
 }
 /* Screenshots remain larger than the aperture: the image is behind a window,
    not fitted into a tile. Approximately a fifth of each full image is visible. */
-.glimpse--harmony{--portal-width:205%;--portal-x:49%;--portal-y:45%}
-.glimpse--tms{--portal-width:210%;--portal-x:50%;--portal-y:49%}
-.glimpse--d3plot{--portal-width:205%;--portal-x:50%;--portal-y:49%}
+.glimpse--harmony{--portal-width:185%;--portal-x:56%;--portal-y:50%}
+.glimpse--tms{--portal-width:100%;--portal-x:50%;--portal-y:50%}
+.glimpse--d3plot{--portal-width:175%;--portal-x:58%;--portal-y:56%}
 .professor-embed{position:relative;width:100%;height:clamp(280px,44vw,420px);margin:24px 0;overflow:hidden;border-radius:20px;background:#1c2c27}
 @media(max-width:600px){
   .glimpse-viewport{padding:8px}
-  .portal-window>img{width:max(var(--portal-width),1050px)}
-  .glimpse--harmony{--portal-width:1050px;--portal-x:43%}
-  .glimpse--tms{--portal-width:1100px;--portal-x:50%}
-  .glimpse--d3plot{--portal-width:1100px;--portal-x:52%}
+  .glimpse--harmony{--portal-width:900px;--portal-x:56%;--portal-y:50%}
+  .glimpse--tms{--portal-width:100%;--portal-x:50%;--portal-y:50%}
+  .glimpse--d3plot{--portal-width:980px;--portal-x:58%;--portal-y:56%}
 }
 </style>
 <style is:global>
