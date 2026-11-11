@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,existsSync} from 'node:fs';
 import {PROFESSOR_PROBLEMS} from '../prototypes/professor-stick-figure/src/homepage-problems.js';
 const read = path => readFileSync(new URL('../'+path,import.meta.url),'utf8');
 
@@ -35,4 +35,11 @@ test('portal compositions maintain inset mask, distinct offsets and no TMS zoom 
   assert.match(dev,/\.glimpse--d3plot\{--portal-width:175%;--portal-x:58%;--portal-y:56%\}/);
   assert.doesNotMatch(dev,/portal-window>img\{width:max/);
   assert.match(dev,/\.portal-window\s*\{[^}]*overflow:hidden/s);
+});
+
+test('only the GitHub Pages root hosts the development homepage',()=>{
+  assert.equal(existsSync(new URL('../src/pages/dev/index.astro',import.meta.url)),false);
+  const root=read('src/pages/index.astro');
+  assert.match(root,/development-homepage/);
+  assert.match(root,/ProfessorAutoDemo/);
 });
