@@ -12,20 +12,21 @@ test('Professor homepage and published full app work independently on desktop, m
  const page=await browser.newPage({viewport:{width:1200,height:1050}}),errors=[];
  page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`);});
  const base=`http://127.0.0.1:${server.address().port}`;await page.goto(base);
- await page.waitForFunction(()=>document.querySelector('professor-demo')?.controller?.getState().time>200);
+ await page.waitForFunction(()=>document.querySelector('professor-auto-demo')?.controller?.getState().time>200);
  assert.equal(await page.locator('.professor-embed button,.professor-embed input,.professor-embed select,.professor-embed aside').count(),0);
  assert.equal(await page.locator('.professor-embed .demo-action').count(),3);
  const links=await page.locator('.professor-embed .demo-action').evaluateAll(es=>es.map(e=>({href:e.getAttribute('href'),title:e.title})));assert.deepEqual(links.map(l=>l.title),['Source','Live','Page']);
  assert.equal(links[0].href,'https://github.com/AsymptopiaSoftware/asymptopiasoftware.github.io/tree/main/prototypes/professor-stick-figure');
  for(const link of links.slice(1)){const response=await page.request.get(base+link.href);assert.equal(response.status(),200);}
- await page.evaluate(()=>{const d=document.querySelector('professor-demo').controller;d.seek(d.getState().duration);});
- await page.waitForFunction(()=>document.querySelector('professor-demo').controller.getState().loops>0,{timeout:6000});
- await page.evaluate(()=>document.querySelector('professor-demo').controller.pause());
- const stopped=await page.evaluate(()=>document.querySelector('professor-demo').controller.getState().time);
+ const originalProblem=await page.locator('professor-auto-demo').evaluate(el=>el.currentProblem);
+ await page.evaluate(()=>{const d=document.querySelector('professor-auto-demo').controller;d.seek(d.getState().duration);});
+ await page.waitForFunction(original=>document.querySelector('professor-auto-demo').currentProblem!==original,originalProblem,{timeout:9000});
+ await page.evaluate(()=>document.querySelector('professor-auto-demo').controller.pause());
+ const stopped=await page.evaluate(()=>document.querySelector('professor-auto-demo').controller.getState().time);
  await page.getByRole('button',{name:'Spin',exact:true}).click();await page.waitForTimeout(250);
- assert.equal(await page.evaluate(()=>document.querySelector('professor-demo').controller.getState().time),stopped);
+ assert.equal(await page.evaluate(()=>document.querySelector('professor-auto-demo').controller.getState().time),stopped);
  await page.waitForFunction(()=>document.querySelector('#resultsLabel').textContent==='WELCOME');assert.equal(await page.locator('.reel').count(),7);
- await page.evaluate(()=>{const d=document.querySelector('professor-demo').controller;d.seek(d.getState().duration);});
+ await page.evaluate(()=>{const d=document.querySelector('professor-auto-demo').controller;d.seek(d.getState().duration);});
  for(const width of [1200,375,320]){
   await page.setViewportSize({width,height:width<400?850:1050});await page.waitForTimeout(80);
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
@@ -35,8 +36,8 @@ test('Professor homepage and published full app work independently on desktop, m
  }
  const speech=await page.evaluate(()=>speechSynthesis.speaking);assert.equal(speech,false);
  await page.emulateMedia({reducedMotion:'reduce'});await page.reload();
- await page.waitForFunction(()=>document.querySelector('professor-demo')?.controller?.getState().reducedMotion);
- const reduced=await page.evaluate(()=>document.querySelector('professor-demo').controller.getState());assert.equal(reduced.time,reduced.duration);assert.equal(reduced.playing,false);
+ await page.waitForFunction(()=>document.querySelector('professor-auto-demo')?.controller?.getState().reducedMotion);
+ const reduced=await page.evaluate(()=>document.querySelector('professor-auto-demo').controller.getState());assert.equal(reduced.time,reduced.duration);assert.equal(reduced.playing,false);
  assert.ok(await page.locator('.professor-embed [data-layer="chalk"] path[d]').count()>0);
  await page.goto(base+links[1].href);await page.waitForSelector('#seek');
  assert.equal(await page.locator('#writing').inputValue(),'x/5-4/4=2/5');assert.equal(await page.locator('#advanced').getAttribute('open'),null);
