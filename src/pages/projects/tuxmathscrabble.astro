@@ -1,23 +1,33 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FeaturedScreenshot from '../../components/FeaturedScreenshot.astro';
 ---
-<BaseLayout title="TuxMathScrabble | Asymptopia Software" description="TuxMathScrabble is an educational math game built around arithmetic equation construction.">
-  <main class="project-page">
-    <a href="/" class="back-link">← Asymptopia Software</a>
+<BaseLayout title="TuxMathScrabble | Asymptopia Software" description="An educational word-game-style arithmetic experience built around forming valid mathematical equations.">
+  <main class="story-page">
+    <a class="back-link" href="/dev/">← Asymptopia Software</a>
     <h1>TuxMathScrabble</h1>
-    <p>TuxMathScrabble is an educational math game built around arithmetic equation construction.</p>
-    <p>The homepage shows a static image preview. Use the live link to open the working application.</p>
-    <nav aria-label="TuxMathScrabble links">
-      <a href="https://github.com/ccosse/TuxMathScrabble" target="_blank" rel="noopener noreferrer">Source</a>
-      <a href="https://www.asymptopia.com/tuxmathscrabble" target="_blank" rel="noopener noreferrer">Live application</a>
-      <a href="/">Homepage preview</a>
+    <p class="story-intro">TuxMathScrabble turns equation construction into a tile-based game. Place numbers and operations on the board to form mathematical statements and discover patterns through play.</p>
+    <section aria-label="Featured screenshot">
+      <h2>Inside the project</h2>
+      <FeaturedScreenshot src="/images/tuxmathscrabble.png"
+        alt="Full TuxMathScrabble equation grid with colored number and operator tiles"
+        caption="Original game screenshot used as the source behind the homepage viewport." />
+    </section>
+    <p>The homepage's shallow portal is a masked view into this full screenshot. Open the image above to inspect the entire scene.</p>
+    <nav aria-label="TuxMathScrabble project links">
+      <a href="https://github.com/ccosse/TuxMathScrabble" target="_blank" rel="noopener noreferrer">Source code</a>
+      <a href="https://www.asymptopia.com/tuxmathscrabble" target="_blank" rel="noopener noreferrer">Launch application</a>
+      <a href="/dev/">Development homepage</a>
     </nav>
   </main>
 </BaseLayout>
 <style>
-.project-page{width:min(760px,100%);margin:48px auto;color:#303030;line-height:1.65}
-.project-page h1{font-size:2rem;margin:20px 0}
-.back-link,.project-page nav a{color:#165a39}
-.project-page nav{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
-.project-page nav a{padding:8px 12px;border:1px solid #aaa;border-radius:8px;text-decoration:none}
+.story-page{width:min(1050px,100%);margin:32px auto 60px;color:#26342e;font:15px/1.65 system-ui,sans-serif}
+.story-page h1{font-size:clamp(24px,3vw,34px);line-height:1.2;margin:18px 0}
+.story-page h2{font-size:18px;margin:26px 0 8px}
+.story-intro{max-width:850px}
+.back-link,.story-page nav a{color:#17633f}
+.story-page nav{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.story-page nav a{padding:9px 13px;border:1px solid #aebdb3;border-radius:9px;text-decoration:none}
+.story-page nav a:hover{border-color:#17633f}
 </style>
