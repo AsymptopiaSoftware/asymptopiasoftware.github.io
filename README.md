@@ -1,8 +1,8 @@
 # Asymptopia Software — new permanent website
 
-Public site: https://asymptopiasoftware.github.io/
+Development site: https://asymptopiasoftware.github.io/\n\nProduction site (separate, unchanged): https://www.asymptopia.com/
 
-This is the new standalone Astro/Vue website in the `AsymptopiaSoftware` organization. It is **not** a migration of the full current asymptopia.com content.
+This repository publishes the development homepage at the GitHub Pages root (`/`). There is no separate `/dev/` route. The independent production website remains `www.asymptopia.com` and is not deployed from this workflow.
 
 ## Current homepage
 
@@ -11,7 +11,7 @@ This is the new standalone Astro/Vue website in the `AsymptopiaSoftware` organiz
 - Automatic GitHub Pages build version badge.
 - SEO and GA4 metadata are in `src/content/brand.json` and `src/content/analytics.json`.
 
-Only projects supplying a functioning demo belong on the homepage. Slot Machine is currently the only included project. Reading Edge remains deferred.
+The development homepage includes the WELCOME demo, masked project screenshot portals, and the rotating Professor demo. Reading Edge remains deferred.
 
 ## Local development
 

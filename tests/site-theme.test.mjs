@@ -11,10 +11,8 @@ test('root, body and shell have consistent full-height dark backgrounds', () => 
 });
 test('full d3SRT image is featured while the homepage masks keep their original asset', () => {
   const page = read('src/pages/projects/d3srt.astro');
-  const dev = read('src/pages/dev/index.astro');
   const home = read('src/pages/index.astro');
   assert.ok(page.includes('/images/d3SightReadingTrainer_CosmicHarmony.png'));
-  assert.ok(dev.includes('/images/d3srt-unified-harmony-focus-20261023.png'));
   assert.ok(home.includes('/images/d3srt-unified-harmony-focus-20261023.png'));
 });
 test('project story text stays readable on dark theme', () => {
