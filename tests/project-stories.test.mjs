@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 const read = path => readFileSync(new URL('../'+path,import.meta.url),'utf8');
 test('project stories feature verified screenshots while preserving the existing portal images',()=>{
- const dev=read('src/pages/dev/index.astro');
+ const dev=read('src/pages/index.astro');
  for(const [slug,file] of [
   ['d3srt','d3SightReadingTrainer_CosmicHarmony.png'],
   ['d3plot','d3plot-multiwindow-session.png'],
