@@ -1,23 +1,33 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FeaturedScreenshot from '../../components/FeaturedScreenshot.astro';
 ---
-<BaseLayout title="d3 Sight Reading Trainer | Asymptopia Software" description="Interactive browser-based sight reading, piano, guitar, musical notation and Cosmic Harmony.">
-  <main class="project-page">
-    <a class="back-link" href="/">← Asymptopia Software</a>
-    <h1>d3 Sight Reading Trainer</h1>
-    <p>Explore musical notation and harmony with a working, interactive piano and scrolling staff. The homepage uses a static view of the unified d3SRT and Cosmic Harmony workspace, including its harmonic planets. Launch the application to interact with it.</p>
-    <p>Launch the full application for the unified d3SRT and Cosmic Harmony workspace, MIDI integration, recording, playback, guitar fretboard, and harmonic exploration.</p>
-    <nav aria-label="d3SRT project links">
-      <a href="https://github.com/ccosse/d3SightReadingTrainer" target="_blank" rel="noopener noreferrer">Source</a>
-      <a href="https://ccosse.github.io/d3SightReadingTrainer/#/" target="_blank" rel="noopener noreferrer">Full application</a>
-      <a href="/">Homepage demo</a>
+<BaseLayout title="d3 Sight Reading Trainer + Cosmic Harmony | Asymptopia Software" description="An integrated music workspace connecting a harmonic map, narrative, notation, and instruments.">
+  <main class="story-page">
+    <a class="back-link" href="/dev/">← Asymptopia Software</a>
+    <h1>d3 Sight Reading Trainer + Cosmic Harmony</h1>
+    <p class="story-intro">d3 Sight Reading Trainer combines scrolling notation, an interactive piano and guitar fretboard, MIDI playback and recording, and a connected Cosmic Harmony map. Explore harmonic paths alongside the notes they produce.</p>
+    <section aria-label="Featured screenshot">
+      <h2>Inside the project</h2>
+      <FeaturedScreenshot src="/images/d3srt-unified-harmony-focus-20261023.png"
+        alt="Unified d3SRT and Cosmic Harmony workspace with harmonic planets, narrative, musical staff, and piano"
+        caption="Original unified-workspace screenshot used for the masked homepage portal." />
+    </section>
+    <p>The homepage's shallow portal is a masked view into this full screenshot. Open the image above to inspect the entire scene.</p>
+    <nav aria-label="d3 Sight Reading Trainer + Cosmic Harmony project links">
+      <a href="https://github.com/ccosse/d3SightReadingTrainer" target="_blank" rel="noopener noreferrer">Source code</a>
+      <a href="https://ccosse.github.io/d3SightReadingTrainer/#/" target="_blank" rel="noopener noreferrer">Launch application</a>
+      <a href="/dev/">Development homepage</a>
     </nav>
   </main>
 </BaseLayout>
 <style>
-.project-page {width:min(760px,100%);margin:48px auto;color:#303030;line-height:1.65;}
-.project-page h1 {font-size:2rem;margin:20px 0;}
-.back-link,.project-page nav a {color:#165a39;}
-.project-page nav {display:flex;flex-wrap:wrap;gap:12px;margin-top:24px;}
-.project-page nav a {padding:8px 12px;border:1px solid #aaa;border-radius:8px;text-decoration:none;}
+.story-page{width:min(1050px,100%);margin:32px auto 60px;color:#26342e;font:15px/1.65 system-ui,sans-serif}
+.story-page h1{font-size:clamp(24px,3vw,34px);line-height:1.2;margin:18px 0}
+.story-page h2{font-size:18px;margin:26px 0 8px}
+.story-intro{max-width:850px}
+.back-link,.story-page nav a{color:#17633f}
+.story-page nav{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.story-page nav a{padding:9px 13px;border:1px solid #aebdb3;border-radius:9px;text-decoration:none}
+.story-page nav a:hover{border-color:#17633f}
 </style>
