@@ -1,0 +1,24 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  caption: string;
+  width?: number;
+  height?: number;
+}
+const {src,alt,caption,width,height}=Astro.props;
+---
+<figure class="featured-screenshot">
+  <a class="featured-image-link" href={src} target="_blank" rel="noopener noreferrer" aria-label="Open the full-size screenshot">
+    <img src={src} alt={alt} width={width} height={height} loading="eager" decoding="async" />
+  </a>
+  <figcaption>{caption} <a href={src} target="_blank" rel="noopener noreferrer">View full-size image</a></figcaption>
+</figure>
+<style>
+.featured-screenshot{margin:24px 0 28px;width:100%}
+.featured-image-link{display:block;line-height:0;border:1px solid #3f4743;border-radius:16px;overflow:hidden;background:#18201d}
+.featured-image-link img{display:block;width:100%;height:auto;max-width:100%;object-fit:contain}
+.featured-screenshot figcaption{margin-top:10px;font:13px/1.5 system-ui,sans-serif;color:inherit;opacity:.9}
+.featured-screenshot figcaption a{margin-left:8px;color:#19734b}
+.featured-image-link:hover,.featured-image-link:focus-visible{outline:2px solid #409b65;outline-offset:3px}
+</style>
