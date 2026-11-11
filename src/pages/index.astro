@@ -48,7 +48,7 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber + '-dev';
     <section class="professor-embed" aria-label="Professor working through rotating fraction problems">
       <ProfessorAutoDemo problem={professor.problem} label={professor.demoLabel} />
       <ProjectDemoActions title={professor.title} sourceUrl={professor.sourceUrl}
-        liveUrl="/professor/preview/" pageUrl={professor.pageUrl} />
+        liveUrl={professor.liveUrl} pageUrl={professor.pageUrl} />
     </section>
     <p class="dev-note">Development preview · production remains www.asymptopia.com</p>
   </main>
