@@ -2,17 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 const read = path => readFileSync(new URL('../'+path,import.meta.url),'utf8');
-test('every Story/About page features the original full screenshot from the portal',()=>{
+test('project stories feature verified screenshots while preserving the existing portal images',()=>{
  const dev=read('src/pages/dev/index.astro');
  for(const [slug,file] of [
-  ['d3srt','d3srt-unified-harmony-focus-20261023.png'],
+  ['d3srt','d3SightReadingTrainer_CosmicHarmony.png'],
   ['d3plot','d3plot-multiwindow-session.png'],
   ['tuxmathscrabble','tuxmathscrabble.png']
  ]){
   const page=read('src/pages/projects/'+slug+'.astro');
   assert.ok(page.includes('FeaturedScreenshot'),slug);
   assert.ok(page.includes('/images/'+file),slug);
-  assert.ok(dev.includes('/images/'+file),slug);
+  assert.ok(dev.includes('/images/'+(slug==='d3srt'?'d3srt-unified-harmony-focus-20261023.png':file)),slug);
   assert.ok(existsSync(new URL('../public/images/'+file,import.meta.url)),slug);
  }
 });
