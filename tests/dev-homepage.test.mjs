@@ -13,7 +13,7 @@ test('curated Professor pool covers both fraction families',()=>{
 });
 
 test('dev homepage keeps public homepage separate and previews all projects as masked images',()=>{
-  const dev=read('src/pages/dev/index.astro'),live=read('src/pages/index.astro');
+  const dev=read('src/pages/index.astro');
   assert.match(dev,/ProfessorAutoDemo/);
   for(const name of ['glimpse--harmony','glimpse--tms','glimpse--d3plot'])assert.ok(dev.includes(name));
   assert.match(dev,/overflow:hidden/);
@@ -25,11 +25,11 @@ test('dev homepage keeps public homepage separate and previews all projects as m
   assert.match(dev,/PUBLIC_BUILD_NUMBER/);
   assert.match(dev,/siteVersion.*buildNumber/);
   assert.match(dev,/aspect-ratio:1000 \/ 154/);
-  assert.doesNotMatch(live,/ProfessorAutoDemo|glimpse-viewport/);
+  assert.doesNotMatch(dev,/href="\/dev\/"/);
 });
 
 test('portal compositions maintain inset mask, distinct offsets and no TMS zoom on small screens',()=>{
-  const dev=read('src/pages/dev/index.astro');
+  const dev=read('src/pages/index.astro');
   assert.match(dev,/\.glimpse--tms\{--portal-width:100%;--portal-x:50%;--portal-y:50%\}/);
   assert.match(dev,/\.glimpse--harmony\{--portal-width:185%;--portal-x:56%;--portal-y:50%\}/);
   assert.match(dev,/\.glimpse--d3plot\{--portal-width:175%;--portal-x:58%;--portal-y:56%\}/);
