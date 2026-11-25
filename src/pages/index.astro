@@ -5,6 +5,7 @@ import ProjectDemoActions from '../components/ProjectDemoActions.astro';
 import ProfessorAutoDemo from '../components/ProfessorAutoDemo.astro';
 import professor from '../content/professor.json';
 import brand from '../content/brand.json';
+import musicbuddy from '../content/musicbuddy.json';
 
 const buildNumber = import.meta.env.PUBLIC_BUILD_NUMBER || 'local';
 const commitSha = import.meta.env.PUBLIC_COMMIT_SHA?.slice(0,7) || 'local';
@@ -24,11 +25,20 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber + '-dev';
         liveUrl="https://www.asymptopia.com/slotmachine/#/" pageUrl="/projects/slotmachine/" />
     </section>
 
-    <section class="glimpse-viewport glimpse--harmony" aria-label="Glimpse into d3SRT and Cosmic Harmony">
-      <div class="portal-window"><img src="/images/d3srt-unified-harmony-focus-20261023.png" loading="lazy" decoding="async"
-        alt="Cosmic Harmony planets and the connected d3SRT musical workspace" /></div>
-      <ProjectDemoActions title="d3SRT + Cosmic Harmony" sourceUrl="https://github.com/ccosse/d3SightReadingTrainer"
-        liveUrl="https://ccosse.github.io/d3SightReadingTrainer/#/" pageUrl="/projects/d3srt/" />
+    <section class="musicbuddy-feature" aria-label="Music Buddy web practice">
+      <div class="musicbuddy-feature-copy">
+        <p class="musicbuddy-overline">NEW · WEB {musicbuddy.version}</p>
+        <h2>{musicbuddy.title}</h2>
+        <p>{musicbuddy.tagline}</p>
+        <p class="musicbuddy-description">{musicbuddy.description}</p>
+        <a class="musicbuddy-launch" href={musicbuddy.url}>Open Music Buddy</a>
+      </div>
+      <div class="musicbuddy-preview" aria-hidden="true">
+        <div>STANDARDS · B♭</div>
+        <div class="musicbuddy-preview-chords"><span>B♭M7</span><span>G-7</span><span>C-7</span><span>F7</span></div>
+        <div>Ex: <b>C-7</b> [C E♭ G B♭]</div>
+        <div>You: <b>G-7</b> [G B♭ D F]</div>
+      </div>
     </section>
 
     <section class="glimpse-viewport glimpse--tms" aria-label="Glimpse into TuxMathScrabble">
@@ -45,6 +55,13 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber + '-dev';
         liveUrl="https://ccosse.github.io/d3plot/#/" pageUrl="/projects/d3plot/" />
     </section>
 
+    <section class="glimpse-viewport glimpse--harmony" aria-label="Archived d3SRT and Cosmic Harmony">
+      <div class="portal-window"><img src="/images/d3srt-unified-harmony-focus-20261023.png" loading="lazy" decoding="async"
+        alt="Cosmic Harmony planets and the connected d3SRT musical workspace" /></div>
+      <ProjectDemoActions title={musicbuddy.archiveLabel} sourceUrl="https://github.com/ccosse/d3SightReadingTrainer"
+        liveUrl="https://ccosse.github.io/d3SightReadingTrainer/#/" pageUrl="/projects/d3srt/" />
+    </section>
+
     <section class="professor-embed" aria-label="Professor working through rotating fraction problems">
       <ProfessorAutoDemo problem={professor.problem} label={professor.demoLabel} />
       <ProjectDemoActions title={professor.title} sourceUrl={professor.sourceUrl}
@@ -57,6 +74,16 @@ const siteVersion = 'v' + brand.versionSeries + '.' + buildNumber + '-dev';
 
 <style>
 .development-homepage{width:100%;min-width:0}
+.musicbuddy-feature{display:flex;gap:25px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:24px 0;padding:28px;border:1px solid #486c56;border-radius:20px;background:#1e2c25;color:#e3f3e6}
+.musicbuddy-feature-copy{flex:1 1 340px}
+.musicbuddy-overline{color:#acd9b5;font:bold 12px system-ui,sans-serif;letter-spacing:.1em}
+.musicbuddy-feature h2{font:700 clamp(28px,5vw,45px) system-ui,sans-serif;letter-spacing:-.035em;margin:4px 0}
+.musicbuddy-feature-copy p{font:16px/1.5 system-ui,sans-serif}
+.musicbuddy-feature-copy .musicbuddy-description{font-size:13px;color:#a6c4b0}
+.musicbuddy-launch{display:inline-block;margin-top:10px;background:#b1e2bd;color:#17271d;padding:11px 17px;border-radius:9px;font:bold 14px system-ui,sans-serif;text-decoration:none}
+.musicbuddy-preview{flex:1 1 310px;border:1px solid #557060;border-radius:12px;padding:18px;background:#101814;color:#b5d5c0;font:14px/2 ui-monospace,monospace}
+.musicbuddy-preview b{color:#e0fae6}.musicbuddy-preview-chords{display:flex;gap:5px;margin:12px 0}.musicbuddy-preview-chords span{background:#293d31;color:#e8f2e8;border-radius:5px;padding:5px 7px;font-size:12px}
+
 .dev-note{text-align:center;color:#aebdb3;font:12px system-ui,sans-serif;padding:8px}
 .glimpse-viewport {
   position:relative;width:100%;aspect-ratio:1000 / 154;
