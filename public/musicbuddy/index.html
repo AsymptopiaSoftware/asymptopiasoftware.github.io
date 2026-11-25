@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#141a1c">
+  <title>Music Buddy 0.1 — Asymptopia Software</title>
+  <meta name="description" content="Music Buddy: voice-guided, MIDI-checked chord journeys for ears-and-hands piano practice.">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./music.js" type="module"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a href="/" class="brand">Asymptopia Software</a>
+    <span class="version">MUSIC BUDDY · WEB 0.1</span>
+  </header>
+  <main class="app">
+    <div class="hero">
+      <div><p class="eyebrow">EARS & HANDS</p><h1>Music Buddy</h1><p class="subtitle">Hear the chord name. Play it. Know what you played.</p></div>
+      <div class="connection">
+        <label for="midi">MIDI input</label>
+        <div class="connection-row"><select id="midi"><option value="">Choose keyboard…</option></select><button id="scan" type="button" class="secondary">Connect / Rescan</button></div>
+        <small id="midi-status" aria-live="polite">Connect a MIDI keyboard in Chrome or Edge.</small>
+      </div>
+    </div>
+    <section class="toolbar" aria-label="Exercise controls">
+      <div class="field wide"><label for="journey">Journey</label><select id="journey"></select></div>
+      <div class="field"><label for="key">Key</label><select id="key"></select></div>
+      <div class="field"><label for="notation">Notation</label><select id="notation"><option value="both">Names + numbers</option><option value="names">Chord names</option><option value="numbers">Roman numerals</option></select></div>
+      <div class="field"><label for="voice">Voice</label><select id="voice"><option value="">System default</option></select></div>
+      <label class="check"><input id="loop" type="checkbox" checked> Loop</label>
+      <label class="check"><input id="octaves" type="checkbox"> Octaves</label>
+    </section>
+    <section class="journey-panel" aria-labelledby="journey-title">
+      <div class="panel-head"><div><p class="eyebrow">GUIDED JOURNEY</p><h2 id="journey-title">Standards</h2></div><div class="progress"><span id="position">1 / 17</span><span id="pass">Pass 1</span></div></div>
+      <div id="phrases" class="phrases"></div>
+    </section>
+    <section class="play-panel" aria-label="Live chord feedback">
+      <div class="feedback"><span>Ex: <strong id="expected-name">—</strong> <span id="expected-notes" class="notes">[]</span></span><span>You: <strong id="played-name">—</strong> <span id="played-notes" class="notes">[]</span></span></div>
+      <div class="practice-actions"><button type="button" id="start">Start / Hear chord</button><button type="button" id="repeat" class="secondary">Repeat prompt</button><button type="button" id="restart" class="secondary">Restart journey</button><span id="feedback-status" aria-live="polite">Select a MIDI input, then start.</span></div>
+    </section>
+    <p class="help">Your MIDI keyboard drives <b>You</b> continuously, even when revisiting older chords. The correct chord advances the journey immediately; any inversion is accepted. The suggested <b>Ex</b> voicing is optional. Press <kbd>Space</kbd> to repeat a prompt.</p>
+    <details class="details"><summary>About this release</summary><p>Version 0.1 preserves the focused Music Buddy exercise: spoken chord names, MIDI validation, journeys, transposition, and live feedback. This app uses browser Web MIDI; no Python, account, or server is required. Audio speech uses the browser's installed voices. Browsers without MIDI support can view the journeys but cannot validate a hardware keyboard.</p></details>
+  </main>
+</body>
+</html>
