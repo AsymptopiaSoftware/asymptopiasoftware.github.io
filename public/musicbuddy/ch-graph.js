@@ -34,6 +34,16 @@ const QUALITY_TEXT={maj7:"M7",m7:"-7",m7b5:"-7♭5",dim7:"°7",7:"7",m:"-"};
 const clean=n=>(n+120)%12;
 const note=(pc,key)=>["D","E","G","A","B"].includes(key)?SHARP[clean(pc)]:CHROMATIC[clean(pc)];
 const chordLabel=(n,key)=>note(n.root,key)+QUALITY_TEXT[n.quality];
+const NUMERAL_SUFFIX={maj7:"M7",m7:"-7",m7b5:"ø7",dim7:"°7",m:"",7:"7"};
+function chordNumeral(n,mode){
+  const base=n.sub||(n.id==="sun"?(mode==="minor"?"i":"I"):n.degree==="sharpIV"?"♯IV":n.degree);
+  const degree=base==="bII"?"♭II":base==="vii"?"vii":base;
+  const suffix=NUMERAL_SUFFIX[n.quality]??"";
+  // Moon symbols are relative to their parent; the qualifier is retained.
+  const parent=n.target&&n.target!=="sun"?(n.target==="sharpIV"?"♯IV":n.target):null;
+  return degree+suffix+(parent?"/"+parent:"");
+}
+
 function makeNodes(key,mode="major"){
   const root=PC[key],config=MODES[mode];
   if(root===undefined||!config)throw Error("Unknown CH context: "+key+" / "+mode);
@@ -165,7 +175,7 @@ export function previewCosmicChord(container,key,chord,mode="major"){
   }
 }
 export function renderCosmic({container,status,key,mode="major",target,played,
-  sequence=[],index=0,showArrows=true,preview=null}){
+  sequence=[],index=0,showArrows=true,preview=null,notation="both"}){
   if(lastKey!==key||lastMode!==mode){
     nodes=makeNodes(key,mode);lastKey=key;lastMode=mode;
   }
@@ -203,7 +213,12 @@ export function renderCosmic({container,status,key,mode="major",target,played,
     if(isPlayed)svg("circle",{r:n.r+12,class:"played-ring"},g);
     svg("circle",{r:n.r+20,class:"preview-ring"},g);
     const role=svg("text",{y:n.kind==="sun"?-14:-6,class:"node-role"},g);role.textContent=n.label;
-    const name=svg("text",{y:n.kind==="sun"?14:14,class:"node-chord"},g);name.textContent=chordLabel(n,key);
+    const display=notation==="numbers"?chordNumeral(n,mode):chordLabel(n,key);
+    const name=svg("text",{y:n.kind==="sun"?14:14,class:"node-chord"},g);name.textContent=display;
+    if(notation==="both"){
+      const roman=svg("text",{y:n.r>35?34:26,class:"node-numeral"},g);
+      roman.textContent=chordNumeral(n,mode);
+    }
   }
   container.replaceChildren(chart);
   previewCosmicChord(container,key,preview,mode);
