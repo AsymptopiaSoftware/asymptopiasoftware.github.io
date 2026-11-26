@@ -2,6 +2,12 @@
 
 Newest first. Earlier command-line milestones are reconstructed from our development discussions; they are not a verified release-tag history.
 
+## 2026-11-26 — Web 0.1.1: reload persistence, header, and nodes
+- Restore the selected journey, transposition key, current exercise chord, and notation/preferences on page reload.
+- Preserve voice and last MIDI device selection when available; resume listening only after an explicit Start/Connect gesture.
+- Restore the top-left header to “Asymptopia Software” and increment the top-right version to 0.1.1.
+- Give the CH graph a definite viewport height and keep exercise chord nodes visible in auto-sized layouts.
+
 ## 2026-11-26 — Journey controls move into the journey header
 - Replace the duplicate journey title with the existing Journey, Key, Notation, Voice, Octaves and Descriptions controls.
 - Keep the exercise progress counter in the same header.
