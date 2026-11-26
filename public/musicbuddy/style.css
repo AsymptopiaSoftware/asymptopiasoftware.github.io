@@ -63,3 +63,18 @@
 .journey-workspace .chord:focus-visible{outline:2px solid #d9b6f5;outline-offset:2px}
 .ch-graph .preview-ring{fill:none;stroke:#e5a8ff;stroke-width:4;stroke-dasharray:3 5;opacity:0;pointer-events:none}
 .ch-graph .ch-node.preview .preview-ring{opacity:1;filter:drop-shadow(0 0 5px #d9a2ef99)}
+
+/* The Ex/You controls now occupy the former large-title row. */
+.hero{align-items:center;gap:16px}
+.hero .play-panel{flex:1 1 auto;min-width:0;margin:0;padding:12px 15px}
+.hero .feedback{padding:0 0 10px;gap:7px 18px;font-size:14px}
+.hero .feedback strong{font-size:18px}
+.hero .practice-actions{gap:7px}
+.hero .practice-actions button{padding:6px 9px;min-height:34px;font-size:13px}
+.hero .practice-actions #feedback-status{margin-left:0;font-size:11px}
+.hero .connection{flex:0 0 290px;width:290px}
+@media(max-width:780px){
+  .hero{align-items:stretch}
+  .hero .play-panel{width:100%}
+  .hero .connection{width:100%;flex-basis:auto}
+}
