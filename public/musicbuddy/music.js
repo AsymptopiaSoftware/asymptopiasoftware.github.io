@@ -127,7 +127,6 @@ function numeralRows() {
 }
 function render() {
   const j=JOURNEYS[state.journey], chords=sequence(),nums=numeralRows();
-  $("journey-title").textContent=j.title+" · "+state.key+(state.journey==="minor"?" minor":"");
   $("position").textContent=(state.index+1)+" / "+chords.length;
   $("pass").textContent="Pass "+state.pass;
   const host=$("phrases");host.replaceChildren();
