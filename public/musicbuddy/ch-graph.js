@@ -124,7 +124,15 @@ function drawJourneyArrows(chart,nodes,sequence,index){
   return edges;
 }
 let lastKey=null, nodes=[];
-export function renderCosmic({container,status,key,journey,target,played,sequence=[],index=0,showArrows=true}){
+// Update preview in place, rather than rebuilding the SVG on every hover.
+export function previewCosmicChord(container,key,chord){
+  const matches=(lastKey===key?matchNodes(nodes,chord):[]);
+  const ids=new Set(matches.map(n=>n.id));
+  for(const element of container.querySelectorAll(".ch-node")){
+    element.classList.toggle("preview",ids.has(element.dataset.nodeId));
+  }
+}
+export function renderCosmic({container,status,key,journey,target,played,sequence=[],index=0,showArrows=true,preview=null}){
   if(journey!=="standards"){
     container.replaceChildren();
     status.textContent="Graph linking is currently enabled for Standards only.";
@@ -156,17 +164,19 @@ export function renderCosmic({container,status,key,journey,target,played,sequenc
   for(const n of nodes){
     const isExpected=expected.includes(n),isPlayed=actual.includes(n);
     const g=svg("g",{class:"ch-node "+n.kind+(isExpected?" expected":"")+(isPlayed?" played":""),
-      transform:"translate("+n.x+" "+n.y+")"},layer);
+      "data-node-id":n.id,transform:"translate("+n.x+" "+n.y+")"},layer);
     const title=svg("title",{},g);
     title.textContent=n.label+" · "+chordLabel(n,key)+
       (isExpected?" · current journey chord":"")+(isPlayed?" · played on MIDI":"");
     svg("circle",{r:n.r,class:"node-disc"},g);
     if(isExpected)svg("circle",{r:n.r+5,class:"expected-ring"},g);
     if(isPlayed)svg("circle",{r:n.r+12,class:"played-ring"},g);
+    svg("circle",{r:n.r+20,class:"preview-ring"},g);
     const role=svg("text",{y:n.kind==="sun"?-14:-6,class:"node-role"},g);role.textContent=n.label;
     const name=svg("text",{y:n.kind==="sun"?14:14,class:"node-chord"},g);name.textContent=chordLabel(n,key);
   }
   container.replaceChildren(chart);
+  previewCosmicChord(container,key,preview);
 }
 export const cosmicMajorNodes=makeNodes;
 export const cosmicExactMatches=matchNodes;
