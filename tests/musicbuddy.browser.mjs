@@ -105,5 +105,24 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
       window.__fakeMidiInput.onmidimessage({data:[0x90,note,100]});
   });
   await page.waitForFunction(() => document.querySelector('#position').textContent.startsWith('2 /'));
+  // Other journeys must display their own graph, not an empty CH placeholder.
+  await page.selectOption('#journey','minor');
+  await page.waitForFunction(()=>document.querySelector('#ch-context').textContent.includes('Minor · F'));
+  assert.equal(await page.locator('#ch-graph svg').count(),1);
+  assert.equal(await page.locator('.ch-node').count(),22);
+  assert.match(await page.locator('#ch-map-status').textContent(),/no exact node/);
+  await page.selectOption('#journey','blues');
+  await page.waitForFunction(()=>document.querySelector('#ch-context').textContent.includes('Blues · C'));
+  assert.equal(await page.locator('.ch-node').count(),20);
+  assert.ok(await page.locator('.expected-ring').count()>0);
+  await page.selectOption('#journey','home');
+  await page.waitForFunction(()=>document.querySelector('#ch-context').textContent.includes('Major · Db'));
+  assert.equal(await page.locator('.ch-node').count(),25);
+  await page.selectOption('#journey','chromatic');
+  await page.waitForFunction(()=>document.querySelector('#ch-context').textContent.includes('Major · C'));
+  assert.equal(await page.locator('.ch-journey-arrow').count(),2);
+  await page.selectOption('#journey','tritone');
+  await page.waitForFunction(()=>document.querySelector('#ch-context').textContent.includes('Major · C'));
+  assert.equal(await page.locator('.ch-journey-arrow').count(),2);
   assert.deepEqual(errors,[]);
 });
