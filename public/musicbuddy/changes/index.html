@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#141a1c"><title>Music Buddy · CHANGES</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+main{max-width:820px;margin:0 auto;padding:28px 20px 60px}
+h1{font-size:36px}h2{font-size:20px;margin:24px 0 7px;color:#d4e8d9}
+p,li{font-size:14px;line-height:1.65;color:#b8cbbf}
+ul{margin:8px 0 24px;padding-left:23px}li{margin:3px 0}
+a{color:#b1e2bd}
+</style>
+</head>
+<body>
+<header class="topbar"><a href="../" class="brand">Music Buddy</a><span class="version">CHANGES</span></header>
+<main><div id="changes"><p>Loading release history…</p></div><p><a href="../">Return to Music Buddy</a></p></main>
+<script>
+(async()=>{
+  const container=document.getElementById('changes');
+  try{
+    const response=await fetch('../CHANGES.md');
+    if(!response.ok)throw new Error('HTTP '+response.status);
+    const text=await response.text();
+    container.replaceChildren();
+    let list=null;
+    for(const raw of text.split(/\r?\n/)){
+      const line=raw.trim();
+      if(!line){list=null;continue;}
+      if(line.startsWith('# ')){const h=document.createElement('h1');h.textContent=line.slice(2);container.append(h);list=null;}
+      else if(line.startsWith('## ')){const h=document.createElement('h2');h.textContent=line.slice(3);container.append(h);list=null;}
+      else if(line.startsWith('- ')){
+        if(!list){list=document.createElement('ul');container.append(list);}
+        const li=document.createElement('li');li.textContent=line.slice(2);list.append(li);
+      }else{const p=document.createElement('p');p.textContent=line;container.append(p);list=null;}
+    }
+  }catch(e){container.textContent='Could not load CHANGES: '+e.message;}
+})();
+</script>
+</body>
+</html>
