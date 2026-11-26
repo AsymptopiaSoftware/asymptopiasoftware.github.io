@@ -2,6 +2,10 @@
 
 Newest first. Earlier command-line milestones are reconstructed from our development discussions; they are not a verified release-tag history.
 
+## 2026-11-26 — Consistent icon toggles
+- Loop, Arrows, Octaves and Descriptions now share an icon-button convention: highlighted when on, muted when off.
+- Controls retain their previous positions and musical behavior, with hover tooltips and pressed-state accessibility labels.
+
 ## 2026-11-26 — Major, minor, and blues CH modes for all journeys
 - Enabled the original major, minor and blues Cosmic Harmony node grammars, including their distinct sun qualities and moon placements.
 - Home and Standards use the major graph; Minor uses the minor graph; Blues uses the blues graph.
