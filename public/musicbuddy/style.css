@@ -57,3 +57,9 @@
 .ch-graph .ch-journey-arrow.active{stroke:#ffe09d;stroke-width:4.1;opacity:1;filter:drop-shadow(0 0 4px #f6cb74aa)}
 .ch-graph .ch-journey-arrow.future{stroke-dasharray:6 5}
 .ch-graph .ch-arrowhead{fill:#ddbd7e}
+
+/* Temporary journey-to-CH hover/focus preview. Never replaces either live ring. */
+.journey-workspace .chord{cursor:default}
+.journey-workspace .chord:focus-visible{outline:2px solid #d9b6f5;outline-offset:2px}
+.ch-graph .preview-ring{fill:none;stroke:#e5a8ff;stroke-width:4;stroke-dasharray:3 5;opacity:0;pointer-events:none}
+.ch-graph .ch-node.preview .preview-ring{opacity:1;filter:drop-shadow(0 0 5px #d9a2ef99)}
