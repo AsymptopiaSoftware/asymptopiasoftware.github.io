@@ -56,10 +56,24 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   assert.equal(await page.locator('#key-menu .key-option').count(),12);
   assert.equal(await page.locator('#key-menu .priority').count(),7);
   assert.equal(await page.locator('.explanation:visible').count(),0);
-  await page.locator('#descriptions').check();
+  for(const id of ['descriptions','octaves','ch-arrows']){
+    assert.equal(await page.locator('#'+id+'[title][aria-label] svg').count(),1);
+  }
+  assert.equal(await page.locator('#descriptions').getAttribute('aria-pressed'),'false');
+  await page.locator('#descriptions').click();
+  assert.equal(await page.locator('#descriptions').getAttribute('aria-pressed'),'true');
+  assert.equal(await page.locator('#descriptions').evaluate(el=>el.classList.contains('secondary')),false);
   assert.equal(await page.locator('.explanation:visible').count(),5);
-  await page.locator('#descriptions').uncheck();
+  await page.locator('#descriptions').click();
+  assert.equal(await page.locator('#descriptions').getAttribute('aria-pressed'),'false');
   assert.equal(await page.locator('.explanation:visible').count(),0);
+  assert.equal(await page.locator('#octaves').getAttribute('aria-pressed'),'false');
+  await page.locator('#octaves').click();
+  assert.equal(await page.locator('#octaves').getAttribute('aria-pressed'),'true');
+  assert.match(await page.locator('#expected-notes').textContent(),/[0-9]/);
+  await page.locator('#octaves').click();
+  assert.equal(await page.locator('#octaves').getAttribute('aria-pressed'),'false');
+  assert.doesNotMatch(await page.locator('#expected-notes').textContent(),/[0-9]/);
   await page.locator('#key-trigger').click();
   const selected = page.locator('#key-menu .key-option[data-key="C"]');
   assert.equal(await selected.evaluate(el=>getComputedStyle(el).fontWeight),'800');
@@ -68,13 +82,16 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   assert.match(await page.locator('#journey-title').textContent(),/C$/);
   assert.equal(await page.locator('.ch-pane').count(),1);
   assert.equal(await page.locator('#ch-graph svg').count(),1);
-  assert.equal(await page.locator('#ch-arrows').isChecked(),true);
+  assert.equal(await page.locator('#ch-arrows').getAttribute('aria-pressed'),'true');
   // The borrowed Ebm7 has no exact major-mode node, leaving two honest path gaps.
   assert.equal(await page.locator('.ch-journey-arrow').count(),14);
-  await page.locator('#ch-arrows').uncheck();
+  await page.locator('#ch-arrows').click();
+  assert.equal(await page.locator('#ch-arrows').getAttribute('aria-pressed'),'false');
+  assert.equal(await page.locator('#ch-arrows').evaluate(el=>el.classList.contains('secondary')),true);
   assert.equal(await page.locator('.ch-journey-arrow').count(),0);
   assert.ok(await page.locator('.expected-ring').count()>0);
-  await page.locator('#ch-arrows').check();
+  await page.locator('#ch-arrows').click();
+  assert.equal(await page.locator('#ch-arrows').getAttribute('aria-pressed'),'true');
   assert.equal(await page.locator('.ch-journey-arrow').count(),14);
   // Hover a non-target chord: transient preview is independent of the journey.
   await page.locator('.chord[data-step="2"]').hover();
