@@ -32,6 +32,19 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   page.on('pageerror', e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:'+server.address().port+'/musicbuddy/');
   await page.waitForSelector('.chord');
+  assert.equal(await page.locator('.app > p.help').count(),0);
+  assert.equal(await page.getByRole('link',{name:/Open Help in a new tab/}).textContent(),'Help ↗');
+  await page.locator('details.details summary').click();
+  assert.match(await page.locator('details.details').textContent(),/You shows the MIDI notes currently held/);
+  const alignment=await page.locator('.hero .play-panel').evaluate(panel=>({
+    feedback:getComputedStyle(panel.querySelector('.feedback')).justifyContent,
+    controls:getComputedStyle(panel.querySelector('.practice-actions')).justifyContent,
+    font:parseFloat(getComputedStyle(panel.querySelector('.feedback')).fontSize)
+  }));
+  assert.equal(alignment.feedback,'center');
+  assert.equal(alignment.controls,'center');
+  assert.ok(alignment.font>=16);
+  await page.locator('details.details summary').click();
   assert.equal(await page.locator('#loop').count(),1);
   assert.equal(await page.locator('.toolbar #loop').count(),0);
   assert.equal(await page.locator('.play-panel #loop').getAttribute('aria-pressed'),'true');
