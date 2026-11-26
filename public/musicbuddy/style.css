@@ -105,3 +105,6 @@
   .hero{grid-template-columns:minmax(0,1fr)}
   .hero .play-panel,.hero .connection{min-height:auto}
 }
+
+/* The changing CH tonic is a view context; it does not replace the journey's global key. */
+.ch-context{font-size:11px;font-weight:500;color:#93bca1;margin-left:8px;white-space:nowrap}
