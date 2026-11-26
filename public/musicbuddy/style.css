@@ -151,3 +151,7 @@
 .journey-workspace .phrases .chords{display:flex;flex-wrap:wrap;gap:5px}
 .journey-workspace .phrases .chord{display:flex;min-height:49px;min-width:64px;visibility:visible}
 @media(max-width:820px){.journey-workspace .ch-pane{min-height:350px}.journey-workspace .ch-graph{height:310px;min-height:310px}}
+
+/* CH shares the exercise Notation state: chord, numeral, or both. */
+.ch-graph .node-numeral{font:600 11px ui-monospace,monospace;fill:#c2dccc;text-anchor:middle;pointer-events:none}
+.ch-graph .sun .node-numeral{font-size:14px}
