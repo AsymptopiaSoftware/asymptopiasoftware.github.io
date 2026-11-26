@@ -83,7 +83,7 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   assert.equal(await page.locator('.journey-panel .journey-controls-head #journey').count(),1);
   assert.equal(await page.locator('.journey-panel .journey-controls-head #key-trigger').textContent(),'C');
   assert.equal(await page.locator('.app > .toolbar').count(),0);
-  assert.equal(await page.locator('.journey-panel .progress #position').textContent(),'1 / 17');
+  assert.equal(await page.locator('.journey-panel .progress').count(),0);
   assert.equal(await page.locator('.ch-pane').count(),1);
   assert.equal(await page.locator('#ch-graph svg').count(),1);
   assert.equal(await page.locator('#ch-arrows').getAttribute('aria-pressed'),'true');
@@ -100,7 +100,7 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   // Hover a non-target chord: transient preview is independent of the journey.
   await page.locator('.chord[data-step="2"]').hover();
   assert.ok(await page.locator('.ch-node.preview').count()>0);
-  assert.equal(await page.locator('#position').textContent(),'1 / 17');
+  assert.equal(await page.locator('.chord.active[data-step="0"]').count(),1);
   assert.ok(await page.locator('.expected-ring').count()>0);
   await page.locator('.panel-head').hover();
   assert.equal(await page.locator('.ch-node.preview').count(),0);
@@ -124,7 +124,7 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   await page.waitForFunction(() => document.querySelectorAll('.played-ring').length>0);
   assert.match(await page.locator('#played-name').textContent(),/D-7/);
   assert.match(await page.locator('#expected-name').textContent(),/CM7/);
-  assert.equal(await page.locator('#position').textContent(),'1 / 17');
+  assert.equal(await page.locator('.chord.active[data-step="0"]').count(),1);
   assert.ok(await page.locator('.expected-ring').count()>0, 'target highlight must persist independently');
   // Release the non-target chord; recognize CM7 and advance.
   await page.evaluate(() => {
@@ -133,7 +133,7 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
     for(const note of [60,64,67,71])
       window.__fakeMidiInput.onmidimessage({data:[0x90,note,100]});
   });
-  await page.waitForFunction(() => document.querySelector('#position').textContent.startsWith('2 /'));
+  await page.waitForFunction(() => document.querySelector('.chord.active')?.dataset.step === '1');
   // Other journeys must display their own graph, not an empty CH placeholder.
   await page.selectOption('#journey','minor');
   await page.waitForFunction(()=>document.querySelector('#ch-context').textContent.includes('Minor · F'));
