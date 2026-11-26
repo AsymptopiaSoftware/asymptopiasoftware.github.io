@@ -43,6 +43,31 @@ const transpose = chord => {
   return scale[(PC[root]+PC[state.key]-PC[j.base]+24)%12]+quality;
 };
 const sequence = () => JOURNEYS[state.journey].chords.split(" ").map(transpose);
+
+const ROOTS=["C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B"];
+// Graph context is per phrase, independent of the exercise's global
+// transposition key. These offsets follow the original journey definitions.
+const CH_PHRASES={
+  home:[["major",0]],standards:[["major",0]],minor:[["minor",0]],blues:[["blues",0]],
+  chromatic:[["major",0],["major",10],["major",8],["major",6],["minor",5],["major",3]],
+  tritone:[["major",0],["major",0],["major",5],["major",5],["major",10],["major",10]]
+};
+function graphContext(step=state.index){
+  const journey=JOURNEYS[state.journey], phrases=CH_PHRASES[state.journey];
+  let start=0;
+  for(let p=0;p<journey.phrases.length;p++){
+    const end=start+journey.phrases[p][0];
+    if(step<end){
+      const [mode,offset]=(phrases.length===1?phrases[0]:phrases[p]);
+      const key=ROOTS[(PC[state.key]+offset)%12];
+      return {mode,key,start:phrases.length===1?0:start,
+        end:phrases.length===1?sequence().length:end,phrase:p};
+    }
+    start=end;
+  }
+  throw Error("Journey step outside phrase boundaries");
+}
+
 const displayChord = chord => {const {root,quality}=split(chord);return root.replace("b","♭").replace("#","♯")+(SHOWN[quality]??quality);};
 const pitches = chord => {const {root,quality}=split(chord);return QUALITY[quality].map(x=>(PC[root]+x)%12).sort((a,b)=>a-b);};
 const sameSet = (a,b) => a.length===b.length && a.every((n,i)=>n===b[i]);
@@ -134,9 +159,12 @@ function render() {
   $("expected-notes").textContent=names(bestVoicing(expected,state.lastVoicing));
   $("played-name").textContent=guess.length?identify(guess):"—";
   $("played-notes").textContent=names(guess);
-  renderCosmic({container:$("ch-graph"),status:$("ch-map-status"),key:state.key,
-    journey:state.journey,target:expected,played:recognizeChord(guess),
-    sequence:chords,index:state.index,showArrows:state.arrows,
+  const context=graphContext();
+  $("ch-context").textContent=context.mode[0].toUpperCase()+context.mode.slice(1)+" · "+context.key;
+  renderCosmic({container:$("ch-graph"),status:$("ch-map-status"),key:context.key,
+    mode:context.mode,target:expected,played:recognizeChord(guess),
+    sequence:chords.slice(context.start,context.end),
+    index:state.index-context.start,showArrows:state.arrows,
     preview:state.hoverIndex===null?null:chords[state.hoverIndex]});
   const startButton=$("start");
   const action=state.running?"Pause":"Start / Hear chord";
@@ -148,12 +176,14 @@ function render() {
 }
 function setPreview(index,chord){
   state.hoverIndex=index;
-  previewCosmicChord($("ch-graph"),state.key,chord);
+  const context=graphContext();
+  previewCosmicChord($("ch-graph"),context.key,chord,context.mode);
 }
 function clearPreview(index){
   if(state.hoverIndex!==index)return;
   state.hoverIndex=null;
-  previewCosmicChord($("ch-graph"),state.key,null);
+  const context=graphContext();
+  previewCosmicChord($("ch-graph"),context.key,null,context.mode);
 }
 function speak(chord) {
   if(!("speechSynthesis" in window)){setStatus("Speech synthesis unavailable; visual prompts still work.");return;}
