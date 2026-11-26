@@ -29,9 +29,39 @@ const JOURNEYS = {
     chords:"Dm7 G7 Cmaj7 Dm7 Db7 Cmaj7 Gm7 C7 Fmaj7 Gm7 Gb7 Fmaj7 Cm7 F7 Bbmaj7 Cm7 B7 Bbmaj7",
     phrases:[[3,"C · ordinary ii–V–I","Hear G7 resolve to C major."],[3,"C · tritone substitute","D♭7 replaces G7, sharing the same tritone."],[3,"F · ordinary ii–V–I","Hear C7 resolve to F major."],[3,"F · tritone substitute","G♭7 replaces C7; root falls a semitone."],[3,"B♭ · ordinary ii–V–I","Hear F7 resolve to B♭ major."],[3,"B♭ · tritone substitute","B7 replaces F7; root falls a semitone."]]}
 };
+const STORAGE_KEY="asymptopia.musicbuddy.web.v1";
 const $ = id => document.getElementById(id);
 const state = {journey:"standards",key:"Bb",index:0,pass:1,running:false,loop:true,notation:"both",octaves:false,descriptions:false,arrows:true,hoverIndex:null,
  midi:null,input:null,held:new Set(),lastVoicing:null,lastAttack:0,pending:null,audio:null,voices:[]};
+// Only musical/UI preferences and the current exercise position persist.
+// Live MIDI notes, audio handles and running state must never be restored.
+function restoreSession(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");
+    if(!saved||typeof saved!=="object")return;
+    if(Object.hasOwn(JOURNEYS,saved.journey))state.journey=saved.journey;
+    if(KEYS.includes(saved.key))state.key=saved.key;
+    for(const name of ["loop","octaves","descriptions","arrows"])
+      if(typeof saved[name]==="boolean")state[name]=saved[name];
+    if(["both","names","numbers"].includes(saved.notation))state.notation=saved.notation;
+    const length=JOURNEYS[state.journey].chords.split(" ").length;
+    if(Number.isInteger(saved.index)&&saved.index>=0&&saved.index<length)state.index=saved.index;
+    if(Number.isInteger(saved.pass)&&saved.pass>=1)state.pass=saved.pass;
+    if(typeof saved.voice==="string")state.savedVoice=saved.voice;
+    if(typeof saved.midiId==="string")state.savedMidiId=saved.midiId;
+  }catch(err){console.warn("Music Buddy: saved state unavailable",err);}
+}
+function saveSession(){
+  try{
+    localStorage.setItem(STORAGE_KEY,JSON.stringify({
+      journey:state.journey,key:state.key,index:state.index,pass:state.pass,
+      loop:state.loop,notation:state.notation,octaves:state.octaves,
+      descriptions:state.descriptions,arrows:state.arrows,
+      voice:$("voice")?.value||state.savedVoice||"",
+      midiId:state.input?.id||state.savedMidiId||""
+    }));
+  }catch(err){console.warn("Music Buddy: unable to save state",err);}
+}
 const split = chord => {
   const match=/^([A-G](?:#|b)?)(maj7|m7b5|dim7|m7|m|7)?$/.exec(chord);
   if(!match) throw new Error("Unsupported chord: "+chord);
@@ -186,6 +216,7 @@ function render() {
     button.title=label+(enabled?" on":" off");
   }
   updateKeyTrigger();
+  saveSession();
 }
 function setPreview(index,chord){
   state.hoverIndex=index;
@@ -264,14 +295,15 @@ function populateMidi(){
   select.replaceChildren(new Option("Choose keyboard…",""));
   for(const input of state.midi.inputs.values())select.add(new Option(input.name||input.id,input.id));
   const available=[...state.midi.inputs.values()];
-  if(available.some(i=>i.id===old)){select.value=old;connectMidi(old);}
+  if(!old&&available.some(i=>i.id===state.savedMidiId)){select.value=state.savedMidiId;connectMidi(state.savedMidiId);}
+  else if(available.some(i=>i.id===old)){select.value=old;connectMidi(old);}
   else if(available.length===1){select.value=available[0].id;connectMidi(available[0].id);}
   else {$("midi-status").textContent=available.length?available.length+" MIDI devices available. Choose one.":"No MIDI inputs found. Connect a keyboard and rescan.";state.input=null;}
 }
 function connectMidi(id){
   if(state.input)state.input.onmidimessage=null;
   state.input=id?state.midi?.inputs.get(id):null;state.held.clear();render();
-  if(state.input){state.input.onmidimessage=midiMessage;$("midi-status").textContent="Connected: "+state.input.name;}
+  if(state.input){state.savedMidiId=state.input.id;saveSession();state.input.onmidimessage=midiMessage;$("midi-status").textContent="Connected: "+state.input.name;}
   else $("midi-status").textContent="Select a MIDI input.";
 }
 function reset(){state.hoverIndex=null;state.index=0;state.pass=1;state.lastVoicing=null;state.held.clear();clearTimeout(state.pending);render();announce();}
@@ -333,16 +365,20 @@ function voices(){
   state.voices=window.speechSynthesis.getVoices();
   const chosen=$("voice").value;$("voice").replaceChildren(new Option("System default",""));
   state.voices.forEach(v=>$("voice").add(new Option(v.name+" ("+v.lang+")",v.voiceURI)));
-  if(state.voices.some(v=>v.voiceURI===chosen))$("voice").value=chosen;
+  const preferred=chosen||state.savedVoice;
+  if(state.voices.some(v=>v.voiceURI===preferred))$("voice").value=preferred;
 }
 function init(){
+  restoreSession();
   Object.entries(JOURNEYS).forEach(([id,j])=>$("journey").add(new Option(j.title,id)));
   KEYS.forEach(k=>$("key").add(new Option(k.replace("b","♭"),k)));
   $("journey").value=state.journey;$("key").value=state.key;
+  $("notation").value=state.notation;
   initKeyMenu();
   $("journey").onchange=changeJourney;
   $("key").onchange=()=>{state.key=$("key").value;reset();};
   $("notation").onchange=()=>{state.notation=$("notation").value;render();};
+  $("voice").onchange=()=>{state.savedVoice=$("voice").value;saveSession();};
   $("octaves").onclick=()=>{state.octaves=!state.octaves;render();};
   $("descriptions").onclick=()=>{state.descriptions=!state.descriptions;render();};
   $("ch-arrows").onclick=()=>{state.arrows=!state.arrows;render();};
