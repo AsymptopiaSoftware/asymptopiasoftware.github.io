@@ -2,6 +2,10 @@
 
 Newest first. Earlier command-line milestones are reconstructed from our development discussions; they are not a verified release-tag history.
 
+## 2026-11-26 — Web 0.1.2: shared notation in Cosmic Harmony
+- CH node labels now follow the same Notation state as the exercise: chord names, Roman numerals, or both.
+- Keep harmonic relationships, current-key transposition, path arrows, target rings, and MIDI feedback unchanged.
+
 ## 2026-11-26 — Web 0.1.1: reload persistence, header, and nodes
 - Restore the selected journey, transposition key, current exercise chord, and notation/preferences on page reload.
 - Preserve voice and last MIDI device selection when available; resume listening only after an explicit Start/Connect gesture.
