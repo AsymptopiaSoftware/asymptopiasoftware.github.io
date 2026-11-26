@@ -2,6 +2,13 @@
 
 Newest first. Earlier command-line milestones are reconstructed from our development discussions; they are not a verified release-tag history.
 
+## 2026-11-26 — Compact matched practice and MIDI panels
+- Place live Ex / You and MIDI connection in separate, equal-height rounded panels.
+- Replace Start/Pause, Repeat prompt, Restart journey, and MIDI rescan text buttons with accessible icons and tooltips.
+- Move the Loop toggle beside the practice controls; keep the same looping behavior.
+- Remove the visible “Select a MIDI input, then start” prompt without discarding screen-reader status updates.
+- Keep the MIDI, journey, and Cosmic Harmony logic unchanged.
+
 ## 2026-11-26 — Transient journey chord preview
 - Hover or keyboard-focus any journey chord to preview its exact CH node(s) in purple.
 - Remove the preview when the pointer or focus leaves; no click-to-unhighlight mechanism.
