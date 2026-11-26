@@ -46,13 +46,9 @@
         <small id="midi-status" aria-live="polite">Connect a MIDI keyboard in Chrome or Edge.</small>
       </section>
     </div>
-    <section class="journey-panel" aria-labelledby="journey-title">
-      <div class="panel-head"><div><p class="eyebrow">GUIDED JOURNEY</p><h2 id="journey-title">Standards</h2></div><div class="progress"><span id="position">1 / 17</span><span id="pass">Pass 1</span></div></div>
-      <div class="journey-workspace"><aside class="ch-pane" aria-label="Cosmic Harmony major graph"><div class="ch-pane-heading"><div class="ch-pane-title">Cosmic Harmony <span id="ch-context" class="ch-context">Major · B♭</span></div><button type="button" id="ch-arrows" class="icon-button toggle-icon" aria-pressed="true" aria-label="Arrows on" title="Arrows on">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18 Q8 3 20 9"/><path d="m15 5 5 4-6 3"/></svg>
-</button></div><div id="ch-graph" class="ch-graph"></div><p id="ch-map-status" class="ch-pane-note" aria-live="polite">Graph not yet connected.</p><div class="ch-map-legend"><span class="ch-target-mark">Target</span><span class="ch-played-mark">You played</span></div></aside><div id="phrases" class="phrases"></div></div>
-    </section>
-    <section class="toolbar" aria-label="Exercise controls">
+    <section class="journey-panel" aria-label="Guided Journey">
+      <div class="panel-head journey-controls-head">
+        <div class="toolbar" role="group" aria-label="Journey controls">
       <div class="field wide"><label for="journey">Journey</label><select id="journey"></select></div>
       <div class="field key-field"><label id="key-label" for="key-trigger">Key</label><div class="key-picker"><button type="button" id="key-trigger" class="key-trigger secondary" aria-labelledby="key-label key-trigger" aria-haspopup="listbox" aria-expanded="false">B♭</button><div id="key-menu" role="listbox" aria-labelledby="key-label" hidden></div><select id="key" hidden aria-hidden="true" tabindex="-1"></select></div></div>
       <div class="field"><label for="notation">Notation</label><select id="notation"><option value="both">Names + numbers</option><option value="names">Chord names</option><option value="numbers">Roman numerals</option></select></div>
@@ -63,7 +59,14 @@
       <button type="button" id="descriptions" class="icon-button toggle-icon secondary" aria-pressed="false" aria-label="Descriptions off" title="Descriptions off">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5h14"/><path d="M5 10h14"/><path d="M5 15h10"/><path d="M5 20h7"/></svg>
 </button>
+        </div>
+        <div class="progress"><span id="position">1 / 17</span><span id="pass">Pass 1</span></div>
+      </div>
+      <div class="journey-workspace"><aside class="ch-pane" aria-label="Cosmic Harmony major graph"><div class="ch-pane-heading"><div class="ch-pane-title">Cosmic Harmony <span id="ch-context" class="ch-context">Major · B♭</span></div><button type="button" id="ch-arrows" class="icon-button toggle-icon" aria-pressed="true" aria-label="Arrows on" title="Arrows on">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18 Q8 3 20 9"/><path d="m15 5 5 4-6 3"/></svg>
+</button></div><div id="ch-graph" class="ch-graph"></div><p id="ch-map-status" class="ch-pane-note" aria-live="polite">Graph not yet connected.</p><div class="ch-map-legend"><span class="ch-target-mark">Target</span><span class="ch-played-mark">You played</span></div></aside><div id="phrases" class="phrases"></div></div>
     </section>
+
     <p class="help"><b>You</b> shows the MIDI notes currently held. <b>Ex</b> shows a suggested voicing. A matching chord advances the exercise. Press <kbd>Space</kbd> to repeat the prompt.</p>
     <details class="details"><summary>About this release</summary><p>Music Buddy is a product of agentic assisted coding, built on approximately twenty years of earlier sight-reading trainer work: MusicTeX flashcards, the Java SightReadingTrainer, d3SRT, and Cosmic Harmony. The current web version uses browser MIDI, speech synthesis, and guided journeys. No Python service is required.</p><p><a href="./changes/" target="_blank" rel="noopener noreferrer">CHANGES — chronological release notes</a></p></details>
   </main>
