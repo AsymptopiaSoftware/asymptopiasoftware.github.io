@@ -33,9 +33,17 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   await page.goto('http://127.0.0.1:'+server.address().port+'/musicbuddy/');
   await page.waitForSelector('.chord');
   assert.equal(await page.locator('#loop').count(),1);
-  assert.ok(await page.locator('.play-panel #loop').isChecked());
   assert.equal(await page.locator('.toolbar #loop').count(),0);
-  for (const id of ['start','repeat','restart','scan']) {
+  assert.equal(await page.locator('.play-panel #loop').getAttribute('aria-pressed'),'true');
+  assert.equal(await page.locator('#loop').getAttribute('title'),'Loop on');
+  assert.equal(await page.locator('#loop').evaluate(el=>el.classList.contains('secondary')),false);
+  await page.locator('#loop').click();
+  assert.equal(await page.locator('#loop').getAttribute('aria-pressed'),'false');
+  assert.equal(await page.locator('#loop').getAttribute('title'),'Loop off');
+  assert.equal(await page.locator('#loop').evaluate(el=>el.classList.contains('secondary')),true);
+  await page.locator('#loop').click();
+  assert.equal(await page.locator('#loop').getAttribute('aria-pressed'),'true');
+  for (const id of ['start','repeat','restart','loop','scan']) {
     assert.ok(await page.locator('#'+id+'[title][aria-label] svg').count()>0, id+' has an icon and tooltip');
   }
   assert.ok(await page.locator('#feedback-status').evaluate(el=>el.classList.contains('sr-only') && el.textContent.trim()===''));
