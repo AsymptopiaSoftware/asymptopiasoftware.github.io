@@ -116,3 +116,19 @@
 }
 .toolbar .toggle-icon{align-self:flex-end}
 .ch-pane-heading .toggle-icon{margin:0}
+
+
+/* Journey settings replace the old journey title and bottom settings panel. */
+.journey-controls-head{display:flex;align-items:end;gap:12px;margin-bottom:14px}
+.journey-controls-head .toolbar{
+  flex:1 1 auto;min-width:0;display:flex;align-items:end;gap:9px;
+  padding:0;margin:0;border:0;border-radius:0;background:transparent;flex-wrap:wrap
+}
+.journey-controls-head .toolbar .field{flex:1 1 112px;min-width:100px}
+.journey-controls-head .toolbar .field.wide{flex:1.5 1 180px;min-width:160px}
+.journey-controls-head .toolbar .toggle-icon{align-self:end}
+.journey-controls-head .progress{flex:0 0 auto;align-self:center;white-space:nowrap}
+@media(max-width:1080px){
+  .journey-controls-head{flex-wrap:wrap}
+  .journey-controls-head .progress{order:-1;width:100%;justify-content:flex-end}
+}
