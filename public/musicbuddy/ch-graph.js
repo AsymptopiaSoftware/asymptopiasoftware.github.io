@@ -6,33 +6,65 @@ const NS="http://www.w3.org/2000/svg";
 const CHROMATIC=["C","D♭","D","E♭","E","F","G♭","G","A♭","A","B♭","B"];
 const SHARP=["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"];
 const PC={C:0,"C#":1,Db:1,D:2,"D#":3,Eb:3,E:4,F:5,"F#":6,Gb:6,G:7,"G#":8,Ab:8,A:9,"A#":10,Bb:10,B:11};
+// These three harmonic grammars mirror Cosmic Harmony M25, not a generalized
+// chord graph. Minor's sun is deliberately m (triad), blues' sun is I7.
 const MAJOR=[["ii",2,"m7"],["iii",4,"m7"],["IV",5,"maj7"],["V",7,"7"],["vi",9,"m7"]];
+const MINOR=[["ii",2,"m7b5"],["III",3,"maj7"],["iv",5,"m7"],["V",7,"7"],["VI",8,"maj7"]];
+const BLUES=[["ii",2,"m7"],["IV",5,"7"],["V",7,"7"],["VI",9,"7"],["sharpIV",6,"dim7"]];
+const MODES={major:{quality:"maj7",planets:MAJOR},minor:{quality:"m",planets:MINOR},blues:{quality:"7",planets:BLUES}};
+const BLUES_SLOTS={ii:[300,210],IV:[760,205],V:[820,570],VI:[500,710],sharpIV:[225,600]};
+const BLUES_MOONS=[
+  ["ii:ii","ii","ii","outer",4,"m7b5",115,100,"iiø of ii"],
+  ["ii:V","ii","V","inner",9,"7",288,67,"V7 of ii"],
+  ["ii:vii","ii","vii","inner",1,"dim7",455,92,"vii° of ii"],
+  ["IV:ii","IV","ii","outer",7,"m7",730,65,"ii of IV"],
+  ["IV:vii","IV","vii","inner",4,"dim7",952,91,"vii° of IV"],
+  ["IV:bII","IV","bII","crossed",6,"7",988,248,"♭II7 of IV"],
+  ["V:ii","V","ii","outer",9,"m7",1001,420,"ii of V"],
+  ["V:V","V","V","inner",2,"7",1012,608,"V7 of V"],
+  ["V:bII","V","bII","crossed",8,"7",960,778,"♭II7 of V"],
+  ["VI:ii","VI","ii","outer",11,"m7b5",364,852,"iiø of VI"],
+  ["VI:V","VI","V","inner",4,"7",560,843,"V7 of VI"],
+  ["VI:vii","VI","vii","inner",8,"dim7",690,809,"vii° of VI"],
+  ["sun:vii","sun","vii","inner",11,"dim7",352,443,"vii° of I"],
+  ["sun:bII","sun","bII","crossed",1,"7",602,277,"♭II7 of I"]
+];
 const COORDS=[[425,153],[685,248],[697,524],[425,650],[164,532]];
 const QUALITY_TEXT={maj7:"M7",m7:"-7",m7b5:"-7♭5",dim7:"°7",7:"7",m:"-"};
 const clean=n=>(n+120)%12;
 const note=(pc,key)=>["D","E","G","A","B"].includes(key)?SHARP[clean(pc)]:CHROMATIC[clean(pc)];
 const chordLabel=(n,key)=>note(n.root,key)+QUALITY_TEXT[n.quality];
-function makeNodes(key){
-  const root=PC[key];
-  if(root===undefined)throw Error("Unknown CH tonic: "+key);
-  const nodes=[{id:"sun",degree:"I",kind:"sun",root,quality:"maj7",x:425,y:380,r:76,label:"SUN · I"}];
-  MAJOR.forEach(([degree,offset,quality],i)=>{
-    let [x,y]=COORDS[i];
-    const scale=1+[-.080,-.045,0,.040,.080][i];
-    x=425+(x-425)*scale;y=380+(y-380)*scale;
+function makeNodes(key,mode="major"){
+  const root=PC[key],config=MODES[mode];
+  if(root===undefined||!config)throw Error("Unknown CH context: "+key+" / "+mode);
+  const isBlues=mode==="blues";
+  const nodes=[{id:"sun",degree:"I",kind:"sun",root,quality:config.quality,
+    x:isBlues?530:425,y:isBlues?450:380,r:76,label:"SUN · I"}];
+  config.planets.forEach(([degree,offset,quality],i)=>{
+    let [x,y]=isBlues?BLUES_SLOTS[degree]:COORDS[i];
+    if(!isBlues){const scale=1+[-.080,-.045,0,.040,.080][i];
+      x=425+(x-425)*scale;y=380+(y-380)*scale;}
     nodes.push({id:degree,degree,kind:"planet",root:clean(root+offset),quality,x,y,r:49,label:degree});
   });
-  // The original Cosmic Harmony graph builds moons around each planet; preserve
-  // its distances, moon types, and root offsets rather than manufacturing a generic graph.
-  const targets=[...nodes];
-  for(const target of targets){
+  if(isBlues){
+    for(const [id,target,sub,kind,offset,quality,x,y,label] of BLUES_MOONS)
+      nodes.push({id,target,sub,kind,root:clean(root+offset),quality,x,y,r:30,label});
+    return nodes;
+  }
+  // Major and minor follow the original Halberstadt-derived M25 moon grammar.
+  // In minor, iiø has only V and bII; the minor sun retains its separate bII.
+  for(const target of [...nodes]){
     const minorTarget=target.quality==="m7",sun=target.id==="sun";
-    let moons=sun?[["ii","outer",2,"m7"],["V","inner",7,"7"],["bII","crossed",1,"7"]]:
-      [["ii","outer",2,minorTarget?"m7b5":"m7"],["V","inner",7,"7"]];
-    if(!sun){
+    let moons;
+    if(sun)moons=[["bII","crossed",1,"7"]];
+    else if(mode==="minor"&&target.quality==="m7b5")
+      moons=[["V","inner",7,"7"],["bII","crossed",1,"7"]];
+    else{
+      moons=[["ii","outer",2,minorTarget?"m7b5":(mode==="minor"&&target.id==="V"?"m7b5":"m7")],
+        ["V","inner",7,"7"]];
       if(minorTarget)moons.push(["vii","inner",11,"dim7"]);
       moons.push(["bII","crossed",1,"7"]);
-    }else moons=moons.filter(m=>m[0]==="bII");
+    }
     let ux=target.x-425,uy=target.y-380,len=Math.hypot(ux,uy)||1;
     ux/=len;uy/=len;if(sun){ux=1;uy=0}
     const tx=-uy,ty=ux;
@@ -54,9 +86,9 @@ function makeNodes(key){
       if(sun){distance=174;offset=28}
       const x=Math.min(816,Math.max(39,target.x+ux*distance+tx*offset));
       const y=Math.min(735,Math.max(38,target.y+uy*distance+ty*offset));
-      const label=(sub==="bII"?"♭II":sub==="vii"?"vii°":sub)+" of "+target.degree;
-      nodes.push({id:target.id+":"+sub,target:target.id,sub,kind,root:clean(target.root+step),quality,
-        x,y,r:kind==="outer"?30:27,label});
+      nodes.push({id:target.id+":"+sub,target:target.id,sub,kind,
+        root:clean(target.root+step),quality,x,y,r:kind==="outer"?30:27,
+        label:(sub==="bII"?"♭II":sub==="vii"?"vii°":sub)+" of "+target.degree});
     }
   }
   return nodes;
@@ -123,29 +155,27 @@ function drawJourneyArrows(chart,nodes,sequence,index){
   }
   return edges;
 }
-let lastKey=null, nodes=[];
+let lastKey=null,lastMode=null,nodes=[];
 // Update preview in place, rather than rebuilding the SVG on every hover.
-export function previewCosmicChord(container,key,chord){
-  const matches=(lastKey===key?matchNodes(nodes,chord):[]);
+export function previewCosmicChord(container,key,chord,mode="major"){
+  const matches=(lastKey===key&&lastMode===mode?matchNodes(nodes,chord):[]);
   const ids=new Set(matches.map(n=>n.id));
   for(const element of container.querySelectorAll(".ch-node")){
     element.classList.toggle("preview",ids.has(element.dataset.nodeId));
   }
 }
-export function renderCosmic({container,status,key,journey,target,played,sequence=[],index=0,showArrows=true,preview=null}){
-  if(journey!=="standards"){
-    container.replaceChildren();
-    status.textContent="Graph linking is currently enabled for Standards only.";
-    lastKey=null;return;
+export function renderCosmic({container,status,key,mode="major",target,played,
+  sequence=[],index=0,showArrows=true,preview=null}){
+  if(lastKey!==key||lastMode!==mode){
+    nodes=makeNodes(key,mode);lastKey=key;lastMode=mode;
   }
-  if(lastKey!==key){nodes=makeNodes(key);lastKey=key;}
   const expected=matchNodes(nodes,target);
   const actual=matchNodes(nodes,played);
   status.textContent="Target: "+(expected.length?"mapped":"no exact node")+" · You: "+(!played?"—":actual.length?"mapped":"no exact node");
-  const chart=svg("svg",{viewBox:"0 0 860 775",role:"img","aria-label":"Cosmic Harmony major graph with separately highlighted target and played chords"},document.createDocumentFragment());
+  const chart=svg("svg",{viewBox:mode==="blues"?"0 0 1080 930":"0 0 860 775",role:"img","aria-label":"Cosmic Harmony "+mode+" graph with separately highlighted target and played chords"},document.createDocumentFragment());
   // Replace only the diagram, not practice controls or heading.
   const back=svg("g",{},chart);
-  for(const n of nodes.filter(n=>n.kind==="planet")){
+  if(mode!=="blues")for(const n of nodes.filter(n=>n.kind==="planet")){
     svg("circle",{cx:425,cy:380,r:Math.hypot(n.x-425,n.y-380),class:"orbit"},back);
   }
   const map=new Map(nodes.map(n=>[n.id,n]));
@@ -176,8 +206,9 @@ export function renderCosmic({container,status,key,journey,target,played,sequenc
     const name=svg("text",{y:n.kind==="sun"?14:14,class:"node-chord"},g);name.textContent=chordLabel(n,key);
   }
   container.replaceChildren(chart);
-  previewCosmicChord(container,key,preview);
+  previewCosmicChord(container,key,preview,mode);
 }
-export const cosmicMajorNodes=makeNodes;
+export const cosmicMajorNodes=key=>makeNodes(key,"major");
+export const cosmicNodes=makeNodes;
 export const cosmicExactMatches=matchNodes;
 export const cosmicJourneyPath=journeyPath;
