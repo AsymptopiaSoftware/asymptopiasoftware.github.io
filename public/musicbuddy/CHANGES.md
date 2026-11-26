@@ -2,6 +2,12 @@
 
 Newest first. Earlier command-line milestones are reconstructed from our development discussions; they are not a verified release-tag history.
 
+## 2026-11-26 — Journey controls move into the journey header
+- Replace the duplicate journey title with the existing Journey, Key, Notation, Voice, Octaves and Descriptions controls.
+- Keep the exercise progress counter in the same header.
+- Remove the now-unneeded separate bottom settings panel.
+- Preserve existing MIDI, CH, journey, and toggle behavior.
+
 ## 2026-11-26 — Consistent icon toggles
 - Loop, Arrows, Octaves and Descriptions now share an icon-button convention: highlighted when on, muted when off.
 - Controls retain their previous positions and musical behavior, with hover tooltips and pressed-state accessibility labels.
