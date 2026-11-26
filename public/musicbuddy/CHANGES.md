@@ -2,6 +2,12 @@
 
 Newest first. Earlier command-line milestones are reconstructed from our development discussions; they are not a verified release-tag history.
 
+## 2026-11-26 — Transient journey chord preview
+- Hover or keyboard-focus any journey chord to preview its exact CH node(s) in purple.
+- Remove the preview when the pointer or focus leaves; no click-to-unhighlight mechanism.
+- Keep the current journey target, live MIDI recognition, and arrow state independent.
+- Do not invent highlights when a borrowed chord has no exact node in the selected graph.
+
 ## 2026-11-26 — Cosmic Harmony journey arrows
 - Draw the ordered Standards journey across exact CH nodes, using the existing CH-style curved arrows.
 - Arrows are visible by default, with an independent show/hide checkbox in the CH header.
