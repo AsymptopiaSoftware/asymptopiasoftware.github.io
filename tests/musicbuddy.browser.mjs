@@ -38,7 +38,7 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   for (const id of ['start','repeat','restart','scan']) {
     assert.ok(await page.locator('#'+id+'[title][aria-label] svg').count()>0, id+' has an icon and tooltip');
   }
-  assert.equal(await page.locator('#feedback-status:visible').count(),0);
+  assert.ok(await page.locator('#feedback-status').evaluate(el=>el.classList.contains('sr-only') && el.textContent.trim()===''));
   const [left,right]=await Promise.all([
     page.locator('.hero .play-panel').boundingBox(),
     page.locator('.hero .connection').boundingBox()
