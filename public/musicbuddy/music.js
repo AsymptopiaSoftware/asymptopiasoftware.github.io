@@ -1,4 +1,4 @@
-import { renderCosmic } from './ch-graph.js';
+import { renderCosmic, previewCosmicChord } from './ch-graph.js';
 // Music Buddy Web 0.1 — browser-only MIDI, voice prompts, and chord journeys.
 // This deliberately does not depend on d3SRT, a Python server, or an AI service.
 const PC = {C:0,"C#":1,Db:1,D:2,"D#":3,Eb:3,E:4,F:5,"F#":6,Gb:6,G:7,"G#":8,Ab:8,A:9,"A#":10,Bb:10,B:11,Cb:11};
@@ -30,7 +30,7 @@ const JOURNEYS = {
     phrases:[[3,"C · ordinary ii–V–I","Hear G7 resolve to C major."],[3,"C · tritone substitute","D♭7 replaces G7, sharing the same tritone."],[3,"F · ordinary ii–V–I","Hear C7 resolve to F major."],[3,"F · tritone substitute","G♭7 replaces C7; root falls a semitone."],[3,"B♭ · ordinary ii–V–I","Hear F7 resolve to B♭ major."],[3,"B♭ · tritone substitute","B7 replaces F7; root falls a semitone."]]}
 };
 const $ = id => document.getElementById(id);
-const state = {journey:"standards",key:"Bb",index:0,pass:1,running:false,loop:true,notation:"both",octaves:false,descriptions:false,arrows:true,
+const state = {journey:"standards",key:"Bb",index:0,pass:1,running:false,loop:true,notation:"both",octaves:false,descriptions:false,arrows:true,hoverIndex:null,
  midi:null,input:null,held:new Set(),lastVoicing:null,lastAttack:0,pending:null,audio:null,voices:[]};
 const split = chord => {
   const match=/^([A-G](?:#|b)?)(maj7|m7b5|dim7|m7|m|7)?$/.exec(chord);
@@ -116,6 +116,14 @@ function render() {
       const cell=document.createElement("div");cell.className="chord"+(i===state.index?" active":"");
       if(state.notation!=="numbers"){const c=document.createElement("span");c.textContent=displayChord(chords[i]);cell.append(c);}
       if(state.notation!=="names"){const n=document.createElement("span");n.className="roman";n.textContent=nums[i];cell.append(n);}
+      // Hover is only a temporary CH preview; it never changes the exercise step.
+      cell.dataset.step=String(i);
+      cell.tabIndex=0;
+      cell.setAttribute("aria-label",displayChord(chords[i])+" — preview on Cosmic Harmony");
+      cell.addEventListener("mouseenter",()=>setPreview(i,chords[i]));
+      cell.addEventListener("mouseleave",()=>clearPreview(i));
+      cell.addEventListener("focus",()=>setPreview(i,chords[i]));
+      cell.addEventListener("blur",()=>clearPreview(i));
       cells.append(cell);
     }
     const info=document.createElement("div");info.className="explanation";info.textContent=description;info.hidden=!state.descriptions;left.append(info,cells);box.append(left);host.append(box);
@@ -128,9 +136,19 @@ function render() {
   $("played-notes").textContent=names(guess);
   renderCosmic({container:$("ch-graph"),status:$("ch-map-status"),key:state.key,
     journey:state.journey,target:expected,played:recognizeChord(guess),
-    sequence:chords,index:state.index,showArrows:state.arrows});
+    sequence:chords,index:state.index,showArrows:state.arrows,
+    preview:state.hoverIndex===null?null:chords[state.hoverIndex]});
   $("start").textContent=state.running?"Pause":"Start / Hear chord";
   updateKeyTrigger();
+}
+function setPreview(index,chord){
+  state.hoverIndex=index;
+  previewCosmicChord($("ch-graph"),state.key,chord);
+}
+function clearPreview(index){
+  if(state.hoverIndex!==index)return;
+  state.hoverIndex=null;
+  previewCosmicChord($("ch-graph"),state.key,null);
 }
 function speak(chord) {
   if(!("speechSynthesis" in window)){setStatus("Speech synthesis unavailable; visual prompts still work.");return;}
@@ -208,7 +226,7 @@ function connectMidi(id){
   if(state.input){state.input.onmidimessage=midiMessage;$("midi-status").textContent="Connected: "+state.input.name;}
   else $("midi-status").textContent="Select a MIDI input.";
 }
-function reset(){state.index=0;state.pass=1;state.lastVoicing=null;state.held.clear();clearTimeout(state.pending);render();announce();}
+function reset(){state.hoverIndex=null;state.index=0;state.pass=1;state.lastVoicing=null;state.held.clear();clearTimeout(state.pending);render();announce();}
 function changeJourney(){state.journey=$("journey").value;state.key=JOURNEYS[state.journey].base;$("key").value=state.key;reset();}
 function updateKeyTrigger(){
   const trigger=$("key-trigger");
