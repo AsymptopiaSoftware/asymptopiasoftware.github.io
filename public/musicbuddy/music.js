@@ -138,7 +138,12 @@ function render() {
     journey:state.journey,target:expected,played:recognizeChord(guess),
     sequence:chords,index:state.index,showArrows:state.arrows,
     preview:state.hoverIndex===null?null:chords[state.hoverIndex]});
-  $("start").textContent=state.running?"Pause":"Start / Hear chord";
+  const start=$("start");
+  const action=state.running?"Pause":"Start / Hear chord";
+  start.title=action;
+  start.setAttribute("aria-label",action);
+  start.querySelector(".play-icon").hidden=state.running;
+  start.querySelector(".pause-icon").hidden=!state.running;
   updateKeyTrigger();
 }
 function setPreview(index,chord){
