@@ -2,6 +2,14 @@
 
 Newest first. Earlier command-line milestones are reconstructed from our development discussions; they are not a verified release-tag history.
 
+## 2026-11-26 — Cosmic Harmony mapping (Standards first)
+- Integrated a major-mode Cosmic Harmony diagram based on the original d3SRT sun, planet, and moon definitions.
+- Place the diagram to the left of the Standards journey.
+- Follow the current journey chord and independently highlight the chord recognized from live MIDI.
+- Match pitch class and chord quality exactly; indicate when a chord is not represented by a node.
+- The graph follows key transposition; it does not open a second MIDI listener.
+- Other journeys, minor/blues graph modes, graph-driven exploration, and the Circle of Fifths sidebar remain for subsequent integration.
+
 ## 2026-11-26 — Web UI refinements
 - Key selector: emphasize the seven priority jam keys with bold text instead of stars.
 - Simplify the page heading and practice instructions; remove promotional wording.
