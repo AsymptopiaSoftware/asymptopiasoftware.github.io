@@ -30,7 +30,7 @@ const JOURNEYS = {
     phrases:[[3,"C · ordinary ii–V–I","Hear G7 resolve to C major."],[3,"C · tritone substitute","D♭7 replaces G7, sharing the same tritone."],[3,"F · ordinary ii–V–I","Hear C7 resolve to F major."],[3,"F · tritone substitute","G♭7 replaces C7; root falls a semitone."],[3,"B♭ · ordinary ii–V–I","Hear F7 resolve to B♭ major."],[3,"B♭ · tritone substitute","B7 replaces F7; root falls a semitone."]]}
 };
 const $ = id => document.getElementById(id);
-const state = {journey:"standards",key:"Bb",index:0,pass:1,running:false,loop:true,notation:"both",octaves:false,descriptions:false,
+const state = {journey:"standards",key:"Bb",index:0,pass:1,running:false,loop:true,notation:"both",octaves:false,descriptions:false,arrows:true,
  midi:null,input:null,held:new Set(),lastVoicing:null,lastAttack:0,pending:null,audio:null,voices:[]};
 const split = chord => {
   const match=/^([A-G](?:#|b)?)(maj7|m7b5|dim7|m7|m|7)?$/.exec(chord);
@@ -127,7 +127,8 @@ function render() {
   $("played-name").textContent=guess.length?identify(guess):"—";
   $("played-notes").textContent=names(guess);
   renderCosmic({container:$("ch-graph"),status:$("ch-map-status"),key:state.key,
-    journey:state.journey,target:expected,played:recognizeChord(guess)});
+    journey:state.journey,target:expected,played:recognizeChord(guess),
+    sequence:chords,index:state.index,showArrows:state.arrows});
   $("start").textContent=state.running?"Pause":"Start / Hear chord";
   updateKeyTrigger();
 }
@@ -278,6 +279,7 @@ function init(){
   $("notation").onchange=()=>{state.notation=$("notation").value;render();};
   $("octaves").onchange=()=>{state.octaves=$("octaves").checked;render();};
   $("descriptions").onchange=()=>{state.descriptions=$("descriptions").checked;render();};
+  $("ch-arrows").onchange=()=>{state.arrows=$("ch-arrows").checked;render();};
   $("loop").onchange=()=>state.loop=$("loop").checked;
   $("scan").onclick=scanMidi;
   $("midi").onchange=()=>connectMidi($("midi").value);
