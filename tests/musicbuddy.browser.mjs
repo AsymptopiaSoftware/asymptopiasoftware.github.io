@@ -21,6 +21,14 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   t.after(() => browser.close());
   const page = await browser.newPage();
   const errors=[];
+  await page.addInitScript(() => {
+    window.__fakeMidiInput = {id:'fake-midi',name:'Test MIDI',onmidimessage:null};
+    Object.defineProperty(navigator,'requestMIDIAccess',{
+      configurable:true,value:async()=>({
+        inputs:new Map([['fake-midi',window.__fakeMidiInput]]),onstatechange:null
+      })
+    });
+  });
   page.on('pageerror', e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:'+server.address().port+'/musicbuddy/');
   await page.waitForSelector('.chord');
@@ -38,5 +46,29 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   assert.equal(await page.locator('#key-trigger').textContent(),'C');
   assert.match(await page.locator('#journey-title').textContent(),/C$/);
   assert.equal(await page.locator('.ch-pane').count(),1);
+  assert.equal(await page.locator('#ch-graph svg').count(),1);
+  assert.ok(await page.locator('.expected-ring').count()>0, 'C major tonic should have a mapped target');
+  assert.equal(await page.locator('.played-ring').count(),0);
+  await page.locator('#scan').click();
+  await page.waitForFunction(() => document.querySelector('#midi-status').textContent.includes('Test MIDI'));
+  await page.locator('#start').click();
+  // Dm7 is a mapped C-major planet, but the journey currently expects CM7.
+  await page.evaluate(() => {
+    for(const note of [62,65,69,72])
+      window.__fakeMidiInput.onmidimessage({data:[0x90,note,100]});
+  });
+  await page.waitForFunction(() => document.querySelectorAll('.played-ring').length>0);
+  assert.match(await page.locator('#played-name').textContent(),/D-7/);
+  assert.match(await page.locator('#expected-name').textContent(),/CM7/);
+  assert.equal(await page.locator('#position').textContent(),'1 / 17');
+  assert.ok(await page.locator('.expected-ring').count()>0, 'target highlight must persist independently');
+  // Release the non-target chord; recognize CM7 and advance.
+  await page.evaluate(() => {
+    for(const note of [62,65,69,72])
+      window.__fakeMidiInput.onmidimessage({data:[0x80,note,0]});
+    for(const note of [60,64,67,71])
+      window.__fakeMidiInput.onmidimessage({data:[0x90,note,100]});
+  });
+  await page.waitForFunction(() => document.querySelector('#position').textContent.startsWith('2 /'));
   assert.deepEqual(errors,[]);
 });
