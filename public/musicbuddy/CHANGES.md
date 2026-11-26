@@ -2,6 +2,13 @@
 
 Newest first. Earlier command-line milestones are reconstructed from our development discussions; they are not a verified release-tag history.
 
+## 2026-11-26 — Cosmic Harmony journey arrows
+- Draw the ordered Standards journey across exact CH nodes, using the existing CH-style curved arrows.
+- Arrows are visible by default, with an independent show/hide checkbox in the CH header.
+- Show earlier, current, and future transitions distinctly and offset repeated edges.
+- Preserve gaps at chords with no exact node rather than inventing a connection.
+- Target and You played highlights remain independent of arrow visibility.
+
 ## 2026-11-26 — Cosmic Harmony mapping (Standards first)
 - Integrated a major-mode Cosmic Harmony diagram based on the original d3SRT sun, planet, and moon definitions.
 - Place the diagram to the left of the Standards journey.
