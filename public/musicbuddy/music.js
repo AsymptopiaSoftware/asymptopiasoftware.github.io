@@ -172,6 +172,11 @@ function render() {
   startButton.setAttribute("aria-label",action);
   startButton.querySelector(".play-icon").toggleAttribute("hidden",state.running);
   startButton.querySelector(".pause-icon").toggleAttribute("hidden",!state.running);
+  const loopButton=$("loop");
+  loopButton.classList.toggle("secondary",!state.loop);
+  loopButton.setAttribute("aria-pressed",String(state.loop));
+  loopButton.setAttribute("aria-label",state.loop?"Loop on":"Loop off");
+  loopButton.title=state.loop?"Loop on":"Loop off";
   updateKeyTrigger();
 }
 function setPreview(index,chord){
@@ -333,7 +338,7 @@ function init(){
   $("octaves").onchange=()=>{state.octaves=$("octaves").checked;render();};
   $("descriptions").onchange=()=>{state.descriptions=$("descriptions").checked;render();};
   $("ch-arrows").onchange=()=>{state.arrows=$("ch-arrows").checked;render();};
-  $("loop").onchange=()=>state.loop=$("loop").checked;
+  $("loop").onclick=()=>{state.loop=!state.loop;render();};
   $("scan").onclick=scanMidi;
   $("midi").onchange=()=>connectMidi($("midi").value);
   $("start").onclick=()=>{state.running=!state.running;if(state.running){state.audio??=window.AudioContext?new AudioContext():null;setStatus("Listening. Play the announced chord.");announce();}else{window.speechSynthesis?.cancel();setStatus("Paused.");}render();};
