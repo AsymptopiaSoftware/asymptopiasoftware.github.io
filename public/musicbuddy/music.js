@@ -142,8 +142,8 @@ function render() {
   const action=state.running?"Pause":"Start / Hear chord";
   startButton.title=action;
   startButton.setAttribute("aria-label",action);
-  startButton.querySelector(".play-icon").hidden=state.running;
-  startButton.querySelector(".pause-icon").hidden=!state.running;
+  startButton.querySelector(".play-icon").toggleAttribute("hidden",state.running);
+  startButton.querySelector(".pause-icon").toggleAttribute("hidden",!state.running);
   updateKeyTrigger();
 }
 function setPreview(index,chord){
