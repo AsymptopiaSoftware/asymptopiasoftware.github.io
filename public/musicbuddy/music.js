@@ -191,7 +191,7 @@ function render() {
   renderCosmic({container:$("ch-graph"),status:$("ch-map-status"),key:context.key,
     mode:context.mode,target:expected,played:recognizeChord(guess),
     sequence:chords.slice(context.start,context.end),
-    index:state.index-context.start,showArrows:state.arrows,
+    index:state.index-context.start,showArrows:state.arrows,notation:state.notation,
     preview:state.hoverIndex===null?null:chords[state.hoverIndex]});
   const startButton=$("start");
   const action=state.running?"Pause":"Start / Hear chord";
