@@ -18,13 +18,31 @@
     <div class="hero">
       <section class="play-panel" aria-label="Live chord feedback">
         <div class="feedback"><span>Ex: <strong id="expected-name">—</strong> <span id="expected-notes" class="notes">[]</span></span><span>You: <strong id="played-name">—</strong> <span id="played-notes" class="notes">[]</span></span></div>
-        <div class="practice-actions"><button type="button" id="start">Start / Hear chord</button><button type="button" id="repeat" class="secondary">Repeat prompt</button><button type="button" id="restart" class="secondary">Restart journey</button><span id="feedback-status" aria-live="polite">Select a MIDI input, then start.</span></div>
+        <div class="practice-actions">
+          <button type="button" id="start" class="icon-button" aria-label="Start / Hear chord" title="Start / Hear chord">
+            <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5 L19 12 L8 19 Z" fill="currentColor"/></svg>
+            <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true" hidden><rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/></svg>
+          </button>
+          <button type="button" id="repeat" class="icon-button secondary" aria-label="Repeat prompt" title="Repeat prompt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+          </button>
+          <button type="button" id="restart" class="icon-button secondary" aria-label="Restart journey" title="Restart journey">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11a9 9 0 1 1 2.6 6.4"/><path d="M3 4v7h7"/></svg>
+          </button>
+          <label class="check play-loop"><input id="loop" type="checkbox" checked> Loop</label>
+          <span id="feedback-status" class="sr-only" aria-live="polite"></span>
+        </div>
       </section>
-      <div class="connection">
+      <section class="connection" aria-label="MIDI connection">
         <label for="midi">MIDI input</label>
-        <div class="connection-row"><select id="midi"><option value="">Choose keyboard…</option></select><button id="scan" type="button" class="secondary">Connect / Rescan</button></div>
+        <div class="connection-row">
+          <select id="midi"><option value="">Choose keyboard…</option></select>
+          <button id="scan" type="button" class="icon-button secondary" aria-label="Connect / Rescan MIDI" title="Connect / Rescan MIDI">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+          </button>
+        </div>
         <small id="midi-status" aria-live="polite">Connect a MIDI keyboard in Chrome or Edge.</small>
-      </div>
+      </section>
     </div>
     <section class="journey-panel" aria-labelledby="journey-title">
       <div class="panel-head"><div><p class="eyebrow">GUIDED JOURNEY</p><h2 id="journey-title">Standards</h2></div><div class="progress"><span id="position">1 / 17</span><span id="pass">Pass 1</span></div></div>
@@ -35,7 +53,6 @@
       <div class="field key-field"><label id="key-label" for="key-trigger">Key</label><div class="key-picker"><button type="button" id="key-trigger" class="key-trigger secondary" aria-labelledby="key-label key-trigger" aria-haspopup="listbox" aria-expanded="false">B♭</button><div id="key-menu" role="listbox" aria-labelledby="key-label" hidden></div><select id="key" hidden aria-hidden="true" tabindex="-1"></select></div></div>
       <div class="field"><label for="notation">Notation</label><select id="notation"><option value="both">Names + numbers</option><option value="names">Chord names</option><option value="numbers">Roman numerals</option></select></div>
       <div class="field"><label for="voice">Voice</label><select id="voice"><option value="">System default</option></select></div>
-      <label class="check"><input id="loop" type="checkbox" checked> Loop</label>
       <label class="check"><input id="octaves" type="checkbox"> Octaves</label>
       <label class="check"><input id="descriptions" type="checkbox"> Descriptions</label>
     </section>
