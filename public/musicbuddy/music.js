@@ -1,3 +1,4 @@
+import { renderCosmic } from './ch-graph.js';
 // Music Buddy Web 0.1 — browser-only MIDI, voice prompts, and chord journeys.
 // This deliberately does not depend on d3SRT, a Python server, or an AI service.
 const PC = {C:0,"C#":1,Db:1,D:2,"D#":3,Eb:3,E:4,F:5,"F#":6,Gb:6,G:7,"G#":8,Ab:8,A:9,"A#":10,Bb:10,B:11,Cb:11};
@@ -66,19 +67,23 @@ function bestVoicing(chord, prev) {
   }
   return winner;
 }
-function identify(notes) {
+function recognizeChord(notes) {
   const pcs=[...new Set(notes.map(n=>n%12))].sort((a,b)=>a-b);
-  if(pcs.length<3)return "?";
+  if(pcs.length<3)return null;
   const choices=[];
   for(let root=0;root<12;root++) for(const [quality,intervals] of Object.entries(QUALITY)){
     const candidate=intervals.map(n=>(root+n)%12).sort((a,b)=>a-b);
     if(sameSet(pcs,candidate)) choices.push({root,quality});
   }
-  if(!choices.length)return "?";
-  const expected=sequence()[state.index], {root:targetRoot,quality:targetQuality}=split(expected);
+  if(!choices.length)return null;
+  const expected=sequence()[state.index],{root:targetRoot,quality:targetQuality}=split(expected);
   choices.sort((a,b)=>Number(b.root===PC[targetRoot]&&b.quality===targetQuality)-Number(a.root===PC[targetRoot]&&a.quality===targetQuality));
   const choice=choices[0],root=(SHARP_KEYS.has(state.key)?SHARPS:FLATS)[choice.root];
-  return displayChord(root+choice.quality);
+  return root+choice.quality;
+}
+function identify(notes) {
+  const chord=recognizeChord(notes);
+  return chord?displayChord(chord):"?";
 }
 function displayNumeral(roman) {
   return roman.replace(/maj7/g,"M7").replace(/(?<![A-Za-z])([iv]+)7/g,"$1-7");
@@ -121,6 +126,8 @@ function render() {
   $("expected-notes").textContent=names(bestVoicing(expected,state.lastVoicing));
   $("played-name").textContent=guess.length?identify(guess):"—";
   $("played-notes").textContent=names(guess);
+  renderCosmic({container:$("ch-graph"),status:$("ch-map-status"),key:state.key,
+    journey:state.journey,target:expected,played:recognizeChord(guess)});
   $("start").textContent=state.running?"Pause":"Start / Hear chord";
   updateKeyTrigger();
 }
