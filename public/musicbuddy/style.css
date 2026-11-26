@@ -132,3 +132,13 @@
   .journey-controls-head{flex-wrap:wrap}
   .journey-controls-head .progress{order:-1;width:100%;justify-content:flex-end}
 }
+
+/* Center both Ex/You feedback and its icon-control row. */
+.hero .play-panel .feedback{
+  justify-content:center;
+  text-align:center;
+  font-size:16px;
+  gap:8px 20px;
+}
+.hero .play-panel .feedback strong{font-size:20px}
+.hero .play-panel .practice-actions{justify-content:center}
