@@ -2,6 +2,14 @@
 
 Newest first. Earlier command-line milestones are reconstructed from our development discussions; they are not a verified release-tag history.
 
+## 2026-11-26 — Major, minor, and blues CH modes for all journeys
+- Enabled the original major, minor and blues Cosmic Harmony node grammars, including their distinct sun qualities and moon placements.
+- Home and Standards use the major graph; Minor uses the minor graph; Blues uses the blues graph.
+- Chromatic and Tritone select the appropriate graph tonic per phrase as their tonal centers shift. The journey key dropdown remains the overall transposition control.
+- Display current CH mode and tonic in the graph header.
+- Preserve target, live You played, mouseover preview, and arrow toggle; paths in multi-center journeys are drawn within the active phrase.
+- Only exact matches are highlighted. Minor seventh tonic chords are not falsely identified with the original minor graph's tonic triad.
+
 ## 2026-11-26 — Compact matched practice and MIDI panels
 - Place live Ex / You and MIDI connection in separate, equal-height rounded panels.
 - Replace Start/Pause, Repeat prompt, Restart journey, and MIDI rescan text buttons with accessible icons and tooltips.
