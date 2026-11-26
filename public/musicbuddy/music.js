@@ -177,6 +177,17 @@ function render() {
   loopButton.setAttribute("aria-pressed",String(state.loop));
   loopButton.setAttribute("aria-label",state.loop?"Loop on":"Loop off");
   loopButton.title=state.loop?"Loop on":"Loop off";
+  for(const [id,enabled,label] of [
+    ["ch-arrows",state.arrows,"Arrows"],
+    ["octaves",state.octaves,"Octaves"],
+    ["descriptions",state.descriptions,"Descriptions"]
+  ]){
+    const button=$(id);
+    button.classList.toggle("secondary",!enabled);
+    button.setAttribute("aria-pressed",String(enabled));
+    button.setAttribute("aria-label",label+(enabled?" on":" off"));
+    button.title=label+(enabled?" on":" off");
+  }
   updateKeyTrigger();
 }
 function setPreview(index,chord){
@@ -335,9 +346,9 @@ function init(){
   $("journey").onchange=changeJourney;
   $("key").onchange=()=>{state.key=$("key").value;reset();};
   $("notation").onchange=()=>{state.notation=$("notation").value;render();};
-  $("octaves").onchange=()=>{state.octaves=$("octaves").checked;render();};
-  $("descriptions").onchange=()=>{state.descriptions=$("descriptions").checked;render();};
-  $("ch-arrows").onchange=()=>{state.arrows=$("ch-arrows").checked;render();};
+  $("octaves").onclick=()=>{state.octaves=!state.octaves;render();};
+  $("descriptions").onclick=()=>{state.descriptions=!state.descriptions;render();};
+  $("ch-arrows").onclick=()=>{state.arrows=!state.arrows;render();};
   $("loop").onclick=()=>{state.loop=!state.loop;render();};
   $("scan").onclick=scanMidi;
   $("midi").onchange=()=>connectMidi($("midi").value);
