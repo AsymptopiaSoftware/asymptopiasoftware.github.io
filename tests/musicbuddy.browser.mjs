@@ -176,6 +176,14 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   assert.equal(await page.locator('#journey').inputValue(),'tritone');
   assert.equal(await page.locator('#key-trigger').textContent(),'G');
   assert.equal(await page.locator('#notation').inputValue(),'numbers');
+  assert.equal((await page.locator('.ch-node.sun .node-chord').textContent()).trim(),'IM7');
+  assert.equal(await page.locator('.ch-node.sun .node-numeral').count(),0);
+  await page.selectOption('#notation','names');
+  assert.match(await page.locator('.ch-node.sun .node-chord').textContent(),/M7/);
+  assert.equal(await page.locator('.ch-node.sun .node-numeral').count(),0);
+  await page.selectOption('#notation','both');
+  assert.equal((await page.locator('.ch-node.sun .node-numeral').textContent()).trim(),'IM7');
+  await page.selectOption('#notation','numbers');
   assert.equal(await page.locator('#ch-arrows').getAttribute('aria-pressed'),'false');
   assert.ok(await page.locator('.ch-node').count()>=20);
   assert.ok(await page.locator('.chord').count()>0);
@@ -186,6 +194,6 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   });
   assert.ok(visible,'Cosmic Harmony and exercise nodes need visible geometry');
   assert.equal(await page.locator('.brand').textContent(),'Asymptopia Software');
-  assert.match(await page.locator('.topbar .version').textContent(),/0\\.1\\.1/);
+  assert.match(await page.locator('.topbar .version').textContent(),/0\\.1\\.2/);
   assert.deepEqual(errors,[]);
 });
