@@ -166,5 +166,26 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   await page.selectOption('#journey','tritone');
   await page.waitForFunction(()=>document.querySelector('#ch-context').textContent.includes('Major · C'));
   assert.equal(await page.locator('.ch-journey-arrow').count(),2);
+  // A full reload must retain the exercise configuration and render both sets of nodes.
+  await page.locator('#key-trigger').click();
+  await page.locator('#key-menu .key-option[data-key="G"]').click();
+  await page.selectOption('#notation','numbers');
+  await page.locator('#ch-arrows').click();
+  await page.reload();
+  await page.waitForSelector('.ch-node');
+  assert.equal(await page.locator('#journey').inputValue(),'tritone');
+  assert.equal(await page.locator('#key-trigger').textContent(),'G');
+  assert.equal(await page.locator('#notation').inputValue(),'numbers');
+  assert.equal(await page.locator('#ch-arrows').getAttribute('aria-pressed'),'false');
+  assert.ok(await page.locator('.ch-node').count()>=20);
+  assert.ok(await page.locator('.chord').count()>0);
+  const visible=await page.evaluate(()=>{
+    const graph=document.querySelector('#ch-graph svg').getBoundingClientRect();
+    const chord=document.querySelector('.chord').getBoundingClientRect();
+    return graph.width>100&&graph.height>100&&chord.width>20&&chord.height>20;
+  });
+  assert.ok(visible,'Cosmic Harmony and exercise nodes need visible geometry');
+  assert.equal(await page.locator('.brand').textContent(),'Asymptopia Software');
+  assert.match(await page.locator('.topbar .version').textContent(),/0\\.1\\.1/);
   assert.deepEqual(errors,[]);
 });
