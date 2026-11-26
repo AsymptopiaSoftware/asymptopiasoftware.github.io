@@ -32,6 +32,19 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   page.on('pageerror', e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:'+server.address().port+'/musicbuddy/');
   await page.waitForSelector('.chord');
+  assert.equal(await page.locator('#loop').count(),1);
+  assert.ok(await page.locator('.play-panel #loop').isChecked());
+  assert.equal(await page.locator('.toolbar #loop').count(),0);
+  for (const id of ['start','repeat','restart','scan']) {
+    assert.ok(await page.locator('#'+id+'[title][aria-label] svg').count()>0, id+' has an icon and tooltip');
+  }
+  assert.equal(await page.locator('#feedback-status:visible').count(),0);
+  const [left,right]=await Promise.all([
+    page.locator('.hero .play-panel').boundingBox(),
+    page.locator('.hero .connection').boundingBox()
+  ]);
+  assert.ok(Math.abs(left.y-right.y)<2 && Math.abs(left.height-right.height)<2,
+    'top panels should align symmetrically');
   assert.equal(await page.locator('#key-menu .key-option').count(),12);
   assert.equal(await page.locator('#key-menu .priority').count(),7);
   assert.equal(await page.locator('.explanation:visible').count(),0);
@@ -71,6 +84,9 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   await page.locator('#scan').click();
   await page.waitForFunction(() => document.querySelector('#midi-status').textContent.includes('Test MIDI'));
   await page.locator('#start').click();
+  assert.equal(await page.locator('#start').getAttribute('aria-label'),'Pause');
+  assert.equal(await page.locator('#start .pause-icon:visible').count(),1);
+  assert.equal(await page.locator('#start .play-icon:visible').count(),0);
   // Dm7 is a mapped C-major planet, but the journey currently expects CM7.
   await page.evaluate(() => {
     for(const note of [62,65,69,72])
