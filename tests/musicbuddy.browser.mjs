@@ -79,7 +79,11 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   assert.equal(await selected.evaluate(el=>getComputedStyle(el).fontWeight),'800');
   await selected.click();
   assert.equal(await page.locator('#key-trigger').textContent(),'C');
-  assert.match(await page.locator('#journey-title').textContent(),/C$/);
+  assert.equal(await page.locator('#journey-title').count(),0);
+  assert.equal(await page.locator('.journey-panel .journey-controls-head #journey').count(),1);
+  assert.equal(await page.locator('.journey-panel .journey-controls-head #key-trigger').textContent(),'C');
+  assert.equal(await page.locator('.app > .toolbar').count(),0);
+  assert.equal(await page.locator('.journey-panel .progress #position').textContent(),'1 / 17');
   assert.equal(await page.locator('.ch-pane').count(),1);
   assert.equal(await page.locator('#ch-graph svg').count(),1);
   assert.equal(await page.locator('#ch-arrows').getAttribute('aria-pressed'),'true');
