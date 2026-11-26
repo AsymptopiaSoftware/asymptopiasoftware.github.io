@@ -46,3 +46,14 @@
 .ch-target-mark:before,.ch-played-mark:before{content:"";display:inline-block;width:9px;height:9px;margin-right:6px;vertical-align:middle;border:2px solid #f7d083;border-radius:50%}
 .ch-played-mark:before{border-color:#72dbea}
 @media(max-width:820px){.journey-workspace{grid-template-columns:1fr}.ch-graph svg{max-height:480px}}
+
+/* Ordered journey arrows: original CH-like curved transitions, distinct from
+   the gold expected-chord and blue played-chord node rings. */
+.ch-pane-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ch-arrows-control{display:inline-flex;align-items:center;gap:6px;margin:0;font-size:12px;font-weight:500;color:#b6cdbd;cursor:pointer}
+.ch-arrows-control input{width:15px;height:15px;accent-color:#e1bb77}
+.ch-graph .ch-journey-arrow{fill:none;stroke:#d3a85f;stroke-width:2.4;stroke-linecap:round;opacity:.47;pointer-events:stroke}
+.ch-graph .ch-journey-arrow.passed{stroke:#bfdeae;opacity:.62}
+.ch-graph .ch-journey-arrow.active{stroke:#ffe09d;stroke-width:4.1;opacity:1;filter:drop-shadow(0 0 4px #f6cb74aa)}
+.ch-graph .ch-journey-arrow.future{stroke-dasharray:6 5}
+.ch-graph .ch-arrowhead{fill:#ddbd7e}
