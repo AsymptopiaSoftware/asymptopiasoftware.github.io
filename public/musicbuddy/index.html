@@ -23,6 +23,14 @@
         <small id="midi-status" aria-live="polite">Connect a MIDI keyboard in Chrome or Edge.</small>
       </div>
     </div>
+    <section class="play-panel" aria-label="Live chord feedback">
+      <div class="feedback"><span>Ex: <strong id="expected-name">—</strong> <span id="expected-notes" class="notes">[]</span></span><span>You: <strong id="played-name">—</strong> <span id="played-notes" class="notes">[]</span></span></div>
+      <div class="practice-actions"><button type="button" id="start">Start / Hear chord</button><button type="button" id="repeat" class="secondary">Repeat prompt</button><button type="button" id="restart" class="secondary">Restart journey</button><span id="feedback-status" aria-live="polite">Select a MIDI input, then start.</span></div>
+    </section>
+    <section class="journey-panel" aria-labelledby="journey-title">
+      <div class="panel-head"><div><p class="eyebrow">GUIDED JOURNEY</p><h2 id="journey-title">Standards</h2></div><div class="progress"><span id="position">1 / 17</span><span id="pass">Pass 1</span></div></div>
+      <div class="journey-workspace"><div id="phrases" class="phrases"></div><aside class="ch-pane" aria-label="Cosmic Harmony graph workspace"><div class="ch-pane-title">Cosmic Harmony</div><p class="ch-pane-note">Planetary graph not yet integrated.</p></aside></div>
+    </section>
     <section class="toolbar" aria-label="Exercise controls">
       <div class="field wide"><label for="journey">Journey</label><select id="journey"></select></div>
       <div class="field key-field"><label id="key-label" for="key-trigger">Key</label><div class="key-picker"><button type="button" id="key-trigger" class="key-trigger secondary" aria-labelledby="key-label key-trigger" aria-haspopup="listbox" aria-expanded="false">B♭</button><div id="key-menu" role="listbox" aria-labelledby="key-label" hidden></div><select id="key" hidden aria-hidden="true" tabindex="-1"></select></div></div>
@@ -31,14 +39,6 @@
       <label class="check"><input id="loop" type="checkbox" checked> Loop</label>
       <label class="check"><input id="octaves" type="checkbox"> Octaves</label>
       <label class="check"><input id="descriptions" type="checkbox"> Descriptions</label>
-    </section>
-    <section class="journey-panel" aria-labelledby="journey-title">
-      <div class="panel-head"><div><p class="eyebrow">GUIDED JOURNEY</p><h2 id="journey-title">Standards</h2></div><div class="progress"><span id="position">1 / 17</span><span id="pass">Pass 1</span></div></div>
-      <div class="journey-workspace"><div id="phrases" class="phrases"></div><aside class="ch-pane" aria-label="Cosmic Harmony graph workspace"><div class="ch-pane-title">Cosmic Harmony</div><p class="ch-pane-note">Planetary graph not yet integrated.</p></aside></div>
-    </section>
-    <section class="play-panel" aria-label="Live chord feedback">
-      <div class="feedback"><span>Ex: <strong id="expected-name">—</strong> <span id="expected-notes" class="notes">[]</span></span><span>You: <strong id="played-name">—</strong> <span id="played-notes" class="notes">[]</span></span></div>
-      <div class="practice-actions"><button type="button" id="start">Start / Hear chord</button><button type="button" id="repeat" class="secondary">Repeat prompt</button><button type="button" id="restart" class="secondary">Restart journey</button><span id="feedback-status" aria-live="polite">Select a MIDI input, then start.</span></div>
     </section>
     <p class="help"><b>You</b> shows the MIDI notes currently held. <b>Ex</b> shows a suggested voicing. A matching chord advances the exercise. Press <kbd>Space</kbd> to repeat the prompt.</p>
     <details class="details"><summary>About this release</summary><p>Music Buddy is a product of vibe coding, built on approximately twenty years of earlier sight-reading trainer work: MusicTeX flashcards, the Java SightReadingTrainer, d3SRT, and Cosmic Harmony. The current web version uses browser MIDI, speech synthesis, and guided journeys. No Python service is required.</p><p><a href="./changes/" target="_blank" rel="noopener noreferrer">CHANGES — chronological release notes</a></p></details>
