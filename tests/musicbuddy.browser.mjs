@@ -47,6 +47,14 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   assert.match(await page.locator('#journey-title').textContent(),/C$/);
   assert.equal(await page.locator('.ch-pane').count(),1);
   assert.equal(await page.locator('#ch-graph svg').count(),1);
+  assert.equal(await page.locator('#ch-arrows').isChecked(),true);
+  // The borrowed Ebm7 has no exact major-mode node, leaving two honest path gaps.
+  assert.equal(await page.locator('.ch-journey-arrow').count(),14);
+  await page.locator('#ch-arrows').uncheck();
+  assert.equal(await page.locator('.ch-journey-arrow').count(),0);
+  assert.ok(await page.locator('.expected-ring').count()>0);
+  await page.locator('#ch-arrows').check();
+  assert.equal(await page.locator('.ch-journey-arrow').count(),14);
   assert.ok(await page.locator('.expected-ring').count()>0, 'C major tonic should have a mapped target');
   assert.equal(await page.locator('.played-ring').count(),0);
   await page.locator('#scan').click();
