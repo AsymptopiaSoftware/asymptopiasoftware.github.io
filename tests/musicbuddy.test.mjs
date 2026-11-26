@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const source = readFileSync(new URL('../public/musicbuddy/music.js', import.meta.url), 'utf8');
-const api = new Function(source.replace(/\binit\(\);\s*$/, '') +
+const api = new Function(source.replace(/^import .*\n/m, '').replace(/\binit\(\);\s*$/, '') +
   '\nreturn { JOURNEYS, state, sequence, pitches, split, bestVoicing, numeralRows, identify };')();
 
 test('Music Buddy journeys and transpositions remain valid in all twelve keys', () => {
