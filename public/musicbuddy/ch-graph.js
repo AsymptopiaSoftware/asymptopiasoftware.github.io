@@ -72,8 +72,59 @@ function matchNodes(nodes,chord){
   if(!m)return [];
   return nodes.filter(n=>n.root===PC[m[1]]&&n.quality===(m[2]||""));
 }
+// An ordered journey path is a harmonic fingerprint, not a claim that every
+// progression is one of the original graph's allowed exploration moves.
+// Keep unmappable chords as gaps rather than drawing invented connections.
+function journeyPath(nodes, sequence){
+  const order={sun:0,planet:1,outer:2,inner:3,crossed:4};
+  const positions=sequence.map(chord=>{
+    const candidates=matchNodes(nodes,chord);
+    return [...candidates].sort((a,b)=>
+      (order[a.kind]??5)-(order[b.kind]??5) || a.id.localeCompare(b.id))[0]||null;
+  });
+  return positions.slice(1).map((to,i)=>({
+    index:i+1,from:positions[i],to
+  })).filter(edge=>edge.from&&edge.to);
+}
+function drawJourneyArrows(chart,nodes,sequence,index){
+  const edges=journeyPath(nodes,sequence);
+  if(!edges.length)return edges;
+  const defs=svg("defs",{},chart);
+  const marker=svg("marker",{id:"ch-journey-arrowhead",viewBox:"0 0 10 10",
+    refX:8,refY:5,markerWidth:6,markerHeight:6,orient:"auto-start-reverse"},defs);
+  svg("path",{d:"M 0 0 L 10 5 L 0 10 z",class:"ch-arrowhead"},marker);
+  const layer=svg("g",{class:"ch-journey-arrows",role:"group",
+    "aria-label":"Ordered journey chord transitions"},chart);
+  const repeats=new Map();
+  for(const edge of edges){
+    const a=edge.from,b=edge.to;
+    const pair=[a.id,b.id].sort().join("|");
+    const repeat=repeats.get(pair)||0;repeats.set(pair,repeat+1);
+    const isActive=edge.index===index;
+    const isPassed=edge.index<index;
+    let d;
+    if(a.id===b.id){
+      // A repeated chord is a true self-transition and must not disappear.
+      const radius=a.r+22+repeat*14;
+      d=`M ${a.x+a.r*.5} ${a.y-a.r*.88} C ${a.x+radius*1.45} ${a.y-radius*1.35}, ${a.x-radius*1.45} ${a.y-radius*1.35}, ${a.x-a.r*.5} ${a.y-a.r*.88}`;
+    }else{
+      const dx=b.x-a.x,dy=b.y-a.y,dist=Math.hypot(dx,dy);
+      if(dist<1)continue;
+      const ux=dx/dist,uy=dy/dist,nx=-uy,ny=ux;
+      const orientation=a.id.localeCompare(b.id)<=0?1:-1;
+      const bend=orientation*(repeat%2===0?1:-1)*(24+Math.floor(repeat/2)*16);
+      const mx=(a.x+b.x)/2+nx*bend,my=(a.y+b.y)/2+ny*bend;
+      d=`M ${a.x+ux*(a.r+6)} ${a.y+uy*(a.r+6)} Q ${mx} ${my} ${b.x-ux*(b.r+12)} ${b.y-uy*(b.r+12)}`;
+    }
+    const path=svg("path",{d,class:"ch-journey-arrow"+(isActive?" active":isPassed?" passed":" future"),
+      "data-step":edge.index,"marker-end":"url(#ch-journey-arrowhead)"},layer);
+    const title=svg("title",{},path);
+    title.textContent=`Step ${edge.index} → ${edge.index+1}: ${sequence[edge.index-1]} → ${sequence[edge.index]}`;
+  }
+  return edges;
+}
 let lastKey=null, nodes=[];
-export function renderCosmic({container,status,key,journey,target,played}){
+export function renderCosmic({container,status,key,journey,target,played,sequence=[],index=0,showArrows=true}){
   if(journey!=="standards"){
     container.replaceChildren();
     status.textContent="Graph linking is currently enabled for Standards only.";
@@ -99,6 +150,8 @@ export function renderCosmic({container,status,key,journey,target,played}){
     const x2=t.x-dx/length*t.r,y2=t.y-dy/length*t.r;
     svg("line",{x1,y1,x2,y2,class:"relation "+n.kind},linkLayer);
   }
+  // Arrows go behind the chord labels and independent target/MIDI rings.
+  if(showArrows)drawJourneyArrows(chart,nodes,sequence,index);
   const layer=svg("g",{},chart);
   for(const n of nodes){
     const isExpected=expected.includes(n),isPlayed=actual.includes(n);
@@ -117,3 +170,4 @@ export function renderCosmic({container,status,key,journey,target,played}){
 }
 export const cosmicMajorNodes=makeNodes;
 export const cosmicExactMatches=matchNodes;
+export const cosmicJourneyPath=journeyPath;
