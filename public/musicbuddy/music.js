@@ -29,7 +29,7 @@ const JOURNEYS = {
     phrases:[[3,"C · ordinary ii–V–I","Hear G7 resolve to C major."],[3,"C · tritone substitute","D♭7 replaces G7, sharing the same tritone."],[3,"F · ordinary ii–V–I","Hear C7 resolve to F major."],[3,"F · tritone substitute","G♭7 replaces C7; root falls a semitone."],[3,"B♭ · ordinary ii–V–I","Hear F7 resolve to B♭ major."],[3,"B♭ · tritone substitute","B7 replaces F7; root falls a semitone."]]}
 };
 const $ = id => document.getElementById(id);
-const state = {journey:"standards",key:"Bb",index:0,pass:1,running:false,loop:true,notation:"both",octaves:false,
+const state = {journey:"standards",key:"Bb",index:0,pass:1,running:false,loop:true,notation:"both",octaves:false,descriptions:false,
  midi:null,input:null,held:new Set(),lastVoicing:null,lastAttack:0,pending:null,audio:null,voices:[]};
 const split = chord => {
   const match=/^([A-G](?:#|b)?)(maj7|m7b5|dim7|m7|m|7)?$/.exec(chord);
@@ -113,7 +113,7 @@ function render() {
       if(state.notation!=="names"){const n=document.createElement("span");n.className="roman";n.textContent=nums[i];cell.append(n);}
       cells.append(cell);
     }
-    left.append(cells);const info=document.createElement("div");info.className="explanation";info.textContent=description;box.append(left,info);host.append(box);
+    const info=document.createElement("div");info.className="explanation";info.textContent=description;info.hidden=!state.descriptions;left.append(info,cells);box.append(left);host.append(box);
     start+=count;
   }
   const expected=chords[state.index],guess=[...state.held].sort((a,b)=>a-b);
@@ -122,6 +122,7 @@ function render() {
   $("played-name").textContent=guess.length?identify(guess):"—";
   $("played-notes").textContent=names(guess);
   $("start").textContent=state.running?"Pause":"Start / Hear chord";
+  updateKeyTrigger();
 }
 function speak(chord) {
   if(!("speechSynthesis" in window)){setStatus("Speech synthesis unavailable; visual prompts still work.");return;}
@@ -201,6 +202,58 @@ function connectMidi(id){
 }
 function reset(){state.index=0;state.pass=1;state.lastVoicing=null;state.held.clear();clearTimeout(state.pending);render();announce();}
 function changeJourney(){state.journey=$("journey").value;state.key=JOURNEYS[state.journey].base;$("key").value=state.key;reset();}
+function updateKeyTrigger(){
+  const trigger=$("key-trigger");
+  if(!trigger)return;
+  trigger.textContent=state.key.replace("b","♭").replace("#","♯");
+  for(const option of $("key-menu").querySelectorAll(".key-option"))
+    option.setAttribute("aria-selected",String(option.dataset.key===state.key));
+}
+function closeKeyMenu(refocus=false){
+  $("key-menu").hidden=true;
+  $("key-trigger").setAttribute("aria-expanded","false");
+  if(refocus)$("key-trigger").focus();
+}
+function selectKey(key){
+  state.key=key;
+  $("key").value=key;
+  closeKeyMenu(true);
+  reset();
+}
+function initKeyMenu(){
+  const menu=$("key-menu"),trigger=$("key-trigger");
+  KEYS.forEach(k=>{
+    const b=document.createElement("button");
+    b.type="button";b.role="option";b.className="key-option"+(PRIORITY.has(k)?" priority":"");
+    b.dataset.key=k;b.textContent=k.replace("b","♭").replace("#","♯");
+    b.onclick=()=>selectKey(k);
+    menu.append(b);
+  });
+  trigger.onclick=()=>{
+    const opening=menu.hidden;
+    menu.hidden=!opening;
+    trigger.setAttribute("aria-expanded",String(opening));
+    if(opening){
+      const selected=menu.querySelector('[aria-selected="true"]');
+      (selected||menu.querySelector(".key-option"))?.focus();
+    }
+  };
+  menu.addEventListener("keydown",e=>{
+    const options=[...menu.querySelectorAll(".key-option")];
+    const i=options.indexOf(document.activeElement);
+    if(e.key==="Escape"){e.preventDefault();closeKeyMenu(true);}
+    else if(["ArrowDown","ArrowUp","Home","End"].includes(e.key)){
+      e.preventDefault();
+      const next=e.key==="Home"?0:e.key==="End"?options.length-1:
+        (i+(e.key==="ArrowDown"?1:-1)+options.length)%options.length;
+      options[next]?.focus();
+    }
+  });
+  document.addEventListener("pointerdown",e=>{
+    if(!menu.hidden&&!e.target.closest(".key-picker"))closeKeyMenu();
+  });
+  updateKeyTrigger();
+}
 function voices(){
   if(!("speechSynthesis" in window))return;
   state.voices=window.speechSynthesis.getVoices();
@@ -210,12 +263,14 @@ function voices(){
 }
 function init(){
   Object.entries(JOURNEYS).forEach(([id,j])=>$("journey").add(new Option(j.title,id)));
-  KEYS.forEach(k=>$("key").add(new Option((PRIORITY.has(k)?"★ ":"   ")+k.replace("b","♭"),k)));
+  KEYS.forEach(k=>$("key").add(new Option(k.replace("b","♭"),k)));
   $("journey").value=state.journey;$("key").value=state.key;
+  initKeyMenu();
   $("journey").onchange=changeJourney;
   $("key").onchange=()=>{state.key=$("key").value;reset();};
   $("notation").onchange=()=>{state.notation=$("notation").value;render();};
   $("octaves").onchange=()=>{state.octaves=$("octaves").checked;render();};
+  $("descriptions").onchange=()=>{state.descriptions=$("descriptions").checked;render();};
   $("loop").onchange=()=>state.loop=$("loop").checked;
   $("scan").onclick=scanMidi;
   $("midi").onchange=()=>connectMidi($("midi").value);
