@@ -55,6 +55,17 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
   assert.ok(await page.locator('.expected-ring').count()>0);
   await page.locator('#ch-arrows').check();
   assert.equal(await page.locator('.ch-journey-arrow').count(),14);
+  // Hover a non-target chord: transient preview is independent of the journey.
+  await page.locator('.chord[data-step="2"]').hover();
+  assert.ok(await page.locator('.ch-node.preview').count()>0);
+  assert.equal(await page.locator('#position').textContent(),'1 / 17');
+  assert.ok(await page.locator('.expected-ring').count()>0);
+  await page.locator('.panel-head').hover();
+  assert.equal(await page.locator('.ch-node.preview').count(),0);
+  // Borrowed minor iv is not in the current major map; do not fake a match.
+  await page.locator('.chord[data-step="11"]').hover();
+  assert.equal(await page.locator('.ch-node.preview').count(),0);
+  await page.locator('.panel-head').hover();
   assert.ok(await page.locator('.expected-ring').count()>0, 'C major tonic should have a mapped target');
   assert.equal(await page.locator('.played-ring').count(),0);
   await page.locator('#scan').click();
