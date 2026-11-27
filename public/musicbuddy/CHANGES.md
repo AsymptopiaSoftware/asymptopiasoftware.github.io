@@ -2,6 +2,10 @@
 
 Newest first. Earlier command-line milestones are reconstructed from our development discussions; they are not a verified release-tag history.
 
+## 2026-11-26 — Web 0.1.3: wider workspace
+- Increase the Music Buddy application and aligned header maximum width from 1180px to 1500px.
+- Leave the CH diagram geometry, moon sizes, control placement, and exercise behavior unchanged for this single-step layout experiment.
+
 ## 2026-11-26 — Web 0.1.2: shared notation in Cosmic Harmony
 - CH node labels now follow the same Notation state as the exercise: chord names, Roman numerals, or both.
 - Keep harmonic relationships, current-key transposition, path arrows, target rings, and MIDI feedback unchanged.
