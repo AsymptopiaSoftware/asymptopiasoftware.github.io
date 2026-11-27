@@ -193,9 +193,18 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
     return graph.width>100&&graph.height>100&&chord.width>20&&chord.height>20;
   });
   assert.ok(visible,'Cosmic Harmony and exercise nodes need visible geometry');
-  const graphHeight=await page.locator('#ch-graph').evaluate(el=>getComputedStyle(el).height);
-  assert.equal(graphHeight,'510px','CH viewing area should be larger on desktop');
+  const graphSizing=await page.evaluate(()=>{
+    const ch=document.querySelector('#ch-graph svg');
+    const panel=document.querySelector('.ch-pane').getBoundingClientRect();
+    const exercise=document.querySelector('#phrases').getBoundingClientRect();
+    const svg=ch.getBoundingClientRect();
+    const [, , vw, vh]=ch.viewBox.baseVal ? [0,0,ch.viewBox.baseVal.width,ch.viewBox.baseVal.height] : [0,0,860,775];
+    return {panelWidth:panel.width,exerciseWidth:exercise.width,
+      width:svg.width,height:svg.height,ratio:svg.width/svg.height,expectedRatio:vw/vh};
+  });
+  assert.ok(graphSizing.panelWidth>graphSizing.exerciseWidth,'CH receives the larger workspace column');
+  assert.ok(Math.abs(graphSizing.ratio-graphSizing.expectedRatio)<0.02,'CH preserves original viewBox proportions');
   assert.equal(await page.locator('.brand').textContent(),'Asymptopia Software');
-  assert.match(await page.locator('.topbar .version').textContent(),/0\.1\.4/);
+  assert.match(await page.locator('.topbar .version').textContent(),/0\.1\.5/);
   assert.deepEqual(errors,[]);
 });
