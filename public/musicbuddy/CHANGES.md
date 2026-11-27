@@ -2,6 +2,11 @@
 
 Newest first. Earlier command-line milestones are reconstructed from our development discussions; they are not a verified release-tag history.
 
+## 2026-11-27 — Web 0.1.5: original M25 proportions at natural SVG scale
+- Compare directly with d3SightReadingTrainer Cosmic Harmony M25: Music Buddy already uses its sun, planet, and moon radii and coordinates, so leave those original geometry definitions unchanged.
+- Give Cosmic Harmony a larger share of the existing workspace and size the SVG naturally from its original viewBox instead of imposing a fixed height that letterboxes the drawing.
+- Preserve journey behavior, node matching, arrows, highlighting, controls, and notation.
+ 
 ## 2026-11-27 — Web 0.1.4: larger Cosmic Harmony display
 - Expand the CH SVG viewing area from 390px to 510px tall on desktop (and 310px to 400px on narrow screens), scaling the full diagram proportionally within its existing column.
 - Preserve graph coordinates, relative node sizes, moon diameters, controls, notation, and exercise layout; actual magnification remains bounded by available panel width.
