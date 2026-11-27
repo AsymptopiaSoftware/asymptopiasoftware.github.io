@@ -2,6 +2,10 @@
 
 Newest first. Earlier command-line milestones are reconstructed from our development discussions; they are not a verified release-tag history.
 
+## 2026-11-27 — Web 0.1.4: larger Cosmic Harmony display
+- Expand the CH SVG viewing area from 390px to 510px tall on desktop (and 310px to 400px on narrow screens), scaling the full diagram proportionally within its existing column.
+- Preserve graph coordinates, relative node sizes, moon diameters, controls, notation, and exercise layout; actual magnification remains bounded by available panel width.
+
 ## 2026-11-26 — Web 0.1.3: wider workspace
 - Increase the Music Buddy application and aligned header maximum width from 1180px to 1500px.
 - Leave the CH diagram geometry, moon sizes, control placement, and exercise behavior unchanged for this single-step layout experiment.
