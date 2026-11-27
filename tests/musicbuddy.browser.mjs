@@ -193,7 +193,9 @@ test('Music Buddy reference layout and shared key selection work in a browser', 
     return graph.width>100&&graph.height>100&&chord.width>20&&chord.height>20;
   });
   assert.ok(visible,'Cosmic Harmony and exercise nodes need visible geometry');
+  const graphHeight=await page.locator('#ch-graph').evaluate(el=>getComputedStyle(el).height);
+  assert.equal(graphHeight,'510px','CH viewing area should be larger on desktop');
   assert.equal(await page.locator('.brand').textContent(),'Asymptopia Software');
-  assert.match(await page.locator('.topbar .version').textContent(),/0\.1\.3/);
+  assert.match(await page.locator('.topbar .version').textContent(),/0\.1\.4/);
   assert.deepEqual(errors,[]);
 });
